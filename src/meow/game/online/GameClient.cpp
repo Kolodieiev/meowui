@@ -92,6 +92,8 @@ namespace meow
         if (_is_freed)
             return;
 
+        _is_freed = true;
+
         log_i("Від'єднано від сервера");
 
         _server_data_handler = nullptr;
@@ -123,8 +125,6 @@ namespace meow
             vSemaphoreDelete(_udp_mutex);
             _udp_mutex = nullptr;
         }
-
-        _is_freed = true;
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------

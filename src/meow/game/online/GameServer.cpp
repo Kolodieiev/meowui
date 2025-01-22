@@ -111,6 +111,8 @@ namespace meow
         if (_is_freed)
             return;
 
+        _is_freed = true;
+
         xSemaphoreTake(_client_mutex, portMAX_DELAY);
 
         _client_data_handler = nullptr;
@@ -157,8 +159,6 @@ namespace meow
 
         WiFi.disconnect(true);
         WiFi.mode(WIFI_OFF);
-
-        _is_freed = true;
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------
