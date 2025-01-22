@@ -197,15 +197,15 @@ namespace meow
         xSemaphoreGive(_client_mutex);
     }
 
-    void GameServer::sendBroadcast(UdpPacket::Command cmd, void *data, size_t data_size)
+    void GameServer::sendBroadcast(UdpPacket::PacketType type, const void *data, size_t data_size)
     {
         UdpPacket pack(data_size);
-        pack.setCMD(cmd);
-        pack.setData(data);
+        pack.setType(type);
+        pack.write(data, data_size);
         sendBroadcast(pack);
     }
 
-    void GameServer::sendPacket(ClientWrapper *cl_wrap, UdpPacket &packet)
+    void GameServer::sendPacket(const ClientWrapper *cl_wrap, UdpPacket &packet)
     {
         if (!cl_wrap)
             return;
@@ -215,23 +215,23 @@ namespace meow
         xSemaphoreGive(_udp_mutex);
     }
 
-    void GameServer::sendPacket(IPAddress ip, UdpPacket &packet)
+    void GameServer::sendPacket(IPAddress remote_ip, UdpPacket &packet)
     {
-        ClientWrapper *cl_wrap = findClient(ip);
+        ClientWrapper *cl_wrap = findClient(remote_ip);
         sendPacket(cl_wrap, packet);
     }
 
-    void GameServer::send(IPAddress ip, UdpPacket::Command cmd, void *data, size_t data_size)
+    void GameServer::send(IPAddress remote_ip, UdpPacket::PacketType type, const void *data, size_t data_size)
     {
         UdpPacket pack(data_size);
-        pack.setCMD(cmd);
-        pack.setData(data);
-        sendPacket(ip, pack);
+        pack.setType(type);
+        pack.write(data, data_size);
+        sendPacket(remote_ip, pack);
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------
 
-    void GameServer::removeClient(ClientWrapper *cl_wrap)
+    void GameServer::removeClient(const ClientWrapper *cl_wrap)
     {
         if (!cl_wrap)
             return;
@@ -257,16 +257,16 @@ namespace meow
         xSemaphoreGive(_client_mutex);
     }
 
-    void GameServer::removeClient(IPAddress ip)
+    void GameServer::removeClient(IPAddress remote_ip)
     {
-        uint32_t cl_ip = ip;
+        uint32_t cl_ip = remote_ip;
         if (cl_ip == 0)
             return;
 
         xSemaphoreTake(_client_mutex, portMAX_DELAY);
 
         for (auto it = _clients.begin(), last_it = _clients.end(); it != last_it; ++it)
-            if (it->first == ip)
+            if (it->first == remote_ip)
             {
                 delete it->second;
                 _clients.erase(it);
@@ -276,15 +276,15 @@ namespace meow
         xSemaphoreGive(_client_mutex);
     }
 
-    ClientWrapper *GameServer::findClient(IPAddress ip) const
+    ClientWrapper *GameServer::findClient(IPAddress remote_ip) const
     {
-        uint32_t cl_ip = ip;
+        uint32_t cl_ip = remote_ip;
         if (cl_ip == 0)
             return nullptr;
 
         xSemaphoreTake(_client_mutex, portMAX_DELAY);
 
-        auto it = _clients.find(ip);
+        auto it = _clients.find(remote_ip);
 
         if (it == _clients.end())
         {
@@ -332,9 +332,9 @@ namespace meow
         else
             log_i("Відхилено");
 
-        UdpPacket packet(1);
-        packet.setCMD(UdpPacket::CMD_NAME);
-        packet.setData(&resp);
+        UdpPacket packet(sizeof(resp));
+        packet.setType(UdpPacket::TYPE_NAME);
+        packet.write(&resp, sizeof(resp));
 
         sendPacket(cl_wrap, packet);
     }
@@ -344,9 +344,9 @@ namespace meow
         log_i("Сервер зайнятий");
 
         uint8_t data = 1;
-        UdpPacket packet(1);
-        packet.setCMD(UdpPacket::CMD_BUSY);
-        packet.setData(&data);
+        UdpPacket packet(sizeof(data));
+        packet.setType(UdpPacket::TYPE_BUSY);
+        packet.write(&data, sizeof(data));
 
         sendPacket(cl_wrap, packet);
         removeClient(cl_wrap);
@@ -363,9 +363,9 @@ namespace meow
         if (packet->isDataEquals(_server_id.c_str()))
             result = 1;
 
-        UdpPacket resp_msg{1};
-        resp_msg.setCMD(UdpPacket::CMD_HANDSHAKE);
-        resp_msg.setData(&result);
+        UdpPacket resp_msg{sizeof(result)};
+        resp_msg.setType(UdpPacket::TYPE_HANDSHAKE);
+        resp_msg.write(&result, sizeof(result));
         _server.writeTo(resp_msg.raw(), resp_msg.length(), packet->getRemoteIP(), packet->getRemotePort());
     }
 
@@ -409,42 +409,42 @@ namespace meow
 
     void GameServer::handlePacket(UdpPacket *packet)
     {
-        UdpPacket::Command cmd = packet->getCMD();
+        UdpPacket::PacketType type = packet->getType();
         ClientWrapper *cl_wrap = findClient(packet->getRemoteIP());
 
-        if (!cl_wrap)
+        if (cl_wrap)
         {
-            if (_is_open && _clients.size() < _max_connection)
+            if (type == UdpPacket::TYPE_PING)
             {
-                log_i("Клієнт приєднався");
-
-                xSemaphoreTake(_client_mutex, portMAX_DELAY);
-                _clients.emplace(packet->getRemoteIP(), new ClientWrapper{packet->getRemoteIP(), packet->getRemotePort()});
-                xSemaphoreGive(_client_mutex);
-
-                if (cmd == UdpPacket::CMD_HANDSHAKE)
-                    handleHandshake(packet);
+                cl_wrap->prolong();
+            }
+            else
+            {
+                switch (type)
+                {
+                case UdpPacket::TYPE_DATA:
+                    handleData(cl_wrap, packet);
+                    break;
+                case UdpPacket::TYPE_NAME:
+                    handleName(cl_wrap, packet);
+                    break;
+                default:
+                    if (CORE_DEBUG_LEVEL > 0)
+                        packet->printToLog();
+                    break;
+                }
             }
         }
-        else if (cmd == UdpPacket::CMD_PING)
+        else if (_is_open && _clients.size() < _max_connection)
         {
-            cl_wrap->prolong();
-        }
-        else
-        {
-            switch (cmd)
-            {
-            case UdpPacket::CMD_DATA:
-                handleData(cl_wrap, packet);
-                break;
-            case UdpPacket::CMD_NAME:
-                handleName(cl_wrap, packet);
-                break;
-            default:
-                if (CORE_DEBUG_LEVEL > 0)
-                    packet->printToLog();
-                break;
-            }
+            log_i("Клієнт приєднався");
+
+            xSemaphoreTake(_client_mutex, portMAX_DELAY);
+            _clients.emplace(packet->getRemoteIP(), new ClientWrapper{packet->getRemoteIP(), packet->getRemotePort()});
+            xSemaphoreGive(_client_mutex);
+
+            if (type == UdpPacket::TYPE_HANDSHAKE)
+                handleHandshake(packet);
         }
     }
 
@@ -495,7 +495,7 @@ namespace meow
         xSemaphoreTake(_client_mutex, portMAX_DELAY);
 
         UdpPacket ping(1);
-        ping.setCMD(UdpPacket::CMD_PING);
+        ping.setType(UdpPacket::TYPE_PING);
 
         for (auto it = _clients.begin(), last_it = _clients.end(); it != last_it; ++it)
         {

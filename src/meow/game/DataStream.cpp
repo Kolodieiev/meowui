@@ -29,27 +29,8 @@ namespace meow
         }
     }
 
-    size_t DataStream::extractBytes(void *out, size_t start_pos, size_t len) const
-    {
-        ++start_pos;
-        if (!_buffer || start_pos >= _size)
-            return 0;
-
-        size_t available = _size - start_pos;
-
-        if (len > available)
-            len = available;
-
-        memcpy(out, _buffer + start_pos, len);
-
-        return len;
-    }
-
     size_t DataStream::read(void *out, size_t len)
     {
-        if (!_buffer)
-            return 0;
-
         size_t s = space();
         if (len > s)
             len = s;
@@ -61,9 +42,6 @@ namespace meow
 
     size_t DataStream::drop(size_t len)
     {
-        if (!_buffer)
-            return 0;
-
         size_t s = space();
         if (len > s)
             len = s;
@@ -73,11 +51,8 @@ namespace meow
         return len;
     }
 
-    size_t DataStream::write(void *data, size_t len)
+    size_t DataStream::write(const void *data, size_t len)
     {
-        if (!_buffer)
-            return 0;
-
         size_t s = space();
         if (len > s)
             len = s;
@@ -87,26 +62,8 @@ namespace meow
         return len;
     }
 
-    size_t DataStream::write(uint8_t data)
+    size_t DataStream::space() const
     {
-        return write(&data, sizeof(data));
-    }
-
-    size_t DataStream::write(uint16_t data)
-    {
-        return write(&data, sizeof(data));
-    }
-
-    size_t DataStream::write(uint32_t data)
-    {
-        return write(&data, sizeof(data));
-    }
-
-    size_t DataStream::space()
-    {
-        if (!_buffer)
-            return 0;
-
         return _size - _index;
     }
 }

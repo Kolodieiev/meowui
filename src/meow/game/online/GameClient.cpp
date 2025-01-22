@@ -129,7 +129,7 @@ namespace meow
 
     // ------------------------------------------------------------------------------------------------------------------------------
 
-    void GameClient::sendPacket(UdpPacket &packet)
+    void GameClient::sendPacket(const UdpPacket &packet)
     {
         if (_status != STATUS_CONNECTED && _status != STATUS_IDLE)
         {
@@ -142,11 +142,11 @@ namespace meow
         xSemaphoreGive(_udp_mutex);
     }
 
-    void GameClient::send(UdpPacket::Command cmd, void *data, size_t data_size)
+    void GameClient::send(UdpPacket::PacketType type, const void *data, size_t data_size)
     {
         UdpPacket pack(data_size);
-        pack.setCMD(cmd);
-        pack.setData(data);
+        pack.setType(type);
+        pack.write(data, data_size);
         sendPacket(pack);
     }
 
@@ -157,8 +157,8 @@ namespace meow
         log_i("Розпізнавання...");
 
         UdpPacket packet(_server_id.length());
-        packet.setCMD(UdpPacket::CMD_HANDSHAKE);
-        packet.setData((void *)_server_id.c_str());
+        packet.setType(UdpPacket::TYPE_HANDSHAKE);
+        packet.write((void *)_server_id.c_str(), _server_id.length());
 
         sendPacket(packet);
     }
@@ -168,8 +168,8 @@ namespace meow
         log_i("Авторизація...");
 
         UdpPacket packet(_name.length());
-        packet.setCMD(UdpPacket::CMD_NAME);
-        packet.setData((void *)_name.c_str());
+        packet.setType(UdpPacket::TYPE_NAME);
+        packet.write((void *)_name.c_str(), _name.length());
 
         sendPacket(packet);
     }
@@ -178,19 +178,22 @@ namespace meow
 
     void GameClient::handlePacket(UdpPacket *packet)
     {
-        switch (packet->getCMD())
+        switch (packet->getType())
         {
-        case UdpPacket::CMD_DATA:
+        case UdpPacket::TYPE_DATA:
             callDataHandler(packet);
             break;
-        case UdpPacket::CMD_PING:
+        case UdpPacket::TYPE_PING:
             handlePing();
             break;
-        case UdpPacket::CMD_NAME:
+        case UdpPacket::TYPE_NAME:
             handleNameConfirm(packet);
             break;
-        case UdpPacket::CMD_HANDSHAKE:
+        case UdpPacket::TYPE_HANDSHAKE:
             handleHandshake(packet);
+            break;
+        case UdpPacket::TYPE_BUSY:
+            handleBusy();
             break;
         default:
             if (CORE_DEBUG_LEVEL > 0)
@@ -241,7 +244,7 @@ namespace meow
 
     // ------------------------------------------------------------------------------------------------------------------------------
 
-    void GameClient::handleHandshake(UdpPacket *packet)
+    void GameClient::handleHandshake(const UdpPacket *packet)
     {
         if (static_cast<uint8_t>(packet->getData()[0]) != 1)
         {
@@ -257,7 +260,7 @@ namespace meow
         }
     }
 
-    void GameClient::handleNameConfirm(UdpPacket *packet)
+    void GameClient::handleNameConfirm(const UdpPacket *packet)
     {
         if (static_cast<uint8_t>(packet->getData()[0]) != 1)
         {
@@ -279,9 +282,17 @@ namespace meow
         _last_act_time = millis();
 
         UdpPacket packet(1);
-        packet.setCMD(UdpPacket::CMD_PING);
+        packet.setType(UdpPacket::TYPE_PING);
 
         sendPacket(packet);
+    }
+
+    void GameClient::handleBusy()
+    {
+        log_e("Сервер зайнятий");
+        _status = STATUS_SERVER_BUSY;
+        callDisconnHandler();
+        disconnect();
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------
@@ -290,7 +301,7 @@ namespace meow
     {
         if (millis() - _last_act_time > 3000)
         {
-            log_i("onTimeout");
+            log_e("onTimeout");
             _status = STATUS_DISCONNECTED;
             callDisconnHandler();
             disconnect();
@@ -342,19 +353,19 @@ namespace meow
 
 #pragma region set_handler
 
-    void GameClient::onData(ServerDataHandler data_handler, void *arg)
+    void GameClient::onData(const ServerDataHandler data_handler, void *arg)
     {
         _server_data_handler = data_handler;
         _server_data_arg = arg;
     }
 
-    void GameClient::onConnect(ServerConnectedHandler conn_handler, void *arg)
+    void GameClient::onConnect(const ServerConnectedHandler conn_handler, void *arg)
     {
         _server_connected_handler = conn_handler;
         _server_connected_arg = arg;
     }
 
-    void GameClient::onDisconnect(ServerDisconnHandler disconn_handler, void *arg)
+    void GameClient::onDisconnect(const ServerDisconnHandler disconn_handler, void *arg)
     {
         _server_disconn_handler = disconn_handler;
         _server_disconn_arg = arg;

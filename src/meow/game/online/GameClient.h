@@ -6,8 +6,23 @@
 
 namespace meow
 {
+    /**
+     * @brief Тип обробника, який може бути викликано клієнтом у разі втрати зв'язку з сервером.
+     *
+     */
     typedef std::function<void(void *arg)> ServerDisconnHandler;
+
+    /**
+     * @brief Тип обробника, який може бути викликано клієнтом після встановлення зв'язку з сервером.
+     *
+     */
     typedef std::function<void(void *arg)> ServerConnectedHandler;
+
+    /**
+     * @brief Тип обробника, який може бути викликано клієнтом після отримання пакета даних від сервера.
+     * Об'єкт UdpPacket не потрібно видаляти самостійно.
+     *
+     */
     typedef std::function<void(UdpPacket *packet, void *arg)> ServerDataHandler;
 
     class GameClient
@@ -16,34 +31,108 @@ namespace meow
         GameClient();
         ~GameClient();
 
+        /**
+         * @brief Перечислення, що містить значення станів клієнта.
+         *
+         */
         enum ClientStatus : uint8_t
         {
-            STATUS_IDLE = 0,
-            STATUS_CONNECTED,
-            STATUS_DISCONNECTED,
-            STATUS_WRONG_SERVER,
-            STATUS_WRONG_NAME,
-            STATUS_SERVER_BUSY,
+            STATUS_IDLE = 0,     // В очікуванні.
+            STATUS_CONNECTED,    // Приєднано до сервера.
+            STATUS_DISCONNECTED, // З'єднання з сервером втрачено.
+            STATUS_WRONG_SERVER, // Некоректний сервер.
+            STATUS_WRONG_NAME,   // Відмовлено в авторизації.
+            STATUS_SERVER_BUSY,  // Сервер зайнятий обробкою інших запитів.
         };
 
+        /**
+         * @brief Встановлює ім'я клієнта.
+         *
+         * @param name Ім'я клієнта.
+         */
         void setName(const char *name) { _name = name; }
-        const char *getName() const { return _name.c_str(); }
-        void setServerID(const char *id) { _server_id = id; }
-        bool connect(const char *host_ip = "192.168.4.1");
-        void disconnect();
-        void sendPacket(UdpPacket &packet);
-        void send(UdpPacket::Command cmd, void *data, size_t data_size);
 
+        /**
+         * @brief Повертає вказівник на поточне ім'я клієнта.
+         *
+         * @return const char*
+         */
+        const char *getName() const { return _name.c_str(); }
+
+        /**
+         * @brief Встановлює ідентифікатор сервера, до якого очікується підключення.
+         *
+         * @param id Ідентифікатор сервера.
+         */
+        void setServerID(const char *id) { _server_id = id; }
+
+        /**
+         * @brief Запускає процедуру підключення до сервера.
+         *
+         * @param host_ip IP-адреса сервера.
+         * @return true - Якщо процедуру підключення запущено успішно.
+         * @return false - Інакше.
+         */
+        bool connect(const char *host_ip = "192.168.4.1");
+
+        /**
+         * @brief Скидає всі обробники, від'єднує від сервера та звільняє зайняті ресурси.
+         * Модуль WiFi не вимикається.
+         *
+         */
+        void disconnect();
+
+        /**
+         * @brief Надсилає пакет на сервер, з яким встановлено з'єднання.
+         *
+         * @param packet Пакет, що буде надіслано на сервер.
+         */
+        void sendPacket(const UdpPacket &packet);
+
+        /**
+         * @brief Формує та надсилає пакет на сервер, з яким встановлено з'єднання.
+         *
+         * @param type Тип пакету.
+         * @param data Дані пакету.
+         * @param data_size Розмір даних.
+         */
+        void send(UdpPacket::PacketType type, const void *data, size_t data_size);
+
+        /**
+         * @brief Повертає поточний статус клієнта.
+         *
+         * @return ClientStatus
+         */
         ClientStatus getStatus() const { return _status; }
-        //
-        void onData(ServerDataHandler data_handler, void *arg);
-        void onConnect(ServerConnectedHandler conn_handler, void *arg);
+
+        /**
+         * @brief Встановлює обробник, який буде викликано після отримання пакету даних від сервера.
+         *
+         * @param data_handler Обробник події отримання даних.
+         * @param arg Аргумент, який будуе передано обробнику.
+         */
+        void onData(const ServerDataHandler data_handler, void *arg);
+
+        /**
+         * @brief Встановлює обробник, який буде викликано після встановлення з'єднання з сервером.
+         *
+         * @param conn_handler Обробник події встановлення з'єднання з сервером.
+         * @param arg Аргумент, який будуе передано обробнику.
+         */
+        void onConnect(const ServerConnectedHandler conn_handler, void *arg);
+
+        /**
+         * @brief Встановлює обробник, який буде викликано після втрати з'єднання з сервером.
+         *
+         * @param disconn_handler Обробник події втрати з'єднання з сервером.
+         * @param arg Аргумент, який будуе передано обробнику.
+         */
         void onDisconnect(ServerDisconnHandler disconn_handler, void *arg);
 
     protected:
-        static const uint16_t SERVER_PORT = 777;
-        static const uint16_t CLIENT_PORT = 777;
-        static const uint16_t PACKET_QUEUE_SIZE = 6;
+        const uint16_t SERVER_PORT = 777;
+        const uint16_t CLIENT_PORT = 777;
+        const uint16_t PACKET_QUEUE_SIZE = 6;
 
         bool _is_freed{true};
 
@@ -79,12 +168,14 @@ namespace meow
         void handleCheckConnect();
         static void checkConnectTask(void *arg);
         //
-        void handleHandshake(UdpPacket *packet);
-        void handleNameConfirm(UdpPacket *packet);
+        void handleHandshake(const UdpPacket *packet);
+        void handleNameConfirm(const UdpPacket *packet);
         void handlePing();
+        void handleBusy();
         //
         void callDataHandler(UdpPacket *packet);
         void callConnectHandler();
         void callDisconnHandler();
+        //
     };
 } // namespace meow
