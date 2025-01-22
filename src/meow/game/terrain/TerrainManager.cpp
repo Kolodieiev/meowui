@@ -6,6 +6,7 @@ namespace meow
     TerrainManager::~TerrainManager()
     {
         freeMem();
+        freeTilesDescriptionData();
     }
 
     void TerrainManager::freeMem()
@@ -18,8 +19,6 @@ namespace meow
 
         free(_terrain);
         _terrain = nullptr;
-
-        freeTilesDescriptionData();
     }
 
     void TerrainManager::freeTilesDescriptionData()
@@ -161,8 +160,6 @@ namespace meow
                 ++build_pos;
             }
         }
-
-        freeTilesDescriptionData();
     }
 
     bool TerrainManager::canPass(uint16_t x_from, uint16_t y_from, int32_t x_to, int32_t y_to, const SpriteDescription &sprite)
@@ -249,7 +246,7 @@ namespace meow
         return true;
     }
 
-    void TerrainManager::addTileDescr(uint16_t sprite_id, Tile::TileType type, const uint16_t *sprite_src)
+    void TerrainManager::addTileDesc(uint16_t sprite_id, Tile::TileType type, const uint16_t *sprite_src)
     {
         try
         {
