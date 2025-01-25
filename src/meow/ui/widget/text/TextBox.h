@@ -21,25 +21,50 @@ namespace meow
 
         TextBox(uint16_t widget_ID, GraphicsDriver &display);
         virtual ~TextBox() {}
-        virtual TextBox *clone(uint16_t id) const override;
+
+        /**
+         * @brief Викликає процедуру малювання віджета на дисплей.
+         * Якщо віджет не було змінено, він автоматично пропустить перемальовування.
+         *
+         */
         virtual void onDraw() override;
 
-        /*!
-         * @brief Встановити тип текстового поля.
+        /**
+         * @brief Повертає вказівник на глибоку копію віджета.
          *
-         * @param  type
-         *      Тип поля. Може бути TYPE_TEXT, TYPE_PASSWORD.
+         * @param id Ідентифікатор, який буде присвоєно новому віджету.
+         * @return TextBox*
+         */
+        virtual TextBox *clone(uint16_t id) const override;
+
+        /**
+         * @brief Встановлює тип текстового поля.
+         *
+         * @param type Може мати значення:
+         * TYPE_TEXT - текст відображається регулярними символами.
+         * TYPE_PASSWORD - усі символи замінюються на *.
          */
         void setType(FieldType type) { _type = type; }
+
+        /**
+         * @brief Повертає тип текстового поля.
+         *
+         * @return FieldType
+         */
         FieldType getType() const { return _type; }
 
-        /*!
-         * @brief Видалити останній символ із рядка, що зберігається в цьому віджеті.
+        /**
+         * @brief Видаляє останній символ з рядка, що знаходиться в текстовому полі.
+         *
+         * @return true
+         * @return false
          */
         bool removeLastChar();
 
-        /*!
-         * @brief Додати символи в кінець рядка текстового поля.
+        /**
+         * @brief Додає послідовність символів в кінець рядка текстового поля.
+         *
+         * @param ch
          */
         void addChars(const char *ch);
 
