@@ -457,7 +457,7 @@ namespace meow
         {
             if (xQueueReceive(_packet_queue, &packet, portMAX_DELAY) == pdPASS)
             {
-                if (packet != nullptr)
+                if (packet)
                 {
                     this_ptr->handlePacket(packet);
                     delete packet;
