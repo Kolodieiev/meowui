@@ -14,38 +14,43 @@ namespace meow
     public:
         DynamicMenu(uint16_t widget_ID, GraphicsDriver &display);
         virtual ~DynamicMenu() {}
+
+        /**
+         * @brief Повертає вказівник на глибоку копію віджета.
+         *
+         * @param id Ідентифікатор, який буде присвоєно новому віджету.
+         * @return DynamicMenu*
+         */
         virtual DynamicMenu *clone(uint16_t id) const override;
 
-        /*!
-         * @brief
-         *       Перемістити фокус на попередній елемент в списку.
+        /**
+         * @brief Переміщує фокус на попередній віджет у контейнері.
          *
-         * @return
-         *        true в разі успіху операції. Інакше false.
+         * @return true - Якщо операцію виконано успішно.
+         * @return false - Інакше.
          */
         virtual bool focusUp() override;
 
-        /*!
-         * @brief
-         *       Перемістити фокус на наступний елемент в списку.
+        /**
+         * @brief Переміщує фокус на наступний віджет у контейнері.
          *
-         * @return
-         *        true в разі успіху операції. Інакше false.
+         * @return true - Якщо операцію виконано успішно.
+         * @return false - Інакше.
          */
         virtual bool focusDown() override;
 
         /**
-         * @brief Розраховує кількість елементів, що може відобразити меню.
+         * @brief Розраховує та повертає кількість елементів, що може відобразити меню одночасно за поточних розмір.
          *
-         * @return Кількість елементів, які може відобразити меню за поточних розмірів.
+         * @return uint16_t
          */
         uint16_t getItemsNumOnScreen() const;
 
         /**
-         * @brief Встановити обробник, який завантажить наступні елементи для меню.
+         * @brief Встановлює обробник, який буде викликано для завантаження наступної частини віджетів для меню.
          *
          * @param handler Обробник.
-         * @param arg Аргументи.
+         * @param arg Аргумент, що буде передано в обробник.
          */
         void setOnNextItemsLoadHandler(OnNextItemsLoad handler, void *arg)
         {
@@ -54,10 +59,10 @@ namespace meow
         }
 
         /**
-         * @brief Встановити обробник, який завантажить попередні елементи для меню.
+         * @brief Встановлює обробник, який буде викликано для завантаження попередньої частини віджетів для меню.
          *
          * @param handler Обробник.
-         * @param arg Аргументи.
+         * @param arg Аргумент, що буде передано в обробник.
          */
         void setOnPrevItemsLoadHandler(OnPrevItemsLoad handler, void *arg)
         {

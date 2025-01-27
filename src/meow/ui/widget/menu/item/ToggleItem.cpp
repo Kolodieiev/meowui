@@ -96,9 +96,9 @@ namespace meow
         }
     }
 
-    void ToggleItem::setToggle(ToggleSwitch *toggle)
+    void ToggleItem::setToggle(ToggleSwitch *togg_switch_ptr)
     {
-        if (!toggle)
+        if (!togg_switch_ptr)
         {
             log_e("ToggleSwitch не може бути null");
             esp_restart();
@@ -106,7 +106,7 @@ namespace meow
 
         delete _toggle;
 
-        _toggle = toggle;
+        _toggle = togg_switch_ptr;
         _is_changed = true;
 
         _toggle->setParent(this);

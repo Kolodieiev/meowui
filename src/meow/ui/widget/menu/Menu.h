@@ -14,99 +14,139 @@ namespace meow
     public:
         Menu(uint16_t widget_ID, GraphicsDriver &display);
         virtual ~Menu() {}
-        virtual void onDraw() override;
 
         virtual bool focusUp() = 0;
         virtual bool focusDown() = 0;
 
+        /**
+         * @brief Викликає процедуру малювання віджета на дисплей.
+         * Якщо віджет не було змінено, він автоматично пропустить перемальовування.
+         *
+         */
+        virtual void onDraw() override;
+
+        /**
+         * @brief Видаляє всі елементи списку меню.
+         *
+         */
         void deleteWidgets();
 
-        /*!
-         * @brief
-         *       Знайти елемент в контейнері по його ідентифікатору.
+        /**
+         * @brief Шукає у своєму контейнері віджет з указаним ідентифікатором.
          *
-         * @return
-         *        Focusable * в разі успіху операції. Інакше nullptr.
+         * @param item_ID Ідентифікатор віджета.
+         * @return MenuItem* - Вказівник на віджет елемента списку у разі успіху операції.
+         * @return nullptr - Інкаше.
          */
-        IWidget *findItemByID(uint16_t item_ID) const;
+        MenuItem *findItemByID(uint16_t item_ID) const;
 
-        /*!
-         * @brief
-         *       Задати висоту для елементів меню.
+        /**
+         * @brief Встановлює висоту кожного із елементів списку для вертикальної орієнтації меню.
          *
-         * @param  height
-         *       Висота елементів меню.
+         * @param height Висота кожного елемента списку.
          */
         void setItemHeight(uint16_t height)
         {
             _item_height = height > 0 ? height : 1;
             _is_changed = true;
         }
-        uint16_t getItemHeight() const { return _item_height; }
 
-        /*!
-         * @brief
-         *       Задати ширину для елементів меню.
+        /**
+         * @brief Повертає висоту кожного елемента списку.
          *
-         * @param  width
-         *       Ширина елементів меню.
+         * @return uint16_t
+         */
+        uint16_t getItemHeight() const { return _orientation == ORIENTATION_VERTICAL ? _item_height : _height - 4; }
+
+        /**
+         * @brief Встановлює ширину кожного із елементів списку для горизонтальної орієнтації меню.
+         *
+         * @param width
          */
         void setItemWidth(uint16_t width)
         {
             _item_width = width > 0 ? width : 1;
             _is_changed = true;
         }
-        uint16_t getItemsWidth() const { return _item_width; }
 
-        /*!
-         * @brief
-         *       Задати орієнтацію меню.
-         * @param  orientation
-         *       Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
+        /**
+         * @brief Повертає ширину кожного елемента списку.
+         *
+         * @return uint16_t
+         */
+        uint16_t getItemsWidth() const { return _orientation == ORIENTATION_HORIZONTAL ? _item_width : _width - 4; }
+
+        /**
+         * @brief Встановлює орієнтацію меню.
+         * При вертикальній орієнтації елементи меню розташовуються зверху вниз.
+         * При горизонтальній - зліва на право.
+         *
+         * @param orientation Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
          */
         void setOrientation(const Orientation orientation)
         {
             _orientation = orientation;
             _is_changed = true;
         }
+
+        /**
+         * @brief Повертає поточну орієнтацію меню.
+         *
+         * @return Orientation
+         */
         Orientation getOrientation() const { return _orientation; }
 
-        /*!
-         * @return
-         *        Ідентифікатор елемента, на якому встановлено фокус.
+        /**
+         * @brief Повертає ідентифікатор віджета елемента списку, на якому встановлено фокус.
+         *
+         * @return uint16_t - Ідентифікатор віджета. 0 - Якщо контейнер порожній.
          */
         uint16_t getCurrentItemID() const;
 
-        /*!
-         * @return
-         *        Позиція елемента, на якому встановлено фокус.
+        /**
+         * @brief Повертає порядковий номер віжета, на якому встановлено фокус, в контейнері.
+         *
+         * @return uint16_t - Позиція віджета в контейнері. 0 - Якщо контейнер порожній.
          */
         uint16_t getCurrentFocusPos() const { return _cur_focus_pos; };
 
-        /*!
-         * @brief
-         *       Отримати копію тексту, що зберігається в цьому елементі.
-         * @return
-         *        Текст елемента, на якому встановлено фокус.
+        /**
+         * @brief Повертає копію тексту, що міститься у віджеті елемента списку, на якому встановлено фокус.
+         *
+         * @return String
          */
         String getCurrentItemText() const;
 
-        /*!
-         * @brief
-         *        Отримати вказівник на поточний виділений елемент меню.
-         * @return
-         *        Вказівник на віджет, якщо розмір меню > 0, nullptr інакше.
+        /**
+         * @brief Повертає вказівник на віджет елемента списку, на якому встановлено фокус.
+         *
+         * @return MenuItem* - Вказівник на віджет елемента списку.
+         * @return nullptr - Якщо контейнер порожній.
          */
         MenuItem *getCurrentItem();
 
-        /*!
-         * @brief
-         *        Встановити відступи між елементами меню.
+        /**
+         * @brief Встановлює відступи між елементами меню.
+         *
+         * @param items_spacing Розмір відступу у пікселях між елементами списку.
          */
         void setItemsSpacing(uint16_t items_spacing) { _items_spacing = items_spacing; }
+
+        /**
+         * @brief Повертає розмір відступу між елементами списку.
+         *
+         * @return uint16_t
+         */
         uint16_t getItemsSpacing() const { return _items_spacing; }
 
-        bool addItem(MenuItem *item);
+        /**
+         * @brief Додає вказівник на віджет елемента списку до контейнера меню.
+         * Віджет повинен мати уникальний ідентифікатор для цього контейнера.
+         * Ідентифікатор віджета повинен бути більшим за 0.
+         *
+         * @param item Вказівник на віджет елемента списку.
+         */
+        void addItem(MenuItem *item_ptr);
 
     protected:
         uint16_t _first_item_index{0};
@@ -117,7 +157,7 @@ namespace meow
 
         uint16_t _items_spacing{0};
 
-        Orientation _orientation{ORIENTATION_HORIZONTAL};
+        Orientation _orientation{ORIENTATION_VERTICAL};
 
         void drawItems(uint16_t start, uint16_t count);
         uint16_t getCyclesCount() const;

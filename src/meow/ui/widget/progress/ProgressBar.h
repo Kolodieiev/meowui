@@ -13,30 +13,40 @@ namespace meow
     public:
         ProgressBar(uint16_t widget_ID, GraphicsDriver &display);
         virtual ~ProgressBar();
+
+        /**
+         * @brief Викликає процедуру малювання віджета на дисплей.
+         * Якщо віджет не було змінено, він автоматично пропустить перемальовування.
+         *
+         */
         virtual void onDraw() override;
+
+        /**
+         * @brief Повертає вказівник на глибоку копію віджета.
+         *
+         * @param id Ідентифікатор, який буде присвоєно новому віджету.
+         * @return ProgressBar*
+         */
         virtual ProgressBar *clone(uint16_t id) const override;
 
-        /*!
-         * @brief
-         *       Задати максимальне значення, яке може бути встановлено в елементі.
-         * @param  max
-         *       Максимальне значення.
+        /**
+         * @brief Встановлює максимальне значення прогресу.
+         *
+         * @param max
          */
         void setMax(uint16_t max);
 
-        /*!
-         * @brief
-         *       Задати поточне значення прогресу.
-         * @param  progress
-         *       Поточне значення прогресу.
+        /**
+         * @brief Встановлює поточне значення прогресу.
+         *
+         * @param progress
          */
         void setProgress(uint16_t progress);
 
-        /*!
-         * @brief
-         *       Задати колір полоси прогресу.
-         * @param  color
-         *       Колір полоси прогресу.
+        /**
+         * @brief Встановлює колір фону смужки прогресу.
+         *
+         * @param color
          */
         void setProgressColor(uint16_t color)
         {
@@ -44,33 +54,49 @@ namespace meow
             _is_changed = true;
         }
 
-        /*!
-         * @brief
-         *       Задати орієнтацію полоси прогресу.
-         *       По замовченню встановлено ORIENTATION_HORIZONTAL.
-         * @param  orientation
-         *       Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
+        /**
+         * @brief Встановлює орієнтацію віджета.
+         * По замовчуванню вастановлено ORIENTATION_HORIZONTAL.
+         *
+         * @param orientation Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
          */
         void setOrientation(Orientation orientation)
         {
             _orientation = orientation;
             _is_changed = true;
         }
+
+        /**
+         * @brief Повертає значення орієнтації віджета.
+         *
+         * @return Orientation
+         */
         Orientation getOrientation() const { return _orientation; }
 
-        /*!
-         * @brief
-         *       Скинути значення прогресу до 1.
+        /**
+         * @brief Скидає значення прогресу до 1.
+         *
          */
         void reset();
 
+        /**
+         * @brief Повертає поточне значення прогресу.
+         *
+         * @return uint16_t
+         */
         uint16_t getProgress() const { return _progress; }
+
+        /**
+         * @brief Повертає максимально можливе значення прогресу.
+         *
+         * @return uint16_t
+         */
         uint16_t getMax() const { return _max; }
 
     private:
         using IWidget::isTransparent;
         using IWidget::setTransparency;
-        
+
         uint16_t _progress{1};
         uint16_t _max{1};
         uint16_t _progress_color{0xFFFF};

@@ -5,22 +5,21 @@ namespace meow
 {
     Menu::Menu(uint16_t widget_ID, GraphicsDriver &display) : IWidgetContainer(widget_ID, display) {}
 
-    IWidget *Menu::findItemByID(uint16_t itemID) const
+    MenuItem *Menu::findItemByID(uint16_t itemID) const
     {
-        return findWidgetByID(itemID);
+        return static_cast<MenuItem *>(findWidgetByID(itemID));
     }
 
     void Menu::deleteWidgets()
     {
+        IWidgetContainer::deleteWidgets();
         _first_item_index = 0;
         _cur_focus_pos = 0;
-
-        IWidgetContainer::deleteWidgets();
     }
 
     uint16_t Menu::getCurrentItemID() const
     {
-        if (_widgets.size() == 0)
+        if (_widgets.empty())
             return 0;
 
         return _widgets[_cur_focus_pos]->getID();
@@ -28,7 +27,7 @@ namespace meow
 
     String Menu::getCurrentItemText() const
     {
-        if (_widgets.size() == 0)
+        if (_widgets.empty())
             return "";
 
         MenuItem *item = reinterpret_cast<MenuItem *>(_widgets[_cur_focus_pos]);
@@ -43,9 +42,9 @@ namespace meow
         return static_cast<MenuItem *>(_widgets[_cur_focus_pos]);
     }
 
-    bool Menu::addItem(MenuItem *item)
+    void Menu::addItem(MenuItem *item_ptr)
     {
-        return addWidget(item);
+        addWidget(item_ptr);
     }
 
     void Menu::onDraw()
@@ -75,7 +74,7 @@ namespace meow
             return;
         }
 
-        if (_widgets.size() == 0)
+        if (_widgets.empty())
         {
             if (!_is_transparent)
                 clear();
@@ -104,7 +103,7 @@ namespace meow
         if (!_is_transparent)
             clear();
 
-        if (_widgets.size() == 0)
+        if (_widgets.empty())
             return;
 
         uint16_t itemXPos = 2;
@@ -114,7 +113,7 @@ namespace meow
         {
             _widgets[i]->setPos(itemXPos, itemYPos);
 
-            if (_orientation == ORIENTATION_HORIZONTAL)
+            if (_orientation == ORIENTATION_VERTICAL)
             {
                 _widgets[i]->setHeight(_item_height);
                 _widgets[i]->setWidth(_width - 4);
@@ -135,7 +134,7 @@ namespace meow
     {
         uint16_t cyclesCount;
 
-        if (_orientation == ORIENTATION_HORIZONTAL)
+        if (_orientation == ORIENTATION_VERTICAL)
             cyclesCount = (float)_height / (_item_height + _items_spacing);
         else
             cyclesCount = (float)_width / (_item_width + _items_spacing);

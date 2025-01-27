@@ -4,7 +4,6 @@
 
 namespace meow
 {
-
     class SpinBox : public Label
     {
 
@@ -17,62 +16,91 @@ namespace meow
 
         SpinBox(uint16_t widget_id, GraphicsDriver &display);
         virtual ~SpinBox() {}
+
+        /**
+         * @brief Повертає вказівник на глибоку копію віджета.
+         *
+         * @param id Ідентифікатор, який буде присвоєно новому віджету.
+         * @return SpinBox*
+         */
         virtual SpinBox *clone(uint16_t id) const override;
 
-        /*!
-         * @brief
-         *       Збільшити значення, що зберігається в елементі на 1, якщо можливо.
+        /**
+         * @brief Збільшує значення, що зберігається у віджеті на 1, якщо можливо.
+         * Якщо значення вже досягло заданого максимуму, відбувається перехід на мінімальне.
          *
          */
         void up();
 
-        /*!
-         * @brief
-         *       Зменшити значення, що зберігається в елементі на 1, якщо можливо.
+        /**
+         * @brief Зменшує значення, що зберігається у віджеті на 1, якщо можливо.
+         * Якщо значення вже досягло заданого мінімуму, відбувається перехід на максимальне.
          *
          */
         void down();
 
-        /*!
-         * @brief
-         *       Задати мінімальне значення, яке може бути встановлено в елементі.
-         * @param  min
-         *       Мінімальне значення.
+        /**
+         * @brief Встановлює мінімальне значення, яке може бути встановлено у віджеті.
+         *
+         * @param min Мінімально допустиме значення.
          */
         void setMin(float min);
+
+        /**
+         * @brief Повертає мінімально допустиме значення, яке може бути встановлено у віджеті.
+         *
+         * @return float
+         */
         float getMin() const { return _min; }
 
-        /*!
-         * @brief
-         *       Задати максимальне значення, яке може бути встановлено в елементі.
-         * @param  max
-         *       Максимальне значення.
+        /**
+         * @brief Встановлює максимальне значення, яке може бути встановлено у віджеті.
+         *
+         * @param max Максимально допустиме значення.
          */
         void setMax(float max);
+
+        /**
+         * @brief Повертає максимально допустиме значення, яке може бути встановлено у віджеті.
+         *
+         * @return float
+         */
         float getMax() const { return _max; }
 
-        /*!
-         * @brief
-         *       Задати поточне значення для елементу.
-         * @param  value
-         *       Поточне значення.
+        /**
+         * @brief Встановлює поточне значення.
+         *
+         * @param value
          */
         void setValue(float value);
+
+        /**
+         * @brief Повертає поточне значення.
+         *
+         * @return float
+         */
         float getValue() const { return _value; }
 
-        /*!
-         * @brief
-         *       Встановити тип відображення вмісту. По замовченню встановлено TYPE_INT.
-         * @param  state
+        /**
+         * @brief Встановлює тип відображення вмісту.
+         * По замовченню встановлено TYPE_INT.
+         * Тобто число відображається без коми.
          *
+         * @param spin_type Може мати значення: TYPE_INT / TYPE_FLOAT.
          */
         void setType(SpinType spin_type);
+
+        /**
+         * @brief Повертає тип відображення вмісту.
+         *
+         * @return SpinType
+         */
         SpinType getType() const { return _spin_type; }
 
     private:
         using Label::isTicker;
-        using Label::setTicker;
         using Label::setText;
+        using Label::setTicker;
 
         float _min = 0.0f;
         float _max = 0.0f;
@@ -82,5 +110,4 @@ namespace meow
 
         void setSpinValToDraw();
     };
-
 }

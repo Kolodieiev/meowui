@@ -12,50 +12,58 @@ namespace meow
     public:
         ScrollBar(uint16_t widget_ID, GraphicsDriver &display);
         virtual ~ScrollBar() {}
+
+        /**
+         * @brief Викликає процедуру малювання віджета на дисплей.
+         * Якщо віджет не було змінено, він автоматично пропустить перемальовування.
+         *
+         */
         virtual void onDraw() override;
+
+        /**
+         * @brief Повертає вказівник на глибоку копію віджета.
+         *
+         * @param id Ідентифікатор, який буде присвоєно новому віджету.
+         * @return ScrollBar*
+         */
         virtual ScrollBar *clone(uint16_t id) const override;
 
-        /*!
-         * @brief
-         *       Підняти слайдер на одну позицію.
+        /**
+         * @brief Переміщує слайдер на одну позицію вгору, якщо можливо.
          *
-         * @return
-         *        true в разі успіху операції. Інакше false.
+         * @return true - У разі успіху операції.
+         * @return false - Інакше.
          */
         bool scrollUp();
 
-        /*!
-         * @brief
-         *       Опустити слайдер на одну позицію.
+        /**
+         * @brief Переміщує слайдер на одну позицію вниз, якщо можливо.
          *
-         * @return
-         *        true в разі успіху операції. Інакше false.
+         * @return true - У разі успіху операції.
+         * @return false - Інакше.
          */
         bool scrollDown();
 
-        /*!
-         * @brief
-         *       Викликати тільки після ініціалізації ширини і висоти полоси прокрутки.
-         *       Встановлює кількість позицій полоси прокрутки.
-         * @param  max_value
-         *       Кількість позицій полоси прокрутки.
+        /**
+         * @brief Викликати тільки після ініціалізації ширини і висоти смуги прокрутки.
+         * Встановлює кількість позицій смуги прокрутки.
+         *
+         * @param max_value Кількість позицій смуги прокрутки.
          */
         void setMax(uint16_t max_value);
 
-        /*!
-         * @brief
-         *       Задати поточну позицію слайдеру.
-         * @param  value
-         *       Поточна позиція слайдера.
+        /**
+         * @brief Встановлює нову позицію слайдера.
+         *
+         * @param value Нова позицію слайдера.
          */
         void setValue(uint16_t value);
 
-        /*!
-         * @brief
-         *       Задати орієнтацію полоси прокрутки.
-         *       По замовченню встановлено ORIENTATION_VERTICAL.
-         * @param  orientation
-         *       Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
+        /**
+         * @brief Встановлює орієнтацію смуги прокрутки.
+         * По замовченню встановлено ORIENTATION_VERTICAL.
+         *
+         * @param orientation Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
          */
         void setOrientation(Orientation orientation)
         {
@@ -63,13 +71,17 @@ namespace meow
             _is_changed = true;
         }
 
+        /**
+         * @brief Повертає поточну орієнтацію смуги прокрутки.
+         *
+         * @return Orientation
+         */
         Orientation getOrientation() const { return _orientation; }
 
-        /*!
-         * @brief
-         *       Задати колір слайдеру.
-         * @param  color
-         *       Колір слайдера.
+        /**
+         * @brief Встановлює колір слайдера.
+         *
+         * @param color Новий колір слайдера.
          */
         void setSliderColor(uint16_t color)
         {
@@ -77,7 +89,18 @@ namespace meow
             _is_changed = true;
         }
 
+        /**
+         * @brief Повертає поточну позицію слайдера.
+         *
+         * @return uint16_t
+         */
         uint16_t getValue() const { return _cur_value; }
+
+        /**
+         * @brief Повертає максимально можливе значення позиції.
+         *
+         * @return uint16_t
+         */
         uint16_t getMax() const { return _max_value; }
 
     private:

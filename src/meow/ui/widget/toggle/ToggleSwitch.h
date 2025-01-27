@@ -4,24 +4,38 @@
 
 namespace meow
 {
-
     class ToggleSwitch : public IWidget
     {
     public:
         ToggleSwitch(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display) {}
         virtual ~ToggleSwitch() {};
+
+        /**
+         * @brief Викликає процедуру малювання віджета на дисплей.
+         * Якщо віджет не було змінено, він автоматично пропустить перемальовування.
+         *
+         */
         virtual void onDraw() override;
+
+        /**
+         * @brief Повертає вказівник на глибоку копію віджета.
+         *
+         * @param id Ідентифікатор, який буде присвоєно новому віджету.
+         * @return ToggleSwitch*
+         */
         virtual ToggleSwitch *clone(uint16_t id) const override;
 
-        /*!
-         * @brief
-         *      Повертає поточний стан перемикача. false == вимкнений.
+        /**
+         * @brief  Повертає поточний стан перемикача.
+         *
+         * @return true - Якщо перемикач знаходиться в положенні "Увімкнутий".
+         * @return false - Якщо перемикач знаходиться в положонні "Вимкнутий".
          */
         bool isOn() const { return _is_on; }
 
-        /*!
-         * @brief
-         *     Встановити стан перемикача у "Ввімкнений".
+        /**
+         * @brief Встановлює стан перемикача у "Ввімкнений".
+         *
          */
         void on()
         {
@@ -29,9 +43,9 @@ namespace meow
             _is_changed = true;
         }
 
-        /*!
-         * @brief
-         *     Встановити стан перемикача у "Вимкнений".
+        /**
+         * @brief Встановлює стан перемикача у "Вимкнутий".
+         *
          */
         void off()
         {
@@ -39,48 +53,76 @@ namespace meow
             _is_changed = true;
         }
 
-        /*!
-         * @brief
-         *     Встановити колір фону важелю.
+        /**
+         * @brief Встановлює колір важелю.
+         *
+         * @param color
          */
         void setLeverColor(uint16_t color)
         {
             _lever_color = color;
             _is_changed = true;
         }
+
+        /**
+         * @brief Повертає значення кольору важелю.
+         *
+         * @return uint16_t
+         */
         uint16_t getLeverColor() const { return _lever_color; }
 
-        /*!
-         * @brief
-         *     Встановити колір фону перемикача у стані "Увімкнений".
+        /**
+         * @brief Встановлює колір фону перемикача у стані "Увімкнений".
+         *
+         * @param color
          */
         void setOnColor(uint16_t color)
         {
             _on_color = color;
             _is_changed = true;
         }
+
+        /**
+         * @brief Повертає значення кольору фону перемикача у стані "Увімкнений".
+         *
+         * @return uint16_t
+         */
         uint16_t getOnColor() const { return _on_color; }
 
-        /*!
-         * @brief
-         *     Встановити колір фону перемикача у стані "Ввимкнений".
+        /**
+         * @brief Встановлює колір фону перемикача у стані "Ввимкнений".
+         *
+         * @param color
          */
         void setOffColor(uint16_t color)
         {
             _off_color = color;
             _is_changed = true;
         }
+
+        /**
+         * @brief Повертає значення кольору фону перемикача у стані "Вимкнений".
+         *
+         * @return uint16_t
+         */
         uint16_t getOffColor() const { return _off_color; }
 
-        /*!
-         * @brief
-         *     Встановити положення перемикача горизонтальне/вертикальне.
+        /**
+         * @brief Встановлює орієнтацію відображення перемикача.
+         *
+         * @param orientation Може мати значення: ORIENTATION_HORIZONTAL / ORIENTATION_VERTICAL.
          */
         void setOrientation(Orientation orientation)
         {
             _orientation = orientation;
             _is_changed = true;
         }
+
+        /**
+         * @brief Повертає значення орієнтації відображення перемикача.
+         *
+         * @return Orientation
+         */
         Orientation getOrientation() const { return _orientation; }
 
     private:
@@ -95,5 +137,4 @@ namespace meow
         uint16_t _on_color{TFT_GREEN};
         uint16_t _off_color{TFT_RED};
     };
-
 }

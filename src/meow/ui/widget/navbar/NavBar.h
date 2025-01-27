@@ -10,19 +10,28 @@ namespace meow
     public:
         NavBar(uint16_t widget_ID, GraphicsDriver &display);
         virtual ~NavBar();
+
+        /**
+         * @brief Викликає процедуру малювання віджета на дисплей.
+         * Якщо віджет не було змінено, він автоматично пропустить перемальовування.
+         *
+         */
         virtual void onDraw() override;
+
+        /**
+         * @brief Повертає вказівник на глибоку копію віджета.
+         *
+         * @param id Ідентифікатор, який буде присвоєно новому віджету.
+         * @return NavBar* 
+         */
         NavBar *clone(uint16_t id) const override;
 
-        /*!
-         * @brief
-         *       Задати віджети, які будуть відображатися на панелі навігації.
-         *       Не викликайте цей метод для клонованого об'єкту. Виклик призведе до невизначеної поведінки.
-         * @param  start
-         *       Крайній лівий віджет.
-         * @param  middle
-         *       Центральний віджет.
-         * @param  last
-         *       Крайній правий віджет.
+        /**
+         * @brief Встановлює віджети, які будуть відображатися на панелі навігації.
+         * 
+         * @param start Крайній лівий віджет.
+         * @param middle Центральний віджет.
+         * @param last Крайній правий віджет.
          */
         void setWidgets(IWidget *start, IWidget *middle, IWidget *last);
 
