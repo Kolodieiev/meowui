@@ -108,7 +108,7 @@ namespace meow
         uint8_t getFontID() const { return _font_ID; }
 
         /**
-         * @brief Встановлює положення тексту по вертикалі відносно віджета.
+         * @brief Встановлює розташування тексту по вертикалі відносно віджета.
          *
          * @param gravity Може мати значення: GRAVITY_TOP / GRAVITY_CENTER / GRAVITY_BOTTOM.
          */
@@ -119,7 +119,7 @@ namespace meow
         }
 
         /**
-         * @brief Встановлює положення тексту по горизонталі відносно віджета.
+         * @brief Встановлює розташування тексту по горизонталі відносно віджета.
          *
          * @param alignment Може мати значення: ALIGN_START / ALIGN_CENTER / ALIGN_END.
          */
