@@ -15,7 +15,7 @@ namespace meow
     {
         if (!_label)
         {
-            log_e("Не встановлено текст");
+            log_e("Не встановлено Label");
             esp_restart();
         }
         return _label->getText();
@@ -94,17 +94,17 @@ namespace meow
         }
     }
 
-    void MenuItem::setIco(Image *img)
+    void MenuItem::setIco(Image *img_ptr)
     {
         delete _ico;
 
-        _ico = img;
+        _ico = img_ptr;
         _is_changed = true;
     }
 
-    void MenuItem::setLbl(Label *lbl)
+    void MenuItem::setLbl(Label *lbl_ptr)
     {
-        if (!lbl)
+        if (!lbl_ptr)
         {
             log_e("Label не може бути null");
             esp_restart();
@@ -112,7 +112,7 @@ namespace meow
 
         delete _label;
 
-        _label = lbl;
+        _label = lbl_ptr;
         _is_changed = true;
 
         _label->setParent(this);
