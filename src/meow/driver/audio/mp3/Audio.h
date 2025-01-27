@@ -120,6 +120,36 @@ public:
     void setI2SCommFMT_LSB(bool commFMT);
 
 private:
+    size_t id3Size{0};
+    size_t totalId3Size{0}; // if we have more header, id3_1_size + id3_2_size + ....
+    size_t remainingHeaderBytes{0};
+    size_t universal_tmp{0};
+    uint8_t ID3version{0};
+    int ehsz{0};
+    char tag[5];
+    char frameid[5];
+    size_t framesize{0};
+    bool compressed{false};
+    uint8_t numID3Header{0};
+    //
+    uint16_t count{0};
+    //
+    uint32_t ctime{0};
+    bool f_stream{false};
+    bool f_fileDataComplete{false};
+    uint32_t byteCounter{0}; // count received data
+    //
+    bool f_setDecodeParamsOnce{true};
+    //
+    uint8_t sampleArray[2][4][8] = {0};
+    uint8_t cnt0{0}, cnt1{0}, cnt2{0}, cnt3{0}, cnt4{0};
+    bool f_vu{false};
+    //
+    int16_t iir_out[2];
+    int16_t iir_out1[2];
+    int16_t iir_out2[2];
+    //
+
 #ifndef ESP_ARDUINO_VERSION_VAL
 #define ESP_ARDUINO_VERSION_MAJOR 0
 #define ESP_ARDUINO_VERSION_MINOR 0

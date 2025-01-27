@@ -8,6 +8,9 @@
  *      Author: Wolle (schreibfaul1)
  *
  */
+
+// TODO прибрати статику
+
 #pragma GCC optimize("O3")
 
 #include "Audio.h"
@@ -491,17 +494,6 @@ size_t Audio::readAudioHeader(uint32_t bytes)
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 int Audio::read_ID3_Header(uint8_t *data, size_t len)
 {
-    static size_t id3Size;
-    static size_t totalId3Size; // if we have more header, id3_1_size + id3_2_size + ....
-    static size_t remainingHeaderBytes;
-    static size_t universal_tmp = 0;
-    static uint8_t ID3version;
-    static int ehsz = 0;
-    static char tag[5];
-    static char frameid[5];
-    static size_t framesize = 0;
-    static bool compressed = false;
-    static uint8_t numID3Header = 0;
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if (m_controlCounter == 0)
     { /* read ID3 tag and ID3 header size */
@@ -770,7 +762,6 @@ bool Audio::pauseResume()
 void Audio::playChunk(bool i2s_only)
 {
     int16_t validSamples = 0;
-    static uint16_t count = 0;
     size_t i2s_bytesConsumed = 0;
     int16_t *sample[2] = {0};
     int16_t *s2;
@@ -881,12 +872,8 @@ void Audio::processLocalFile()
     if (!audiofile)
         return;
 
-    static uint32_t ctime = 0;
     const uint32_t timeout = 2500;                          // ms
     const uint32_t maxFrameSize = InBuff.getMaxBlockSize(); // every mp3/aac frame is not bigger
-    static bool f_stream;
-    static bool f_fileDataComplete;
-    static uint32_t byteCounter; // count received data
     uint32_t availableBytes = 0;
 
     if (m_f_firstCall)
@@ -1111,17 +1098,9 @@ int Audio::findNextSync(uint8_t *data, size_t len)
     //         -1 the sync word was not found within the block with the length len
 
     int nextSync;
-    static uint32_t swnf = 0;
-
     nextSync = MP3FindSyncWord(data, len);
     if (nextSync == -1)
         return len; // syncword not found, search next block
-
-    if (nextSync == 0)
-    {
-        if (swnf > 0)
-            log_w("syncword not found %lu times", (long unsigned int)swnf);
-    }
 
     return nextSync;
 }
@@ -1148,9 +1127,7 @@ void Audio::setDecoderItems()
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 int Audio::sendBytes(uint8_t *data, size_t len)
 {
-
     int32_t bytesLeft;
-    static bool f_setDecodeParamsOnce = true;
     int nextSync = 0;
     if (!m_f_playing)
     {
@@ -1541,10 +1518,6 @@ void Audio::setI2SCommFMT_LSB(bool commFMT)
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void Audio::computeVUlevel(int16_t sample[2])
 {
-    static uint8_t sampleArray[2][4][8] = {0};
-    static uint8_t cnt0 = 0, cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0;
-    static bool f_vu = false;
-
     auto avg = [&](uint8_t *sampArr) { // lambda, inner function, compute the average of 8 samples
         uint16_t av = 0;
         for (int i = 0; i < 8; ++i)
@@ -1874,13 +1847,13 @@ void Audio::IIR_calculateCoefficients(int8_t G0, int8_t G1, int8_t G2)
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // clang-format off
-int16_t* Audio::IIR_filterChain0(int16_t iir_in[2], bool clear) { // Infinite Impulse Response (IIR) filters
-
+// Infinite Impulse Response (IIR) filters
+int16_t* Audio::IIR_filterChain0(int16_t iir_in[2], bool clear) 
+{ 
     uint8_t z1 = 0, z2 = 1;
     enum : uint8_t { in = 0, out = 1 };
     float          inSample[2];
     float          outSample[2];
-    static int16_t iir_out[2];
 
     if(clear) {
         memset(m_filterBuff, 0, sizeof(m_filterBuff)); // zero IIR filterbuffer
@@ -1919,18 +1892,18 @@ int16_t* Audio::IIR_filterChain0(int16_t iir_in[2], bool clear) { // Infinite Im
     return iir_out;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-int16_t* Audio::IIR_filterChain1(int16_t iir_in[2], bool clear) { // Infinite Impulse Response (IIR) filters
-
+// Infinite Impulse Response (IIR) filters
+int16_t* Audio::IIR_filterChain1(int16_t iir_in[2], bool clear) 
+{ 
     uint8_t z1 = 0, z2 = 1;
     enum : uint8_t { in = 0, out = 1 };
     float          inSample[2];
     float          outSample[2];
-    static int16_t iir_out[2];
 
     if(clear) {
         memset(m_filterBuff, 0, sizeof(m_filterBuff)); // zero IIR filterbuffer
-        iir_out[0] = 0;
-        iir_out[1] = 0;
+        iir_out1[0] = 0;
+        iir_out1[1] = 0;
         iir_in[0] = 0;
         iir_in[1] = 0;
     }
@@ -1947,7 +1920,7 @@ int16_t* Audio::IIR_filterChain1(int16_t iir_in[2], bool clear) { // Infinite Im
     m_filterBuff[1][z1][in][LEFTCHANNEL] = inSample[LEFTCHANNEL];
     m_filterBuff[1][z2][out][LEFTCHANNEL] = m_filterBuff[1][z1][out][LEFTCHANNEL];
     m_filterBuff[1][z1][out][LEFTCHANNEL] = outSample[LEFTCHANNEL];
-    iir_out[LEFTCHANNEL] = (int16_t)outSample[LEFTCHANNEL];
+    iir_out1[LEFTCHANNEL] = (int16_t)outSample[LEFTCHANNEL];
 
     outSample[RIGHTCHANNEL] = m_filter[1].a0 * inSample[RIGHTCHANNEL] +
                               m_filter[1].a1 * m_filterBuff[1][z1][in][RIGHTCHANNEL] +
@@ -1959,23 +1932,23 @@ int16_t* Audio::IIR_filterChain1(int16_t iir_in[2], bool clear) { // Infinite Im
     m_filterBuff[1][z1][in][RIGHTCHANNEL] = inSample[RIGHTCHANNEL];
     m_filterBuff[1][z2][out][RIGHTCHANNEL] = m_filterBuff[1][z1][out][RIGHTCHANNEL];
     m_filterBuff[1][z1][out][RIGHTCHANNEL] = outSample[RIGHTCHANNEL];
-    iir_out[RIGHTCHANNEL] = (int16_t)outSample[RIGHTCHANNEL];
+    iir_out1[RIGHTCHANNEL] = (int16_t)outSample[RIGHTCHANNEL];
 
-    return iir_out;
+    return iir_out1;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-int16_t* Audio::IIR_filterChain2(int16_t iir_in[2], bool clear) { // Infinite Impulse Response (IIR) filters
-
+// Infinite Impulse Response (IIR) filters
+int16_t* Audio::IIR_filterChain2(int16_t iir_in[2], bool clear) 
+{ 
     uint8_t z1 = 0, z2 = 1;
     enum : uint8_t { in = 0, out = 1 };
     float          inSample[2];
     float          outSample[2];
-    static int16_t iir_out[2];
 
     if(clear) {
         memset(m_filterBuff, 0, sizeof(m_filterBuff)); // zero IIR filterbuffer
-        iir_out[0] = 0;
-        iir_out[1] = 0;
+        iir_out2[0] = 0;
+        iir_out2[1] = 0;
         iir_in[0] = 0;
         iir_in[1] = 0;
     }
@@ -1992,7 +1965,7 @@ int16_t* Audio::IIR_filterChain2(int16_t iir_in[2], bool clear) { // Infinite Im
     m_filterBuff[2][z1][in][LEFTCHANNEL] = inSample[LEFTCHANNEL];
     m_filterBuff[2][z2][out][LEFTCHANNEL] = m_filterBuff[2][z1][out][LEFTCHANNEL];
     m_filterBuff[2][z1][out][LEFTCHANNEL] = outSample[LEFTCHANNEL];
-    iir_out[LEFTCHANNEL] = (int16_t)outSample[LEFTCHANNEL];
+    iir_out2[LEFTCHANNEL] = (int16_t)outSample[LEFTCHANNEL];
 
     outSample[RIGHTCHANNEL] = m_filter[2].a0 * inSample[RIGHTCHANNEL] +
                               m_filter[2].a1 * m_filterBuff[2][z1][in][RIGHTCHANNEL] +
@@ -2004,9 +1977,9 @@ int16_t* Audio::IIR_filterChain2(int16_t iir_in[2], bool clear) { // Infinite Im
     m_filterBuff[2][z1][in][RIGHTCHANNEL] = inSample[RIGHTCHANNEL];
     m_filterBuff[2][z2][out][RIGHTCHANNEL] = m_filterBuff[2][z1][out][RIGHTCHANNEL];
     m_filterBuff[2][z1][out][RIGHTCHANNEL] = outSample[RIGHTCHANNEL];
-    iir_out[RIGHTCHANNEL] = (int16_t)outSample[RIGHTCHANNEL];
+    iir_out2[RIGHTCHANNEL] = (int16_t)outSample[RIGHTCHANNEL];
 
-    return iir_out;
+    return iir_out2;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
