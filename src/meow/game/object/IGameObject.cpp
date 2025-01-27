@@ -30,7 +30,7 @@ namespace meow
 
     _obj_sprite.createSprite(_sprite.width, _sprite.height);
 
-    if (_obj_sprite.getPointer() == nullptr)
+    if (!_obj_sprite.getPointer())
     {
       log_e("Недостатньо пам'яті для створення спрайту об'єкта");
       esp_restart();
@@ -261,13 +261,13 @@ namespace meow
         }
         else if (direction == DIRECTION_LEFT)
         {
-          if (obj->hasIntersectWithPoint(x + _sprite.ofst_w, y + _sprite.ofst_h) ||     // верхній лівий
+          if (obj->hasIntersectWithPoint(x + _sprite.ofst_w, y + _sprite.ofst_h) ||   // верхній лівий
               obj->hasIntersectWithPoint(x + _sprite.ofst_w, y + _sprite.height - 1)) // нижній лівий
             return true;
         }
         else // RIGHT
         {
-          if (obj->hasIntersectWithPoint(x + _sprite.width - 1 - _sprite.ofst_w, y + _sprite.ofst_h) ||    // верхній правий
+          if (obj->hasIntersectWithPoint(x + _sprite.width - 1 - _sprite.ofst_w, y + _sprite.ofst_h) ||  // верхній правий
               obj->hasIntersectWithPoint(x + _sprite.width - 1 - _sprite.ofst_w, y + _sprite.height - 1) // нижній правий
           )
             return true;
