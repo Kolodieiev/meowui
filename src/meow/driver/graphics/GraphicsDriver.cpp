@@ -48,8 +48,7 @@ namespace meow
         _flick_buf.createSprite(_tft.width(), _tft.height(), 1);
         _renderer_buf.createSprite(_tft.width(), _tft.height(), 1);
 
-        if (_flick_buf.getPointer() == nullptr ||
-            _renderer_buf.getPointer() == nullptr)
+        if (!_flick_buf.getPointer() || !_renderer_buf.getPointer())
         {
             log_e("Помилка створення буферів малювання");
             esp_restart();
