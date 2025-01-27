@@ -26,6 +26,7 @@ namespace meow
         ID_CONTEXT_SNAKE,
         ID_CONTEXT_SOKOBAN,
         ID_CONTEXT_TEST_SERVER,
+        ID_CONTEXT_SIMPLE_RPG,
         //
     };
 }
