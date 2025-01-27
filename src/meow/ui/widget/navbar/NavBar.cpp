@@ -2,7 +2,6 @@
 
 namespace meow
 {
-
     NavBar::NavBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display) {}
 
     NavBar::~NavBar()
@@ -14,7 +13,7 @@ namespace meow
 
     void NavBar::setWidgets(IWidget *first, IWidget *middle, IWidget *last)
     {
-        if (first == nullptr || middle == nullptr || last == nullptr)
+        if (!first || !middle || !last)
         {
             log_e("Спроба передати NULL-об'єкт.");
             esp_restart();
