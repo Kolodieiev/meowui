@@ -54,7 +54,7 @@ namespace meow
             uint16_t x_offset{0};
             uint16_t y_offset{0};
 
-            if (_parent != nullptr)
+            if (_parent)
             {
                 x_offset = _parent->getXPos();
                 y_offset = _parent->getYPos();
