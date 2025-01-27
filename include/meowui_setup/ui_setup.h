@@ -21,6 +21,7 @@
 // Ігрові контексти
 #include "context/games/sokoban/SokobanContext.h"
 #include "context/games/test_server/TestServerContext.h"
+#include "context/games/simple_rpg/SimpleRpgContext.h"
 
 // -------------------------------- Додай перемикання контексту за прикладом
 #define SCREEN_CASES                                            \
@@ -62,6 +63,9 @@
         break;                                                  \
     case ContextID::ID_CONTEXT_TEST_SERVER:                     \
         context = new test_server::TestServerContext(_display); \
+        break;                                                  \
+    case ContextID::ID_CONTEXT_SIMPLE_RPG:                      \
+        context = new simp_rpg::SimpleRpgContext(_display);     \
         break;
 
 // -------------------------------- Стартовий контекст
