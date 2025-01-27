@@ -18,28 +18,14 @@ namespace meow
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;
-
-            clone->_width = _width;
-            clone->_height = _height;
             clone->_back_color = _back_color;
             clone->_border_color = _border_color;
             clone->_corner_radius = _corner_radius;
             clone->_is_transparent = _is_transparent;
-            clone->_img_ptr = _img_ptr;
-            clone->_img_buf = TFT_eSprite(_display.getTFT());
-            clone->_img_buf.setSwapBytes(true);
-            clone->_img_buf.setColorDepth(16);
-            clone->_img_buf.setAttribute(PSRAM_ENABLE, true);
-            clone->_img_buf.createSprite(_width, _height, 1);
             clone->_has_transp_color = _has_transp_color;
             clone->_transparent_color = _transparent_color;
 
-            if (!clone->_img_buf.getPointer())
-            {
-                log_e("Помилка створення спрайту зображення");
-                esp_restart();
-            }
-
+            clone->init(_width, _height);
             clone->setSrc(_img_ptr);
 
             return clone;
@@ -51,36 +37,34 @@ namespace meow
         }
     }
 
-    void Image::setSrc(const uint16_t *image)
+    void Image::init(uint16_t width, uint16_t height)
     {
-        if (_img_buf.getPointer() == nullptr)
+        _width = width;
+        _height = height;
+        _img_buf.deleteSprite();
+        _img_buf.setSwapBytes(true);
+        _img_buf.setColorDepth(16);
+        _img_buf.setAttribute(PSRAM_ENABLE, true);
+        _img_buf.createSprite(_width, _height, 1);
+
+        if (!_img_buf.getPointer())
+        {
+            log_e("Помилка ініціалізації буфера %u на %u", _width, _height);
+            esp_restart();
+        }
+    }
+
+    void Image::setSrc(const uint16_t *image_ptr)
+    {
+        if (!_img_buf.getPointer())
         {
             log_e("Буфер не було ініціалізовано");
             esp_restart();
         }
 
         _is_changed = true;
-        _img_ptr = image;
+        _img_ptr = image_ptr;
         _img_buf.pushImage(0, 0, _width, _height, _img_ptr);
-    }
-
-    void Image::init(uint16_t width, uint16_t height)
-    {
-        _img_buf.deleteSprite();
-
-        _width = width;
-        _height = height;
-
-        _img_buf.setSwapBytes(true);
-        _img_buf.setColorDepth(16);
-        _img_buf.setAttribute(PSRAM_ENABLE, true);
-        _img_buf.createSprite(_width, _height, 1);
-
-        if (_img_buf.getPointer() == nullptr)
-        {
-            log_e("Помилка ініціалізації буферу %u на %u", _width, _height);
-            esp_restart();
-        }
     }
 
     Image::~Image()
@@ -108,13 +92,13 @@ namespace meow
         uint16_t x_offset{0};
         uint16_t y_offset{0};
 
-        if (_parent != nullptr)
+        if (_parent)
         {
             x_offset = _parent->getXPos();
             y_offset = _parent->getYPos();
         }
 
-        if (_img_ptr != nullptr)
+        if (_img_ptr)
         {
             if (!_has_transp_color)
                 _display.pushSprite(_img_buf, _x_pos + x_offset, _y_pos + y_offset);
@@ -146,9 +130,9 @@ namespace meow
         }
     }
 
-    void Image::setSrc(const uint16_t *image)
+    void Image::setSrc(const uint16_t *image_ptr)
     {
-        _img_ptr = image;
+        _img_ptr = image_ptr;
         _is_changed = true;
     }
 
@@ -172,13 +156,13 @@ namespace meow
         uint16_t x_offset{0};
         uint16_t y_offset{0};
 
-        if (_parent != nullptr)
+        if (_parent)
         {
             x_offset = _parent->getXPos();
             y_offset = _parent->getYPos();
         }
 
-        if (_img_ptr != nullptr)
+        if (_img_ptr)
         {
             if (!_has_transp_color)
                 _display.pushImage(_x_pos + x_offset, _y_pos + y_offset, _width, _height, _img_ptr);
