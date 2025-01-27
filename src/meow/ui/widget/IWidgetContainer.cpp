@@ -16,9 +16,9 @@ namespace meow
         vSemaphoreDelete(_widg_mutex);
     }
 
-    bool IWidgetContainer::addWidget(IWidget *widget_ptr)
+    void IWidgetContainer::addWidget(IWidget *widget_ptr)
     {
-        if (widget_ptr == nullptr)
+        if (!widget_ptr)
         {
             log_e("*IWidget не може бути NULL.");
             esp_restart();
@@ -46,7 +46,6 @@ namespace meow
         _is_changed = true;
 
         xSemaphoreGive(_widg_mutex);
-        return true;
     }
 
     bool IWidgetContainer::deleteWidgetByID(uint16_t widget_ID)
@@ -87,16 +86,14 @@ namespace meow
 
     IWidget *IWidgetContainer::getWidgetByIndx(uint16_t widget_indx) const
     {
+        IWidget *result{nullptr};
+
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
-
         if (_widgets.size() > widget_indx)
-        {
-            xSemaphoreGive(_widg_mutex);
-            return _widgets[widget_indx];
-        }
-
+            result = _widgets[widget_indx];
         xSemaphoreGive(_widg_mutex);
-        return nullptr;
+
+        return result;
     }
 
     IWidget *IWidgetContainer::getWidgetByCoords(uint16_t x, uint16_t y) const
@@ -138,5 +135,4 @@ namespace meow
 
         xSemaphoreGive(_widg_mutex);
     }
-
 }
