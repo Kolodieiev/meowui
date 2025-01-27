@@ -15,7 +15,7 @@ namespace meow
 
     void Notification::setLabels(Label *title, Label *msg, Label *left_btn, Label *right_btn)
     {
-        if (title == nullptr || msg == nullptr || left_btn == nullptr || right_btn == nullptr)
+        if (!title || !msg || !left_btn || !right_btn)
         {
             log_e("Спроба передати NULL-об'єкт");
             esp_restart();
