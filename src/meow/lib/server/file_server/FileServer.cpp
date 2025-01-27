@@ -5,8 +5,6 @@
 
 namespace meow
 {
-    bool FileServer::_is_working = false;
-
     FileServer::~FileServer()
     {
         stop();
@@ -216,8 +214,6 @@ namespace meow
 
     void FileServer::handleFile()
     {
-        static FILE *in_file;
-
         HTTPUpload &uploadfile = _server->upload();
         _server->setContentLength(CONTENT_LENGTH_UNKNOWN);
 

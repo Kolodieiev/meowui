@@ -31,7 +31,7 @@ namespace meow
         ServerMode getMode() const { return _mode; }
 
     private:
-        static bool _is_working;
+        bool _is_working{false};
 
         String _server_addr;
         String _server_dir;
@@ -44,6 +44,7 @@ namespace meow
         bool _must_work = false;
 
         FileManager _f_mgr;
+        FILE *in_file{nullptr};
 
         static void startWebServer(void *params);
         void fileServerTask(void *params);
