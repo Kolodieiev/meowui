@@ -45,12 +45,18 @@ namespace meow
 
     uint16_t KeyboardRow::getCurrentBtnID() const
     {
-        return getFocusBtn()->getID();
+        xSemaphoreTake(_widg_mutex, portMAX_DELAY);
+        uint16_t id = getFocusBtn()->getID();
+        xSemaphoreGive(_widg_mutex);
+        return id;
     }
 
     String KeyboardRow::getCurrentBtnTxt() const
     {
-        return reinterpret_cast<Label *>(getFocusBtn())->getText();
+        xSemaphoreTake(_widg_mutex, portMAX_DELAY);
+        Label *lbl = reinterpret_cast<Label *>(getFocusBtn());
+        xSemaphoreGive(_widg_mutex);
+        return lbl->getText();
     }
 
     bool KeyboardRow::focusUp()
@@ -98,7 +104,6 @@ namespace meow
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
         IWidget *btn = getFocusBtn();
-
         btn->removeFocus();
 
         if (pos > _widgets.size() - 1)
@@ -114,8 +119,12 @@ namespace meow
 
     void KeyboardRow::removeFocus()
     {
+        xSemaphoreTake(_widg_mutex, portMAX_DELAY);
+
         getFocusBtn()->removeFocus();
         _cur_focus_pos = 0;
+
+        xSemaphoreGive(_widg_mutex);
     }
 
     IWidget *KeyboardRow::getFocusBtn() const

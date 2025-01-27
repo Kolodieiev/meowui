@@ -42,12 +42,18 @@ namespace meow
 
     uint16_t Keyboard::getCurrentBtnID() const
     {
-        return getFocusRow()->getCurrentBtnID();
+        xSemaphoreTake(_widg_mutex, portMAX_DELAY);
+        uint16_t id = getFocusRow()->getCurrentBtnID();
+        xSemaphoreGive(_widg_mutex);
+        return id;
     }
 
     String Keyboard::getCurrentBtnTxt() const
     {
-        return getFocusRow()->getCurrentBtnTxt();
+        xSemaphoreTake(_widg_mutex, portMAX_DELAY);
+        KeyboardRow *row = reinterpret_cast<KeyboardRow *>(getFocusRow());
+        xSemaphoreGive(_widg_mutex);
+        return row->getCurrentBtnTxt();
     }
 
     void Keyboard::focusUp()
