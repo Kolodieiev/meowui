@@ -8,9 +8,6 @@
  *      Author: Wolle (schreibfaul1)
  *
  */
-
-// TODO прибрати статику
-
 #pragma GCC optimize("O3")
 
 #include "Audio.h"
