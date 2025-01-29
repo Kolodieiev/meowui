@@ -57,6 +57,24 @@ namespace meow
         _is_changed = true;
     }
 
+    void Label::setTextSize(uint8_t size)
+    {
+        _text_size = size;
+
+        uint16_t text_h = _font_ID == 2 ? chr_hgt_font2 * size + 2 : chr_hgt_font4 * size + 2;
+
+        if (_height < text_h)
+            _height = text_h;
+
+        _is_changed = true;
+    }
+
+    void Label::setTextColor(uint16_t textColor)
+    {
+        _text_color = textColor;
+        _is_changed = true;
+    }
+
     uint8_t Label::getCharHgt() const
     {
         if (_font_ID == 2)
@@ -119,6 +137,24 @@ namespace meow
             if (_height < char_h * _text_size + 2)
                 _height = char_h * _text_size + 2;
 
+        _is_changed = true;
+    }
+
+    void Label::setGravity(const Gravity gravity)
+    {
+        _text_gravity = gravity;
+        _is_changed = true;
+    }
+
+    void Label::setAlign(const Alignment alignment)
+    {
+        _text_alignment = alignment;
+        _is_changed = true;
+    }
+
+    void Label::setTextOffset(uint8_t offset)
+    {
+        _text_offset = offset;
         _is_changed = true;
     }
 

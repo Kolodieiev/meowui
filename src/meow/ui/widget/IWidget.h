@@ -68,56 +68,35 @@ namespace meow
          * @param x Координата.
          * @param y Координата.
          */
-        void setPos(uint16_t x, uint16_t y)
-        {
-            _x_pos = x;
-            _y_pos = y;
-            _is_changed = true;
-        }
+        void setPos(uint16_t x, uint16_t y);
 
         /**
          * @brief Встановлює висоту віджета.
          *
          * @param height
          */
-        void setHeight(uint16_t height)
-        {
-            _height = height;
-            _is_changed = true;
-        }
+        void setHeight(uint16_t height);
 
         /**
          * @brief Встановлює ширину віджета.
          *
          * @param width
          */
-        void setWidth(uint16_t width)
-        {
-            _width = width;
-            _is_changed = true;
-        }
+        void setWidth(uint16_t width);
 
         /**
          * @brief Встановлює колір фону віджета.
          *
          * @param back_color
          */
-        void setBackColor(uint16_t back_color)
-        {
-            _back_color = back_color;
-            _is_changed = true;
-        }
+        void setBackColor(uint16_t back_color);
 
         /**
          * @brief Встановлює вказівник на батьківський контейнер.
          *
          * @param parent
          */
-        void setParent(IWidget *parent)
-        {
-            _parent = parent;
-            _is_changed = true;
-        }
+        void setParent(IWidget *parent);
 
         /**
          * @brief Повертає вказівник на батьківський контейнер.
@@ -131,11 +110,7 @@ namespace meow
          *
          * @param radius Значення не повинне перевищувати половину довжини коротшої сторони віджета.
          */
-        void setCornerRadius(uint8_t radius)
-        {
-            _corner_radius = radius;
-            _is_changed = true;
-        }
+        void setCornerRadius(uint8_t radius);
 
         /**
          * @brief Встановлює стан прапору, який керує механізмом відображення межі віджету.
@@ -144,22 +119,14 @@ namespace meow
          *
          * @param state Якщо true - межа віджета буде відображатися.
          */
-        void setBorder(bool state)
-        {
-            _has_border = state;
-            _is_changed = true;
-        }
+        void setBorder(bool state);
 
         /**
          * @brief Встановлює колір межі віджета.
          *
          * @param color
          */
-        void setBorderColor(uint16_t color)
-        {
-            _border_color = color;
-            _is_changed = true;
-        }
+        void setBorderColor(uint16_t color);
 
         /**
          * @brief Повертає X координату віджета відносно верхнього лівого кута дисплею.
@@ -239,24 +206,13 @@ namespace meow
          */
         bool hasBorder() const { return _has_border; }
 
-        /*!
-         * @brief
-         *       Задати флаг відображення межі віджета, при встановленні фокусу на ньому.
-         * @param  state
-         *       Стан флагу.
-         */
-
         /**
          * @brief Встановлює стан прапору, який керує відображенням межі віджета та її кольором, під час потрапляння фокусу на нього.
          *
          * @param state Якщо true - межа буде відображатися в заданому кольорі під час отримання фокусу віджетом.
          * Попередній стан межі ігнорується, та буде відновлено після видалення фокусу з віджета.
          */
-        void setChangingBorder(bool state)
-        {
-            _need_change_border = state;
-            _is_changed = true;
-        }
+        void setChangingBorder(bool state);
 
         /**
          * @brief Встановлює стан прапору, який керує зміною кольору фону під час отримання фокусу віджетом.
@@ -264,22 +220,14 @@ namespace meow
          * @param state Якщо true - фоновий колір віджета буде змінюватися відповідно до налаштувань.
          * Попереднє значення кольору фону буде автоматично відновлено після видалення фокусу з віджета.
          */
-        void setChangingBack(bool state)
-        {
-            _need_change_back = state;
-            _is_changed = true;
-        }
+        void setChangingBack(bool state);
 
         /**
          * @brief Встановлює колір межі віджета у фокусі.
          *
          * @param color
          */
-        void setFocusBorderColor(uint16_t color)
-        {
-            _focus_border_color = color;
-            _is_changed = true;
-        }
+        void setFocusBorderColor(uint16_t color);
 
         /**
          * @brief Повертає значення кольору межі віджета у фокусі.
@@ -288,23 +236,12 @@ namespace meow
          */
         uint16_t getFocusBorderColor() const { return _focus_border_color; }
 
-        /*!
-         * @brief
-         *       Задати колір фону при встановленні фокусу на віджеті.
-         * @param  color
-         *       Колір фону.
-         */
-
         /**
          * @brief Встановлює колір фону віджета у фокусі.
          *
          * @param color
          */
-        void setFocusBackColor(uint16_t color)
-        {
-            _focus_back_color = color;
-            _is_changed = true;
-        }
+        void setFocusBackColor(uint16_t color);
 
         /**
          * @brief Повертає колір фону віджета у фокусі.
@@ -329,11 +266,7 @@ namespace meow
          *
          * @param value Може мати значення: VISIBLE / INVISIBLE
          */
-        void setVisibility(Visibility value)
-        {
-            _visibility = value;
-            _is_changed = true;
-        }
+        void setVisibility(Visibility value);
 
         /**
          * @brief Повертає поточний стан видимості віджета.

@@ -17,15 +17,15 @@ namespace meow
         /**
          * @brief Викликає процедуру малювання віджета на дисплей.
          * Якщо віджет не було змінено, він автоматично пропустить перемальовування.
-         * 
+         *
          */
         virtual void onDraw() override;
 
         /**
          * @brief Повертає вказівник на глибоку копію віджета.
-         * 
+         *
          * @param id Ідентифікатор, який буде присвоєно новому віджету.
-         * @return Label* 
+         * @return Label*
          */
         virtual Label *clone(uint16_t id) const override;
 
@@ -59,38 +59,21 @@ namespace meow
          *
          * @return String
          */
-        String getText() const
-        {
-            return _text;
-        }
+        String getText() const { return _text; }
 
         /**
          * @brief Встановлює розмір тексту.
          *
          * @param size Розмір тексту. Значення може бути від 1 до 7.
          */
-        void setTextSize(uint8_t size)
-        {
-            _text_size = size;
-
-            uint16_t text_h = _font_ID == 2 ? chr_hgt_font2 * size + 2 : chr_hgt_font4 * size + 2;
-
-            if (_height < text_h)
-                _height = text_h;
-
-            _is_changed = true;
-        }
+        void setTextSize(uint8_t size);
 
         /**
          * @brief Встановлює колір тексту.
          *
          * @param textColor
          */
-        void setTextColor(uint16_t textColor)
-        {
-            _text_color = textColor;
-            _is_changed = true;
-        }
+        void setTextColor(uint16_t textColor);
 
         /**
          * @brief Встановлює ідентифікатор шрифту тексту.
@@ -112,33 +95,21 @@ namespace meow
          *
          * @param gravity Може мати значення: GRAVITY_TOP / GRAVITY_CENTER / GRAVITY_BOTTOM.
          */
-        void setGravity(const Gravity gravity)
-        {
-            _text_gravity = gravity;
-            _is_changed = true;
-        }
+        void setGravity(const Gravity gravity);
 
         /**
          * @brief Встановлює розташування тексту по горизонталі відносно віджета.
          *
          * @param alignment Може мати значення: ALIGN_START / ALIGN_CENTER / ALIGN_END.
          */
-        void setAlign(const Alignment alignment)
-        {
-            _text_alignment = alignment;
-            _is_changed = true;
-        }
+        void setAlign(const Alignment alignment);
 
         /**
          * @brief Встановлює зміщення позиції тексту (в пікселях) вправо від початку віджета.
          *
          * @param offset Значення зміщення тексту.
          */
-        void setTextOffset(uint8_t offset)
-        {
-            _text_offset = offset;
-            _is_changed = true;
-        }
+        void setTextOffset(uint8_t offset);
 
         /**
          * @brief Повертає кількість символів, що зберігається в данному віджеті.
