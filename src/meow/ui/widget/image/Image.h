@@ -9,7 +9,7 @@ namespace meow
 {
     class Image : public IWidget
     {
-
+        // TODO додати анімацію
     public:
         Image(uint16_t widget_ID, GraphicsDriver &display);
         virtual ~Image();
