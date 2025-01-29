@@ -11,35 +11,34 @@ namespace meow
     {
         static unsigned long upd_time = 0;
 
-        loop();
-
-        if ((millis() - upd_time) > UI_UPDATE_DELAY)
-        {
-            upd_time = millis();
-
-            _input._update();
-
-            update();
-
-            if (_gui_enabled)
+        if (loop())
+            if ((millis() - upd_time) > UI_UPDATE_DELAY)
             {
-                xSemaphoreTake(_layout_mutex, portMAX_DELAY);
-                _layout->onDraw();
+                upd_time = millis();
 
-                if (_has_toast)
+                _input._update();
+
+                update();
+
+                if (_gui_enabled)
                 {
-                    if (millis() - _toast_birthtime > _toast_lifetime)
-                        removeToast();
-                    else
-                        _toast_label->forcedDraw();
-                }
-                xSemaphoreGive(_layout_mutex);
+                    xSemaphoreTake(_layout_mutex, portMAX_DELAY);
+                    _layout->onDraw();
+
+                    if (_has_toast)
+                    {
+                        if (millis() - _toast_birthtime > _toast_lifetime)
+                            removeToast();
+                        else
+                            _toast_label->forcedDraw();
+                    }
+                    xSemaphoreGive(_layout_mutex);
 
 #ifdef DOUBLE_BUFFERRING
-                _display._pushBuffer();
+                    _display._pushBuffer();
 #endif
+                }
             }
-        }
     }
 
     IContext::IContext(GraphicsDriver &display) : _display{display}
