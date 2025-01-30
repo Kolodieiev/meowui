@@ -85,6 +85,11 @@ namespace meow
         _is_released = true;
     }
 
+    void IContext::release()
+    {
+        openContextByID(static_cast<ContextID>(0));
+    }
+
     void IContext::showToast(const char *msg_txt, unsigned long duration)
     {
         if (!msg_txt)
