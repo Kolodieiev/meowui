@@ -92,11 +92,7 @@ namespace meow
          *
          * @param scene_ID Ідентифікатор ігрового рівня, що повинен бути створений наступним.
          */
-        void openSceneByID(uint16_t scene_ID)
-        {
-            _next_scene_ID = scene_ID;
-            _is_released = true;
-        }
+        void openSceneByID(uint16_t scene_ID);
 
         /**
          * @brief Створює об'єкт вказаного типу.

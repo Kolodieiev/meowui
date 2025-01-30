@@ -104,6 +104,13 @@ namespace meow
         _game_UI->onDraw();
     }
 
+    void IGameScene::openSceneByID(uint16_t scene_ID)
+    {
+        _input.reset();
+        _next_scene_ID = scene_ID;
+        _is_released = true;
+    }
+
     size_t IGameScene::getObjsSize()
     {
         size_t sum{0};
