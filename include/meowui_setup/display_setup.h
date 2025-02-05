@@ -29,7 +29,7 @@
 // Позбутися помилки. 8 пін використовується для SD_MISO
 #define TFT_MISO 8
 
-// #define BACKLIGHT_PIN (uint8_t)39  // Пін управління підсвіткою дисплея. Закоментуй, якщо відсутнє управління підсвіткою
+// #define BACKLIGHT_PIN (uint8_t)46  // Пін управління підсвіткою дисплея. Закоментуй, якщо відсутнє управління підсвіткою
 #define PWM_FREQ (uint16_t)3000 // Частота PWM підсвітки дисплея
 #define PWM_CHANEL (uint8_t)0
 #define PWM_RESOLUTION (uint8_t)8
