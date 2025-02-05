@@ -123,6 +123,13 @@ namespace meow
 
         _terrain_w = tiles_x_num * tile_side_len;
         _terrain_h = tiles_y_num * tile_side_len;
+
+        if (_terrain_w < VIEW_W || _terrain_h < VIEW_H)
+        {
+            log_e("Розмір ігрового рівня не може бути меншим за ViewPort");
+            esp_restart();
+        }
+
         //
         _tile_side_len = tile_side_len;
         //
