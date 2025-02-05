@@ -101,7 +101,8 @@ namespace meow
 
         giveLock();
 
-        _game_UI->onDraw();
+        if (_game_UI)
+            _game_UI->onDraw();
     }
 
     void IGameScene::openSceneByID(uint16_t scene_ID)
