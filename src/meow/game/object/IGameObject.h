@@ -8,7 +8,6 @@
 #include "../../game/ResManager.h"
 //
 #include "../DataStream.h"
-#include "../IdGen.h"
 //
 #include "../terrain/TerrainManager.h"
 //
@@ -157,8 +156,6 @@ namespace meow
         std::unordered_map<uint32_t, IGameObject *> &_game_objs; // Список ігрових об'єктів на сцені
         GraphicsDriver &_display;
 
-        // Створити спрайт об'єкта. Якщо пам'яті недостатньо, буде викликано перезавантаження esp
-
         /**
          * @brief Створює спрайт об'єкта.
          * Повинен бути викликаний тільки після заповнення полів об'єкта _sprite, що описує спрайт об'єкта.
@@ -167,75 +164,83 @@ namespace meow
         void initSprite();
 
         /**
-         * @brief Перевіряє, чи матиме об'єкт пересічення з будь-яким іншим твердим тілом в заданому напрямку.
+         * @brief Повертає список об'єктів, відповідно до фільтра, які перетинаються з заданою точкою.
          *
-         * @param x Координата, де повинна відбутися перевірка.
-         * @param y Координата, де повинна відбутися перевірка.
-         * @param direction Напрямок руху.
-         * @return true - Якщо об'єкт пересікається з іншим твердим тілом в заданих координатах та напрямку. false - Інакше.
-         */
-        bool hasIntersectWithBody(uint16_t x, uint16_t y, MovingDirection direction);
-
-        /**
-         * @brief Повертає всі об'єкти ігрового рівня, що знаходяться в колі з заданим радіусом.
-         *
-         * @param x_mid Центральна координата кола.
-         * @param y_mid Центральна координата кола.
-         * @param radius Радіус кола.
+         * @param x Координата точки.
+         * @param y Координата точки.
+         * @param rigid_only Фільтр, який вказучє чи потрібно відбирати тільки об'єкти, які мають тверде тіло.
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjInCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius);
+        std::list<IGameObject *> getObjectsAt(uint16_t x, uint16_t y, bool rigid_only = false);
 
         /**
-         * @brief Перевіряє чи пересікається спрайт об'єкта із заданим колом.
+         * @brief Повертає об'єкти ігрового рівня, відповідно до фільтра, що знаходяться в колі з заданим радіусом.
          *
          * @param x_mid Центральна координата кола.
          * @param y_mid Центральна координата кола.
          * @param radius Радіус кола.
-         * @return true - Якщо спрайт пересікається з колом. false - Інкаше.
+         * @param rigid_only Фільтр, який вказучє чи потрібно відбирати тільки об'єкти, які мають тверде тіло.
+         * @return std::list<IGameObject *>
          */
-        bool hasCollisionWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius);
+        std::list<IGameObject *> getObjInCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only = false);
 
         /**
-         * @brief Повертає всі об'єкти ігрового рівня, що знаходяться в заданому прямокутнику.
+         * @brief Повертає об'єкти ігрового рівня, відповідно до фільтра, що знаходяться в заданому прямокутнику.
          *
          * @param x_start Координата верхнього лівого кута прямокутника.
          * @param y_start Координата верхнього лівого кута прямокутника.
          * @param width Ширина прямокутника.
          * @param height Висота прямокутника.
+         * @param rigid_only Фільтр, який вказучє чи потрібно відбирати тільки об'єкти, які мають тверде тіло.
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjctsInRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height);
+        std::list<IGameObject *> getObjctsInRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only = false);
 
         /**
-         * @brief Перевіряє чи пересікається спрайт об'єкта із заданим прямокутником.
+         * @brief Перевіряє чи пересікається об'єкт з заданою точкою.
+         *
+         * @param x Координата точки.
+         * @param y Координата точки.
+         * @param rigid_only Задає тип перевірки. Якщо true буде перевірятися тільки пересічення з жорстким тілом. Інакше зі спрайтом.
+         * @return true - Якщо пересікається.
+         * @return false - Інакше.
+         */
+        bool hasIntersectWithPoint(uint16_t x, uint16_t y, bool rigid_only = false);
+
+        /**
+         * @brief Перевіряє чи пересікається об'єкт з заданим колом.
+         *
+         * @param x_mid Центральна координата кола.
+         * @param y_mid Центральна координата кола.
+         * @param radius Радіус кола.
+         * @param rigid_only Задає тип перевірки. Якщо true буде перевірятися тільки пересічення з жорстким тілом. Інакше зі спрайтом.
+         * @return true - Якщо пересікається.
+         * @return false - Інакше.
+         */
+        bool hasIntersectWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only = false);
+
+        /**
+         * @brief Перевіряє чи пересікається об'єкт з заданим прямокутником.
          *
          * @param x_start Координата верхнього лівого кута прямокутника.
          * @param y_start Координата верхнього лівого кута прямокутника.
          * @param width Ширина прямокутника.
          * @param height Висота прямокутника.
-         * @return true - Якщо спрайт пересікається з прямокутником. false - Інкаше.
+         * @param rigid_only Задає тип перевірки. Якщо true буде перевірятися тільки пересічення з жорстким тілом. Інакше зі спрайтом.
+         * @return true - Якщо пересікається.
+         * @return false - Інакше.
          */
-        bool hasCollisionWithRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height);
-
-        // Отримати список об'єктів, які перетинаються з точкою
-        /**
-         * @brief Повертає список об'єктів, спрайти яких перетинацються з заданою точкою.
-         *
-         * @param x Координата точки.
-         * @param y Координата точки.
-         * @return std::list<IGameObject *>
-         */
-        std::list<IGameObject *> getObjInPoint(uint16_t x, uint16_t y);
+        bool hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only = false);
 
         /**
-         * @brief Перевіряє чи пересікається спрайт об'єкта із заданими координатами.
+         * @brief Перевіряє чи матиме тверде тіло об'єкта пересічення з будь-яким іншим твердим тілом під час кроку в задані координати.
          *
-         * @param x Координата точки.
-         * @param y Координата точки.
-         * @return true - Якщо спрайт пересікається з координатами. false - Інакше.
+         * @param x_to Координата
+         * @param y_to Координата
+         * @return true - Якщо об'єкт матиме пересічення.
+         * @return false - Інакше.
          */
-        bool hasIntersectWithPoint(uint16_t x, uint16_t y);
+        bool hasCollisionAt(uint16_t x_to, uint16_t y_to);
 
         /**
          * @brief Розраховує кут від pivot об'єкта, до вказаної точки.
@@ -284,7 +289,22 @@ namespace meow
             }
         }
 
+        /**
+         * @brief Повертає унікальний ID в межах лічильника.
+         *
+         * @return uint32_t
+         */
+        uint32_t generateID() { return ++_curr_obj_id; }
+
+        /**
+         * @brief Скидає лічильник генератора ідентифікаторів об'єктів.
+         *
+         */
+        void resetIdGen() { _curr_obj_id = 0; }
+
     private:
+        static uint32_t _curr_obj_id;
+
         TFT_eSprite _obj_sprite;
     };
 

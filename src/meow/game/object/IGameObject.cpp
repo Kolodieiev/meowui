@@ -4,6 +4,8 @@
 
 namespace meow
 {
+  uint32_t IGameObject::_curr_obj_id{0};
+
   IGameObject::IGameObject(GraphicsDriver &display,
                            ResManager &res,
                            WavManager &audio,
@@ -157,127 +159,147 @@ namespace meow
     }
   }
 
-  std::list<IGameObject *> IGameObject::getObjInPoint(uint16_t x, uint16_t y)
+  std::list<IGameObject *> IGameObject::getObjectsAt(uint16_t x, uint16_t y, bool rigid_only)
   {
     std::list<IGameObject *> objs;
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this && it->second->hasIntersectWithPoint(x, y))
+      if (it->second != this && it->second->hasIntersectWithPoint(x, y, rigid_only))
         objs.push_back(it->second);
     }
 
     return objs;
   }
 
-  std::list<IGameObject *> IGameObject::getObjInCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius)
+  std::list<IGameObject *> IGameObject::getObjInCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only)
   {
     std::list<IGameObject *> objs;
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this && it->second->hasCollisionWithCircle(x_mid, y_mid, radius))
+      if (it->second != this && it->second->hasIntersectWithCircle(x_mid, y_mid, radius, rigid_only))
         objs.push_back(it->second);
     }
 
     return objs;
   }
 
-  bool IGameObject::hasCollisionWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius)
+  std::list<IGameObject *> IGameObject::getObjctsInRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only)
   {
-    float distX = abs(x_mid - _x_global - (float)_sprite.width * 0.5);
-    float distY = abs(y_mid - _y_global - (float)_sprite.height * 0.5);
+    std::list<IGameObject *> objs;
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this && it->second->hasIntersectWithRect(x_start, y_start, width, height, rigid_only))
+        objs.push_back(it->second);
+    }
 
-    if (distX > (float)_sprite.width * 0.5 + radius)
+    return objs;
+  }
+
+  bool IGameObject::hasIntersectWithPoint(uint16_t x, uint16_t y, bool rigid_only)
+  {
+    if (rigid_only)
+    {
+      if (!_sprite.is_rigid)
+        return false;
+
+      return (x >= _x_global + _sprite.rigid_offsets.left &&
+              x <= _x_global + _sprite.width - _sprite.rigid_offsets.right - 1) &&
+             (y >= _y_global + _sprite.rigid_offsets.top &&
+              y <= _y_global + _sprite.height - _sprite.rigid_offsets.bottom - 1);
+    }
+
+    return (x >= _x_global &&
+            x <= _x_global + _sprite.width - 1) &&
+           (y >= _y_global &&
+            y <= _y_global + _sprite.height - 1);
+  }
+
+  bool IGameObject::hasIntersectWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only)
+  {
+    float half_body_w;
+    float half_body_h;
+
+    float dist_x;
+    float dist_y;
+
+    if (rigid_only)
+    {
+      if (!_sprite.is_rigid)
+        return false;
+
+      half_body_w = (float)(_sprite.width - _sprite.rigid_offsets.left - _sprite.rigid_offsets.right) * 0.5f;
+      half_body_h = (float)(_sprite.height - _sprite.rigid_offsets.top - _sprite.rigid_offsets.bottom) * 0.5f;
+
+      dist_x = abs(x_mid - _x_global + _sprite.rigid_offsets.left - half_body_w);
+      dist_y = abs(y_mid - _y_global + _sprite.rigid_offsets.top - half_body_h);
+    }
+    else
+    {
+      half_body_w = (float)_sprite.width * 0.5f;
+      half_body_h = (float)_sprite.height * 0.5f;
+
+      dist_x = abs(x_mid - _x_global - half_body_w);
+      dist_y = abs(y_mid - _y_global - half_body_h);
+    }
+
+    if (dist_x > half_body_w + radius || dist_y > half_body_h + radius)
       return false;
 
-    if (distY > (float)_sprite.height * 0.5 + radius)
-      return false;
-
-    if (distX <= (float)_sprite.width * 0.5)
+    if (dist_x <= half_body_w || dist_y <= half_body_h)
       return true;
 
-    if (distY <= (float)_sprite.height * 0.5)
-      return true;
-
-    float dx = distX - _sprite.width * 0.5;
-    float dy = distY - _sprite.height * 0.5;
+    float dx = dist_x - half_body_w;
+    float dy = dist_y - half_body_h;
 
     return dx * dx + dy * dy <= radius * radius;
   }
 
-  std::list<IGameObject *> IGameObject::getObjctsInRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height)
+  bool IGameObject::hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only)
   {
-    std::list<IGameObject *> objs;
-    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    if (rigid_only)
     {
-      if (it->second != this && it->second->hasCollisionWithRect(x_start, y_start, width, height))
-        objs.push_back(it->second);
+      if (!_sprite.is_rigid)
+        return false;
+
+      if (_x_global + _sprite.rigid_offsets.left > x_start + width ||
+          x_start > _x_global + _sprite.width - _sprite.rigid_offsets.right - 1 ||
+          _y_global + _sprite.rigid_offsets.top > y_start + height ||
+          y_start > _y_global + _sprite.height - _sprite.rigid_offsets.bottom - 1)
+        return false;
     }
-
-    return objs;
-  }
-
-  bool IGameObject::hasCollisionWithRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height)
-  {
-    if (_x_global + _sprite.ofst_w > x_start + width ||
-        x_start > _x_global + _sprite.width - 1 - _sprite.ofst_w ||
-        _y_global + _sprite.ofst_h > y_start + height ||
-        y_start > _y_global + _sprite.height - 1)
-      return false;
+    else
+    {
+      if (_x_global > x_start + width ||
+          x_start > _x_global + _sprite.width - 1 ||
+          _y_global > y_start + height ||
+          y_start > _y_global + _sprite.height - 1)
+        return false;
+    }
 
     return true;
   }
 
-  bool IGameObject::hasIntersectWithPoint(uint16_t x, uint16_t y)
+  bool IGameObject::hasCollisionAt(uint16_t x_to, uint16_t y_to)
   {
-    ++x;
-    ++y;
-    return (x > _x_global + _sprite.ofst_w && x < _x_global + _sprite.width - _sprite.ofst_w) &&
-           (y > _y_global + _sprite.ofst_h && y < _y_global + _sprite.height);
-  }
+    if (!_sprite.is_rigid)
+      return false;
 
-  bool IGameObject::hasIntersectWithBody(uint16_t x, uint16_t y, MovingDirection direction)
-  {
+    x_to += _sprite.rigid_offsets.left;
+    y_to += _sprite.rigid_offsets.top;
+    uint16_t body_w = _sprite.width - _sprite.rigid_offsets.left - _sprite.rigid_offsets.right - 1;
+    uint16_t body_h = _sprite.height - _sprite.rigid_offsets.top - _sprite.rigid_offsets.bottom - 1;
+
     IGameObject *obj;
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
       obj = it->second;
 
-      if (obj != this && obj->_sprite.is_rigid)
-      {
-        if (direction == DIRECTION_UP)
-        {
-          if (obj->hasIntersectWithPoint(x + _sprite.ofst_w, y + _sprite.ofst_h) ||                  // верхній лівий
-              obj->hasIntersectWithPoint(x + _sprite.width - 1 - _sprite.ofst_w, y + _sprite.ofst_h) // верхній правий
-          )
-            return true;
-        }
-        else if (direction == DIRECTION_DOWN)
-        {
-          if (obj->hasIntersectWithPoint(x + _sprite.ofst_w, y + _sprite.height - 1) ||                  // нижній лівий
-              obj->hasIntersectWithPoint(x + _sprite.width - 1 - _sprite.ofst_w, y + _sprite.height - 1) // нижній правий
-          )
-            return true;
-        }
-        else if (direction == DIRECTION_LEFT)
-        {
-          if (obj->hasIntersectWithPoint(x + _sprite.ofst_w, y + _sprite.ofst_h) ||   // верхній лівий
-              obj->hasIntersectWithPoint(x + _sprite.ofst_w, y + _sprite.height - 1)) // нижній лівий
-            return true;
-        }
-        else // RIGHT
-        {
-          if (obj->hasIntersectWithPoint(x + _sprite.width - 1 - _sprite.ofst_w, y + _sprite.ofst_h) ||  // верхній правий
-              obj->hasIntersectWithPoint(x + _sprite.width - 1 - _sprite.ofst_w, y + _sprite.height - 1) // нижній правий
-          )
-            return true;
-        }
-      }
+      if (obj != this && obj->hasIntersectWithRect(x_to, y_to, body_w, body_h, true))
+        return true;
     }
 
     return false;
   }
-
 #endif
-
 }
