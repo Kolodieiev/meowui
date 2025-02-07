@@ -4,7 +4,7 @@
 
 namespace meow
 {
-  uint32_t IGameObject::_curr_obj_id{0};
+  uint32_t IGameObject::_global_obj_id_counter{0};
 
   IGameObject::IGameObject(GraphicsDriver &display,
                            ResManager &res,
@@ -16,7 +16,8 @@ namespace meow
         _audio{audio},
         _obj_sprite{TFT_eSprite(display.getTFT())},
         _terrain{terrain},
-        _game_objs{game_objs}
+        _game_objs{game_objs},
+        _obj_id{++_global_obj_id_counter}
   {
     _obj_sprite.setSwapBytes(true);
     _obj_sprite.setColorDepth(16);

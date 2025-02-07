@@ -142,8 +142,14 @@ namespace meow
          */
         uint8_t getLayer() const { return _layer; }
 
+        /**
+         * @brief Скидає глобальний лічильник ідентифікаторів об'єктів.
+         *
+         */
+        static void resetIdGen() { _global_obj_id_counter = 0; }
+
     protected:
-        uint32_t _obj_id{0};                                     // Ідентифікатор об'єкта. Може не використовуватися в локальній грі
+        const uint32_t _obj_id;                                  // Ідентифікатор об'єкта. Може не використовуватися в локальній грі.
         uint8_t _class_ID{0};                                    // Ідентифікатор типу об'єкта
         uint8_t _trigger_ID{0};                                  // Ідентифіктор тригера. Може не використовуватися, якщо об'єкт не тригериться.
         bool _is_triggered{false};                               // Прапор спрацювання тригера об'єкта.  Може не використовуватися, якщо об'єкт не тригериться.
@@ -289,22 +295,8 @@ namespace meow
             }
         }
 
-        /**
-         * @brief Повертає унікальний ID в межах лічильника.
-         *
-         * @return uint32_t
-         */
-        uint32_t generateID() { return ++_curr_obj_id; }
-
-        /**
-         * @brief Скидає лічильник генератора ідентифікаторів об'єктів.
-         *
-         */
-        void resetIdGen() { _curr_obj_id = 0; }
-
     private:
-        static uint32_t _curr_obj_id;
-
+        static uint32_t _global_obj_id_counter; // Глобальний лічильник ідентифікаторів об'єктів.
         TFT_eSprite _obj_sprite;
     };
 

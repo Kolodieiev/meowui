@@ -14,7 +14,6 @@
 #include "./IGameMenu.h"
 #include "./terrain/TerrainManager.h"
 #include "./object/IGameObject.h"
-#include "./IdGen.h"
 
 namespace meow
 {
@@ -140,5 +139,4 @@ namespace meow
             log_i("Викликано тригер: %d", id);
         }
     };
-
 }
