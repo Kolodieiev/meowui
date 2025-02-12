@@ -101,9 +101,9 @@ namespace meow
         }
     }
 
-    void TerrainManager::buildTerrain(uint16_t tiles_x_num, uint16_t tiles_y_num, uint16_t tile_side_len, const uint16_t *tiles_pos_table)
+    void TerrainManager::build(uint16_t tiles_w_num, uint16_t tiles_h_num, uint16_t tile_side_len, const uint16_t *tiles_pos_templ)
     {
-        if (tiles_x_num == 0 || tiles_y_num == 0 || tile_side_len == 0 || !tiles_pos_table)
+        if (tiles_w_num == 0 || tiles_h_num == 0 || tile_side_len == 0 || !tiles_pos_templ)
         {
             log_e("Некоректні параметри");
             esp_restart();
@@ -121,8 +121,8 @@ namespace meow
             esp_restart();
         }
 
-        _terrain_w = tiles_x_num * tile_side_len;
-        _terrain_h = tiles_y_num * tile_side_len;
+        _terrain_w = tiles_w_num * tile_side_len;
+        _terrain_h = tiles_h_num * tile_side_len;
 
         if (_terrain_w < VIEW_W || _terrain_h < VIEW_H)
         {
@@ -133,8 +133,8 @@ namespace meow
         //
         _tile_side_len = tile_side_len;
         //
-        _tile_x_num = tiles_x_num;
-        _tile_y_num = tiles_y_num;
+        _tile_x_num = tiles_w_num;
+        _tile_y_num = tiles_h_num;
 
         freeMem(); // Звільнити ресурси, якщо було викликано не перший раз
 
@@ -162,7 +162,7 @@ namespace meow
         {
             for (uint16_t j{0}; j < _tile_x_num; ++j)
             {
-                uint16_t sprite_id = tiles_pos_table[build_pos];
+                uint16_t sprite_id = tiles_pos_templ[build_pos];
                 _terrain[i][j] = _tile_descr.at(sprite_id);
                 ++build_pos;
             }
@@ -222,6 +222,7 @@ namespace meow
                 return false;
 
             uint16_t tile_y_main_pos = coordToTilePos(y_to + sprite.rigid_offsets.top); // у верхнього краю
+
             if (_terrain[tile_y_main_pos][tile_x_pos]->_type & sprite.pass_abillity_mask)
             {
                 uint16_t tile_y_side_pos = coordToTilePos(y_to + sprite.height - sprite.rigid_offsets.bottom - 1); // у нижнього краю
