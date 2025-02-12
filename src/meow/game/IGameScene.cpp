@@ -16,6 +16,8 @@ namespace meow
             log_e("Не вдалося створити _obj_mutex");
             esp_restart();
         }
+
+        IGameObject::resetIdGen();
     }
 
     IGameScene::~IGameScene()
@@ -91,10 +93,11 @@ namespace meow
         }
 
         view_obj.sort([](IGameObject *a, IGameObject *b)
-                      { if(a->getLayer() < b->getLayer())
-                        return true;
-                    else
-                        return a->_y_global + a->_sprite.height < b->_y_global + b->_sprite.height; });
+                      { 
+                        if(a->getLayer() < b->getLayer())
+                            return true;
+                        else
+                            return a->_y_global + a->_sprite.height < b->_y_global + b->_sprite.height; });
 
         for (auto it = view_obj.begin(), last_it = view_obj.end(); it != last_it; ++it)
             (*it)->onDraw();
