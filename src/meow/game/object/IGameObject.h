@@ -85,6 +85,14 @@ namespace meow
         virtual void onDraw();
 
         /**
+         * @brief Встановлює глобальну позицію об'єкта на ігровій сцені.
+         *
+         * @param x_pos Координата.
+         * @param y_pos Координата.
+         */
+        void setPos(uint16_t x_pos, uint16_t y_pos);
+
+        /**
          * @brief Повертає ідентифікатор типу об'єкта.
          * Необхідний для заміни instanceof.
          *
@@ -97,7 +105,7 @@ namespace meow
          *
          * @return uint32_t
          */
-        uint32_t getObjId() const { return _obj_id; }
+        uint32_t getId() const { return _obj_ID; }
 
         /**
          * @brief Повертає стан прапора, який вказує чи спрацював тригер у об'єкта.
@@ -149,7 +157,7 @@ namespace meow
         static void resetIdGen() { _global_obj_id_counter = 0; }
 
     protected:
-        const uint32_t _obj_id;                                  // Ідентифікатор об'єкта. Може не використовуватися в локальній грі.
+        const uint32_t _obj_ID;                                  // Ідентифікатор об'єкта. Може не використовуватися в локальній грі.
         uint8_t _class_ID{0};                                    // Ідентифікатор типу об'єкта
         uint8_t _trigger_ID{0};                                  // Ідентифіктор тригера. Може не використовуватися, якщо об'єкт не тригериться.
         bool _is_triggered{false};                               // Прапор спрацювання тригера об'єкта.  Може не використовуватися, якщо об'єкт не тригериться.
@@ -170,6 +178,36 @@ namespace meow
         void initSprite();
 
         /**
+         * @brief Повертає список усіх об'єктів на сцені з заданим ідентифікатором класу.
+         *
+         * @param class_id Ідентифікатор класу.
+         * @return std::list<IGameObject *>
+         */
+        std::list<IGameObject *> getObjByClass(uint8_t class_id);
+
+        /**
+         * @brief Повертає список усіх об'єктів, що знаходяться в заданій точці і мають відповідний ідентифікатор класу.
+         *
+         * @param class_id Ідентифікатор класу.
+         * @param x Координата точки.
+         * @param y Координата точки.
+         * @return std::list<IGameObject *>
+         */
+        std::list<IGameObject *> getObjByClassAt(uint8_t class_id, uint16_t x, uint16_t y);
+
+        /**
+         * @brief Повертає список усіх об'єктів, що знаходяться в заданому прямокутнику і мають відповідний ідентифікатор класу.
+         *
+         * @param class_id Ідентифікатор класу.
+         * @param x_start Координата верхнього лівого кута прямокутника.
+         * @param y_start Координата верхнього лівого кута прямокутника.
+         * @param rect_width Ширина прямокутника.
+         * @param rect_height Висота прямокутника.
+         * @return std::list<IGameObject *>
+         */
+        std::list<IGameObject *> getObjByClassInRect(uint8_t class_id, uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height);
+
+        /**
          * @brief Повертає список об'єктів, відповідно до фільтра, які перетинаються з заданою точкою.
          *
          * @param x Координата точки.
@@ -177,7 +215,7 @@ namespace meow
          * @param rigid_only Фільтр, який вказучє чи потрібно відбирати тільки об'єкти, які мають тверде тіло.
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjectsAt(uint16_t x, uint16_t y, bool rigid_only = false);
+        std::list<IGameObject *> getObjAt(uint16_t x, uint16_t y, bool rigid_only = false);
 
         /**
          * @brief Повертає об'єкти ігрового рівня, відповідно до фільтра, що знаходяться в колі з заданим радіусом.
@@ -195,12 +233,12 @@ namespace meow
          *
          * @param x_start Координата верхнього лівого кута прямокутника.
          * @param y_start Координата верхнього лівого кута прямокутника.
-         * @param width Ширина прямокутника.
-         * @param height Висота прямокутника.
+         * @param rect_width Ширина прямокутника.
+         * @param rect_height Висота прямокутника.
          * @param rigid_only Фільтр, який вказучє чи потрібно відбирати тільки об'єкти, які мають тверде тіло.
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjctsInRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only = false);
+        std::list<IGameObject *> getObjInRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only = false);
 
         /**
          * @brief Перевіряє чи пересікається об'єкт з заданою точкою.
@@ -230,19 +268,19 @@ namespace meow
          *
          * @param x_start Координата верхнього лівого кута прямокутника.
          * @param y_start Координата верхнього лівого кута прямокутника.
-         * @param width Ширина прямокутника.
-         * @param height Висота прямокутника.
+         * @param rect_width Ширина прямокутника.
+         * @param rect_height Висота прямокутника.
          * @param rigid_only Задає тип перевірки. Якщо true буде перевірятися тільки пересічення з жорстким тілом. Інакше зі спрайтом.
          * @return true - Якщо пересікається.
          * @return false - Інакше.
          */
-        bool hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only = false);
+        bool hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only = false);
 
         /**
          * @brief Перевіряє чи матиме тверде тіло об'єкта пересічення з будь-яким іншим твердим тілом під час кроку в задані координати.
          *
-         * @param x_to Координата
-         * @param y_to Координата
+         * @param x_to Координата.
+         * @param y_to Координата.
          * @return true - Якщо об'єкт матиме пересічення.
          * @return false - Інакше.
          */
