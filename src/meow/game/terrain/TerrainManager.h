@@ -94,12 +94,12 @@ namespace meow
          * Ігровий рівень повиннен бути не меншим за розмір дисплея, в іншому разі, під час малювання ігрового рівня, виникне помилка.
          * Опис плиток повинен бути доданий до виклику цього методу.
          *
-         * @param tiles_x_num
-         * @param tiles_y_num
-         * @param tile_side_len
-         * @param tiles_pos_table
+         * @param tiles_w_num Кількість плиток в ширину.
+         * @param tiles_h_num Кількість плиток у висоту.
+         * @param tile_side_len Розмір сторони плитки. Плитки повинні мати квадратну форму.
+         * @param tiles_pos_templ Вказівник на масив, що містить шаблон ігрової сцени.
          */
-        void buildTerrain(uint16_t tiles_x_num, uint16_t tiles_y_num, uint16_t tile_side_len, const uint16_t *tiles_pos_table);
+        void build(uint16_t tiles_w_num, uint16_t tiles_h_num, uint16_t tile_side_len, const uint16_t *tiles_pos_templ);
 
         /**
          * @brief Перевіряє, чи може об'єкт зі вказаним спрайтом бути переміщеним в указані координати ігрового рівня.
