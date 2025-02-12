@@ -10,13 +10,13 @@ namespace meow
         enum TileType : uint8_t
         {
             TYPE_NONE = 0,
-            TYPE_WALL,
-            TYPE_GROUND,
-            TYPE_WATER,
-            TYPE_AIR,
-            TYPE_FIRE,
-            TYPE_SNOW,
-            TYPE_MUD,
+            TYPE_WALL = 1 << 0,
+            TYPE_GROUND = 1 << 1,
+            TYPE_WATER = 1 << 2,
+            TYPE_AIR = 1 << 3,
+            TYPE_FIRE = 1 << 4,
+            TYPE_SNOW = 1 << 5,
+            TYPE_MUD = 1 << 6
         };
 
         Tile(TileType type, const uint16_t *img_ptr) : _type{type}, _img_ptr{img_ptr} {}
