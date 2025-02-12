@@ -134,9 +134,9 @@ namespace meow
          *
          * @param id Ідентифікатор тригера.
          */
-        virtual void onTrigger(uint8_t id)
+        virtual void onTrigger(uint8_t trigg_id)
         {
-            log_i("Викликано тригер: %d", id);
+            log_i("Викликано тригер: %d", trigg_id);
         }
     };
 }
