@@ -56,7 +56,9 @@ namespace meow
                 if (obj->isTriggered())
                 {
                     obj->resetTrigger();
+                    giveLock();
                     onTrigger(obj->getTriggerID());
+                    takeLock();
                 }
 
                 if (_terrain.isInView(obj->_x_global, obj->_y_global, obj->_sprite.width, obj->_sprite.height))
@@ -131,5 +133,7 @@ namespace meow
         for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
             it->second->serialize(ds);
         giveLock();
+
+        ds.flush();
     }
 }
