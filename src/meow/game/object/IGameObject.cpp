@@ -60,7 +60,9 @@ namespace meow
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this && it->second->_class_ID == class_id && it->second->hasIntersectWithPoint(x, y))
+      if (it->second != this &&
+          it->second->_class_ID == class_id &&
+          it->second->hasIntersectWithPoint(x, y))
         objs.push_back(it->second);
     }
 
@@ -73,7 +75,24 @@ namespace meow
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this && it->second->_class_ID == class_id && it->second->hasIntersectWithRect(x_start, y_start, rect_width, rect_height))
+      if (it->second != this &&
+          it->second->_class_ID == class_id &&
+          it->second->hasIntersectWithRect(x_start, y_start, rect_width, rect_height))
+        objs.push_back(it->second);
+    }
+
+    return objs;
+  }
+
+  std::list<IGameObject *> IGameObject::getObjByClassInRadius(uint8_t class_id, uint16_t radius)
+  {
+    std::list<IGameObject *> objs;
+
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this &&
+          it->second->_class_ID == class_id &&
+          it->second->hasIntersectWithCircle(_x_global, _y_global, radius))
         objs.push_back(it->second);
     }
 

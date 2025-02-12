@@ -208,6 +208,15 @@ namespace meow
         std::list<IGameObject *> getObjByClassInRect(uint8_t class_id, uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height);
 
         /**
+         * @brief Повертає список усіх об'єктів, що знаходяться в колі із заданим радіусом навколо об'єкта і мають відповідний ідентифікатор класу.
+         *
+         * @param class_id Ідентифікатор класу.
+         * @param radius Радіус пошуку
+         * @return std::list<IGameObject *>
+         */
+        std::list<IGameObject *> getObjByClassInRadius(uint8_t class_id, uint16_t radius);
+
+        /**
          * @brief Повертає список об'єктів, відповідно до фільтра, які перетинаються з заданою точкою.
          *
          * @param x Координата точки.
