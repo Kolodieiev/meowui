@@ -17,7 +17,7 @@ namespace meow
         _obj_sprite{TFT_eSprite(display.getTFT())},
         _terrain{terrain},
         _game_objs{game_objs},
-        _obj_id{++_global_obj_id_counter}
+        _obj_ID{++_global_obj_id_counter}
   {
     _obj_sprite.setSwapBytes(true);
     _obj_sprite.setColorDepth(16);
@@ -31,6 +31,7 @@ namespace meow
     if (!_sprite.has_img && !_sprite.has_animation)
       return;
 
+    _obj_sprite.deleteSprite();
     _obj_sprite.createSprite(_sprite.width, _sprite.height);
 
     if (!_obj_sprite.getPointer())
@@ -38,6 +39,45 @@ namespace meow
       log_e("Недостатньо пам'яті для створення спрайту об'єкта");
       esp_restart();
     }
+  }
+
+  std::list<IGameObject *> IGameObject::getObjByClass(uint8_t class_id)
+  {
+    std::list<IGameObject *> objs;
+
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this && it->second->_class_ID == class_id)
+        objs.push_back(it->second);
+    }
+
+    return objs;
+  }
+
+  std::list<IGameObject *> IGameObject::getObjByClassAt(uint8_t class_id, uint16_t x, uint16_t y)
+  {
+    std::list<IGameObject *> objs;
+
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this && it->second->_class_ID == class_id && it->second->hasIntersectWithPoint(x, y))
+        objs.push_back(it->second);
+    }
+
+    return objs;
+  }
+
+  std::list<IGameObject *> IGameObject::getObjByClassInRect(uint8_t class_id, uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height)
+  {
+    std::list<IGameObject *> objs;
+
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this && it->second->_class_ID == class_id && it->second->hasIntersectWithRect(x_start, y_start, rect_width, rect_height))
+        objs.push_back(it->second);
+    }
+
+    return objs;
   }
 
   IGameObject::~IGameObject()
@@ -49,6 +89,11 @@ namespace meow
   {
     if (_sprite.has_animation)
     {
+      if (!_sprite.animation_vec)
+      {
+        log_e("Не встановлено вказівник на вектор анімації");
+        esp_restart();
+      }
       _obj_sprite.pushImage(0, 0, _sprite.width, _sprite.height, _sprite.animation_vec->at(_sprite.anim_pos));
 
       if (_sprite.angle == 0)
@@ -56,20 +101,27 @@ namespace meow
       else
         _display.pushRotated(_obj_sprite, _x_local + _sprite.x_pivot, _y_local + _sprite.y_pivot, _sprite.angle, _sprite.transp_color);
 
-      if (_sprite.anim_pos_counter != _sprite.frames_between_anim)
+      if (_sprite.frames_counter != _sprite.frames_between_anim)
       {
-        ++_sprite.anim_pos_counter;
+        ++_sprite.frames_counter;
       }
       else
       {
-        _sprite.anim_pos_counter = 0;
-        ++_sprite.anim_pos;
-        if (_sprite.anim_pos == _sprite.animation_vec->size())
+        _sprite.frames_counter = 0;
+        if (_sprite.anim_pos < _sprite.animation_vec->size() - 1)
+          ++_sprite.anim_pos;
+        else
           _sprite.anim_pos = 0;
       }
     }
     else if (_sprite.has_img)
     {
+      if (!_sprite.img_ptr)
+      {
+        log_e("Не встановлено вказівник на зображення");
+        esp_restart();
+      }
+
       _obj_sprite.pushImage(0, 0, _sprite.width, _sprite.height, _sprite.img_ptr);
 
       if (_sprite.angle == 0)
@@ -77,6 +129,12 @@ namespace meow
       else
         _display.pushRotated(_obj_sprite, _x_local + _sprite.x_pivot, _y_local + _sprite.y_pivot, _sprite.angle, _sprite.transp_color);
     }
+  }
+
+  void IGameObject::setPos(uint16_t x_pos, uint16_t y_pos)
+  {
+    _x_global = x_pos;
+    _y_global = y_pos;
   }
 
   uint16_t IGameObject::calcAngleToPoint(uint16_t x, uint16_t y)
@@ -160,7 +218,7 @@ namespace meow
     }
   }
 
-  std::list<IGameObject *> IGameObject::getObjectsAt(uint16_t x, uint16_t y, bool rigid_only)
+  std::list<IGameObject *> IGameObject::getObjAt(uint16_t x, uint16_t y, bool rigid_only)
   {
     std::list<IGameObject *> objs;
 
@@ -185,12 +243,12 @@ namespace meow
     return objs;
   }
 
-  std::list<IGameObject *> IGameObject::getObjctsInRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only)
+  std::list<IGameObject *> IGameObject::getObjInRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only)
   {
     std::list<IGameObject *> objs;
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this && it->second->hasIntersectWithRect(x_start, y_start, width, height, rigid_only))
+      if (it->second != this && it->second->hasIntersectWithRect(x_start, y_start, rect_width, rect_height, rigid_only))
         objs.push_back(it->second);
     }
 
@@ -256,24 +314,24 @@ namespace meow
     return dx * dx + dy * dy <= radius * radius;
   }
 
-  bool IGameObject::hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, bool rigid_only)
+  bool IGameObject::hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only)
   {
     if (rigid_only)
     {
       if (!_sprite.is_rigid)
         return false;
 
-      if (_x_global + _sprite.rigid_offsets.left > x_start + width ||
+      if (_x_global + _sprite.rigid_offsets.left > x_start + rect_width ||
           x_start > _x_global + _sprite.width - _sprite.rigid_offsets.right - 1 ||
-          _y_global + _sprite.rigid_offsets.top > y_start + height ||
+          _y_global + _sprite.rigid_offsets.top > y_start + rect_height ||
           y_start > _y_global + _sprite.height - _sprite.rigid_offsets.bottom - 1)
         return false;
     }
     else
     {
-      if (_x_global > x_start + width ||
+      if (_x_global > x_start + rect_width ||
           x_start > _x_global + _sprite.width - 1 ||
-          _y_global > y_start + height ||
+          _y_global > y_start + rect_height ||
           y_start > _y_global + _sprite.height - 1)
         return false;
     }
