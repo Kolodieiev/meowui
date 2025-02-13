@@ -47,7 +47,8 @@ namespace meow
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this && it->second->_class_ID == class_id)
+      if (it->second->_class_ID == class_id &&
+          it->second != this)
         objs.push_back(it->second);
     }
 
@@ -60,8 +61,8 @@ namespace meow
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this &&
-          it->second->_class_ID == class_id &&
+      if (it->second->_class_ID == class_id &&
+          it->second != this &&
           it->second->hasIntersectWithPoint(x, y))
         objs.push_back(it->second);
     }
@@ -75,8 +76,8 @@ namespace meow
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this &&
-          it->second->_class_ID == class_id &&
+      if (it->second->_class_ID == class_id &&
+          it->second != this &&
           it->second->hasIntersectWithRect(x_start, y_start, rect_width, rect_height))
         objs.push_back(it->second);
     }
@@ -90,9 +91,49 @@ namespace meow
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      if (it->second != this &&
-          it->second->_class_ID == class_id &&
+      if (it->second->_class_ID == class_id &&
+          it->second != this &&
           it->second->hasIntersectWithCircle(_x_global, _y_global, radius))
+        objs.push_back(it->second);
+    }
+
+    return objs;
+  }
+
+  std::list<IGameObject *> IGameObject::getObjAt(uint16_t x, uint16_t y, bool rigid_only)
+  {
+    std::list<IGameObject *> objs;
+
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this &&
+          it->second->hasIntersectWithPoint(x, y, rigid_only))
+        objs.push_back(it->second);
+    }
+
+    return objs;
+  }
+
+  std::list<IGameObject *> IGameObject::getObjInCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only)
+  {
+    std::list<IGameObject *> objs;
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this &&
+          it->second->hasIntersectWithCircle(x_mid, y_mid, radius, rigid_only))
+        objs.push_back(it->second);
+    }
+
+    return objs;
+  }
+
+  std::list<IGameObject *> IGameObject::getObjInRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only)
+  {
+    std::list<IGameObject *> objs;
+    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+    {
+      if (it->second != this &&
+          it->second->hasIntersectWithRect(x_start, y_start, rect_width, rect_height, rigid_only))
         objs.push_back(it->second);
     }
 
@@ -235,43 +276,6 @@ namespace meow
       _y_global = _y_global + (x_next - _x_global) * (float)(y_to - _y_global) / (x_to - _x_global);
       _x_global = x_next;
     }
-  }
-
-  std::list<IGameObject *> IGameObject::getObjAt(uint16_t x, uint16_t y, bool rigid_only)
-  {
-    std::list<IGameObject *> objs;
-
-    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
-    {
-      if (it->second != this && it->second->hasIntersectWithPoint(x, y, rigid_only))
-        objs.push_back(it->second);
-    }
-
-    return objs;
-  }
-
-  std::list<IGameObject *> IGameObject::getObjInCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only)
-  {
-    std::list<IGameObject *> objs;
-    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
-    {
-      if (it->second != this && it->second->hasIntersectWithCircle(x_mid, y_mid, radius, rigid_only))
-        objs.push_back(it->second);
-    }
-
-    return objs;
-  }
-
-  std::list<IGameObject *> IGameObject::getObjInRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only)
-  {
-    std::list<IGameObject *> objs;
-    for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
-    {
-      if (it->second != this && it->second->hasIntersectWithRect(x_start, y_start, rect_width, rect_height, rigid_only))
-        objs.push_back(it->second);
-    }
-
-    return objs;
   }
 
   bool IGameObject::hasIntersectWithPoint(uint16_t x, uint16_t y, bool rigid_only)
