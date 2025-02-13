@@ -17,6 +17,8 @@
 
 namespace meow
 {
+    class IGameScene;
+
     class IGameObject
     {
     public:
@@ -29,11 +31,8 @@ namespace meow
             DIRECTION_RIGHT
         };
 
-        uint16_t _x_global{0};       // Координата Х відносно ігрового рівня
-        uint16_t _y_global{0};       // Координата Y відносно ігрового рівня
-        int32_t _x_local{0};         // Координата X відносно дисплея
-        int32_t _y_local{0};         // Координата Y відносно дисплея
-        SpriteDescription _sprite{}; // Об'єкт структури, яка описує спрайт об'єкта та його стани
+        uint16_t _x_global{0}; // Координата Х відносно ігрового рівня
+        uint16_t _y_global{0}; // Координата Y відносно ігрового рівня
 
         IGameObject(const IGameObject &rhs) = delete;
         IGameObject &operator=(const IGameObject &rhs) = delete;
@@ -46,16 +45,43 @@ namespace meow
         virtual ~IGameObject() = 0;
 
         /**
-         * @brief Забезпечує оновлення стану об'єкта. Викликається автоматично ігровим рівнем.
+         * @brief Повертає ідентифікатор об'єкта.
          *
+         * @return uint32_t
          */
-        virtual void update() = 0;
+        uint32_t getId() const { return _obj_ID; }
 
         /**
-         * @brief Метод, в якому рекомендується ралізовувати ініціалізацію об'єкта.
+         * @brief Повертає ідентифікатор типу об'єкта.
+         * Необхідний для заміни instanceof.
          *
+         * @return int16_t
          */
-        virtual void init() = 0;
+        int16_t getClassID() const { return _class_ID; }
+
+        /**
+         * @brief Повертає вказівник на рядок з ім'ям об'єкта, якщо було задано. Інакше на порожій рядок.
+         *
+         * @return const char*
+         */
+        const char *getName() const { return _name.c_str(); }
+
+        /**
+         * @brief Встановлює глобальну позицію об'єкта на ігровій сцені.
+         *
+         * @param x_pos Координата.
+         * @param y_pos Координата.
+         */
+        void setPos(uint16_t x_pos, uint16_t y_pos);
+
+        /**
+         * @brief Повертає стан прапору, який вказує чи було об'єкт знищено в попередньому кадрі.
+         * Зазвичай використовується сценою для очищення мертвих об'єктів з ігрового рівня.
+         * Може бути використаний для запобігання взаємодії з потенційно мертвим об'єктом.
+         *
+         * @return true - Якщо об'єкт потенційно мертвий. false - Інакше.
+         */
+        bool isDestroyed() const { return _is_destroyed; }
 
         /**
          * @brief Повертає реальний розмір даних об'єкта, які будуть серіалізовані.
@@ -78,84 +104,6 @@ namespace meow
          */
         virtual void deserialize(DataStream &ds) = 0;
 
-        /**
-         * @brief Перемальвоує об'єкт кожен кадр, якщо у нього задано зображення або анімацію.
-         *
-         */
-        virtual void onDraw();
-
-        /**
-         * @brief Встановлює глобальну позицію об'єкта на ігровій сцені.
-         *
-         * @param x_pos Координата.
-         * @param y_pos Координата.
-         */
-        void setPos(uint16_t x_pos, uint16_t y_pos);
-
-        /**
-         * @brief Повертає ідентифікатор типу об'єкта.
-         * Необхідний для заміни instanceof.
-         *
-         * @return int16_t
-         */
-        int16_t getClassID() const { return _class_ID; }
-
-        /**
-         * @brief Повертає ідентифікатор об'єкта.
-         *
-         * @return uint32_t
-         */
-        uint32_t getId() const { return _obj_ID; }
-
-        /**
-         * @brief Повертає стан прапора, який вказує чи спрацював тригер у об'єкта.
-         *
-         * @return true - Якщо об'єкт має тригер і він спрацював. false - Інакше.
-         */
-        bool isTriggered() const { return _is_triggered; }
-
-        /**
-         * @brief Повертає ідентифікатор активного тригера.
-         *
-         * @return uint8_t
-         */
-        uint8_t getTriggerID() const { return _trigger_ID; }
-
-        /**
-         * @brief Скидає стан тригера об'єкта.
-         *
-         */
-        void resetTrigger() { _is_triggered = false; }
-
-        /**
-         * @brief Повертає вказівник на рядок з ім'ям об'єкта, якщо було задано. Інакше на порожій рядок.
-         *
-         * @return const char*
-         */
-        const char *getName() const { return _name.c_str(); }
-
-        /**
-         * @brief Повертає стан прапору, який вказує чи було об'єкт знищено в попередньому кадрі.
-         * Зазвичай використовується сценою для очищення мертвих об'єктів з ігрового рівня.
-         * Може бути використаний для запобігання взаємодії з потенційно мертвим об'єктом.
-         *
-         * @return true - Якщо об'єкт потенційно мертвий. false - Інакше.
-         */
-        bool isDestroyed() const { return _is_destroyed; }
-
-        /**
-         * @brief Get the Layer object
-         *
-         * @return uint8_t
-         */
-        uint8_t getLayer() const { return _layer; }
-
-        /**
-         * @brief Скидає глобальний лічильник ідентифікаторів об'єктів.
-         *
-         */
-        static void resetIdGen() { _global_obj_id_counter = 0; }
-
     protected:
         const uint32_t _obj_ID;                                  // Ідентифікатор об'єкта. Може не використовуватися в локальній грі.
         uint8_t _class_ID{0};                                    // Ідентифікатор типу об'єкта
@@ -169,6 +117,25 @@ namespace meow
         TerrainManager &_terrain;                                // Поверхня ігрового рівня
         std::unordered_map<uint32_t, IGameObject *> &_game_objs; // Список ігрових об'єктів на сцені
         GraphicsDriver &_display;
+        SpriteDescription _sprite{}; // Об'єкт структури, яка описує спрайт об'єкта та його стани
+
+        /**
+         * @brief Метод, в якому рекомендується ралізовувати ініціалізацію об'єкта.
+         *
+         */
+        virtual void init() = 0;
+
+        /**
+         * @brief Забезпечує оновлення стану об'єкта. Викликається автоматично ігровим рівнем.
+         *
+         */
+        virtual void update() = 0;
+
+        /**
+         * @brief Перемальовує об'єкт кожен кадр, якщо у нього задано зображення або анімацію.
+         *
+         */
+        virtual void onDraw();
 
         /**
          * @brief Створює спрайт об'єкта.
@@ -343,6 +310,10 @@ namespace meow
         }
 
     private:
+        friend class IGameScene;
+        int32_t _x_local{0}; // Координата X відносно дисплея
+        int32_t _y_local{0}; // Координата Y відносно дисплея
+
         static uint32_t _global_obj_id_counter; // Глобальний лічильник ідентифікаторів об'єктів.
         TFT_eSprite _obj_sprite;
     };

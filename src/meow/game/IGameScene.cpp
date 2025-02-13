@@ -17,7 +17,7 @@ namespace meow
             esp_restart();
         }
 
-        IGameObject::resetIdGen();
+        IGameObject::_global_obj_id_counter = 0;
     }
 
     IGameScene::~IGameScene()
@@ -53,11 +53,11 @@ namespace meow
             {
                 obj->update();
 
-                if (obj->isTriggered())
+                if (obj->_is_triggered)
                 {
-                    obj->resetTrigger();
+                    obj->_is_triggered = false;
                     giveLock();
-                    onTrigger(obj->getTriggerID());
+                    onTrigger(obj->_trigger_ID);
                     takeLock();
                 }
 
@@ -96,7 +96,7 @@ namespace meow
 
         view_obj.sort([](IGameObject *a, IGameObject *b)
                       { 
-                        if(a->getLayer() < b->getLayer())
+                        if(a->_layer < b->_layer)
                             return true;
                         else
                             return a->_y_global + a->_sprite.height < b->_y_global + b->_sprite.height; });
