@@ -111,7 +111,7 @@ namespace meow
          * @param sprite Спрайт ігрового об'єкта.
          * @return true - Якщо об'єкт може бути переміщено в указані координатах ігрового рівня. false - інакше.
          */
-        bool canPass(uint16_t x_from, uint16_t y_from, int32_t x_to, int32_t y_to, const SpriteDescription &sprite);
+        bool canPass(uint16_t x_from, uint16_t y_from, uint16_t x_to, uint16_t y_to, const SpriteDescription &sprite);
 
         /**
          * @brief Повертає тип плитки у вказаних координатах.
