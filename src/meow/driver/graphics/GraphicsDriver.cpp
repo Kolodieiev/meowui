@@ -96,11 +96,12 @@ namespace meow
                 _frame_timer = millis();
             }
 
-            _flick_buf.fillRect(0, 0, 20, 12, TFT_BLACK);
+            uint16_t fps_x_pos = _tft.width() / 2 - 20;
+            _flick_buf.fillRect(fps_x_pos, 0, 20, 12, TFT_BLACK);
             _flick_buf.setTextColor(TFT_RED);
             _flick_buf.setTextFont(4);
             _flick_buf.setTextSize(1);
-            _flick_buf.drawString(String(_frame_counter), 0, 0);
+            _flick_buf.drawString(String(_frame_counter), fps_x_pos, 0);
 
 #endif
             _is_buffer_changed = false;
