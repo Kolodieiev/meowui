@@ -4,7 +4,16 @@
 
 namespace meow
 {
-    IWidget::IWidget(uint16_t widget_ID, GraphicsDriver &display) : _id{widget_ID}, _display{display} {}
+    IWidget::IWidget(uint16_t widget_ID, GraphicsDriver &display) : _display{display}
+    {
+        if (widget_ID < 1)
+        {
+            log_e("Ідентифікатор віджета повинен бути більшим за 0");
+            esp_restart();
+        }
+
+        _id = widget_ID;
+    }
 
     IWidget::~IWidget() {}
 
