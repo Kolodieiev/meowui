@@ -4,7 +4,6 @@
 
 namespace meow
 {
-
     class IGameUI
     {
     public:
@@ -17,5 +16,4 @@ namespace meow
     protected:
         GraphicsDriver &_display;
     };
-
 }
