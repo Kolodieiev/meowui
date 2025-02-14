@@ -32,7 +32,12 @@ namespace meow
     void IGameScene::update()
     {
         if (_is_paused)
+        {
+            if (_game_menu)
+                _game_menu->onDraw();
+
             return;
+        }
 
         if (!_main_obj)
             return;
