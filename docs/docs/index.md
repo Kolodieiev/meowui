@@ -1,14 +1,12 @@
 # Документація проєкту Meowui
 
-[Код проєкту на GitHub](https://github.com/Kolodieiev/meowui)
-
 ### Зміст
 * [Про проєкт](about.md)
 * [Можливості](features.md)
 * [Налаштування](setup.md)
 * [Контекст](context.md)
-* [Обробка вводу](input.md)
-* [Макети UI](ui.md)
-* [Ігровий рушій](game_engine.md)
+* [Оброблення вводу](input.md)
+* [Макети GUI](gui.md)
+* [Створення гри](game/index.md)
 * [Підтримка](support.md)
 

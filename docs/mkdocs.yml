@@ -1,18 +1,51 @@
 site_name: Meowui Docs
 
 nav:
-    - Про проєкт: about.md
+    - Про проєкт:  about.md
     - Можливості: features.md
     - Налаштування: setup.md
     - Контекст: context.md
-    - Обробка вводу: input.md
-    - Макети UI: ui.md
-    - Ігровий рушій: game_engine.md
+    - Оброблення вводу: input.md
+    - Макети GUI: gui.md
+    - Ігровий рушій: game/index.md
     - Підтримка: support.md
 
-theme: readthedocs
+plugins:
+  - search
+  - meta
+
+theme:
+  name: material
+  favicon: img/favicon.ico
+  logo: img/pawprint.png
+
+  
+
+  palette: 
+      # Palette toggle for dark mode
+    - scheme: default 
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+
+
+
+
+repo_url: https://github.com/Kolodieiev/meowui
+repo_name: Kolodieiev/meowui
 
 markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - attr_list
+  - mdx_truly_sane_lists
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
