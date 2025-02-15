@@ -38,7 +38,6 @@ public:
     ~AudioBuffer();                            // frees the buffer
     size_t init();                             // set default values
     bool isInitialized() { return m_f_init; }; //
-    void setBufsize(int ram, int psram);       //
     int32_t getBufsize();                      //
     void changeMaxBlockSize(uint16_t mbs);     // is default 1600 for mp3 and aac, set 16384 for FLAC
     uint16_t getMaxBlockSize();                // returns maxBlockSize
@@ -79,10 +78,9 @@ class Audio : private AudioBuffer
     AudioBuffer InBuff; // instance of input buffer
 
 public:
-    Audio(bool internalDAC = false, uint8_t channelEnabled = 3, uint8_t i2sPort = I2S_NUM_0); // #99
+    Audio(uint8_t channelEnabled = 3, uint8_t i2sPort = I2S_NUM_0); // #99
     ~Audio();
     void reconfigI2S();
-    void setBufsize(int rambuf_sz, int psrambuf_sz);
     bool connecttoFS(meow::FileManager &f_mngr, const char *path, int32_t m_fileStartPos = -1);
     bool setFileLoop(bool input); // TEST loop
     bool setAudioPlayPosition(uint16_t sec);
@@ -329,7 +327,7 @@ private:
     int m_controlCounter = 0;     // Status within readID3data() and readWaveHeader()
     int8_t m_balance = 0;         // -16 (mute left) ... +16 (mute right)
     uint16_t m_vol = 21;          // volume
-    uint8_t m_vol_steps = 21;     // default
+    uint16_t m_vol_steps = 21;     // default
     double m_limit_left = 0;      // limiter 0 ... 1, left channel
     double m_limit_right = 0;     // limiter 0 ... 1, right channel
     uint8_t m_curve = 0;          // volume characteristic
@@ -355,7 +353,6 @@ private:
     bool m_f_playing = false;          // valid mp3 stream recognized
     bool m_f_loop = false;             // Set if audio file should loop
     bool m_f_forceMono = false;        // if true stereo -> mono
-    bool m_f_internalDAC = false;      // false: output vis I2S, true output via internal DAC
     uint8_t m_f_channelEnabled = 3;    // internal DAC, both channels
     uint32_t m_audioFileDuration = 0;
     float m_audioCurrentTime = 0;

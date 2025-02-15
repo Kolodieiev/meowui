@@ -30,14 +30,6 @@ AudioBuffer::~AudioBuffer()
     m_buffer = NULL;
 }
 
-void AudioBuffer::setBufsize(int ram, int psram)
-{
-    if (ram > -1) // -1 == default / no change
-        m_buffSizeRAM = ram;
-    if (psram > -1)
-        m_buffSizePSRAM = psram;
-}
-
 int32_t AudioBuffer::getBufsize() { return m_buffSize; }
 
 size_t AudioBuffer::init()
@@ -179,7 +171,7 @@ uint32_t AudioBuffer::getWritePos() { return m_writePtr - m_buffer; }
 uint32_t AudioBuffer::getReadPos() { return m_readPtr - m_buffer; }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // clang-format off
-Audio::Audio(bool internalDAC /* = false */, uint8_t channelEnabled /* = I2S_SLOT_MODE_STEREO */, uint8_t i2sPort) {
+Audio::Audio(uint8_t channelEnabled /* = I2S_SLOT_MODE_STEREO */, uint8_t i2sPort) {
 
     mutex_audio = xSemaphoreCreateMutex();
 
@@ -193,34 +185,9 @@ Audio::Audio(bool internalDAC /* = false */, uint8_t channelEnabled /* = I2S_SLO
         log_e("oom");
 
     m_f_channelEnabled = channelEnabled;
-    m_f_internalDAC = internalDAC;
     m_i2s_num = i2sPort;  // i2s port number
 
     // -------- I2S configuration -------------------------------------------------------------------------------------------
-#if ESP_IDF_VERSION_MAJOR == 5
-    m_i2s_chan_cfg.id            = (i2s_port_t)m_i2s_num;  // I2S_NUM_AUTO, I2S_NUM_0, I2S_NUM_1
-    m_i2s_chan_cfg.role          = I2S_ROLE_MASTER;        // I2S controller master role, bclk and lrc signal will be set to output
-    m_i2s_chan_cfg.dma_desc_num  = 16;                     // number of DMA buffer
-    m_i2s_chan_cfg.dma_frame_num = 512;                    // I2S frame number in one DMA buffer.
-    m_i2s_chan_cfg.auto_clear    = true;                   // i2s will always send zero automatically if no data to send
-    i2s_new_channel(&m_i2s_chan_cfg, &m_i2s_tx_handle, NULL);
-
-    m_i2s_std_cfg.slot_cfg                = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_STEREO); // Set to enable bit shift in Philips mode
-    m_i2s_std_cfg.gpio_cfg.bclk           = I2S_GPIO_UNUSED;           // BCLK, Assignment in setPinout()
-    m_i2s_std_cfg.gpio_cfg.din            = I2S_GPIO_UNUSED;           // not used
-    m_i2s_std_cfg.gpio_cfg.dout           = I2S_GPIO_UNUSED;           // DOUT, Assignment in setPinout()
-    m_i2s_std_cfg.gpio_cfg.mclk           = I2S_GPIO_UNUSED;           // MCLK, Assignment in setPinout()
-    m_i2s_std_cfg.gpio_cfg.ws             = I2S_GPIO_UNUSED;           // LRC,  Assignment in setPinout()
-    m_i2s_std_cfg.gpio_cfg.invert_flags.mclk_inv = false;
-    m_i2s_std_cfg.gpio_cfg.invert_flags.bclk_inv = false;
-    m_i2s_std_cfg.gpio_cfg.invert_flags.ws_inv   = false;
-    m_i2s_std_cfg.clk_cfg.sample_rate_hz = 44100;
-    m_i2s_std_cfg.clk_cfg.clk_src        = I2S_CLK_SRC_DEFAULT;        // Select PLL_F160M as the default source clock
-    m_i2s_std_cfg.clk_cfg.mclk_multiple  = I2S_MCLK_MULTIPLE_128;      // mclk = sample_rate * 256
-    i2s_channel_init_std_mode(m_i2s_tx_handle, &m_i2s_std_cfg);
-    I2Sstart(0);
-    m_sampleRate = 44100;
-#else
     m_i2s_config.sample_rate          = 44100;
     m_i2s_config.bits_per_sample      = I2S_BITS_PER_SAMPLE_16BIT;
     m_i2s_config.channel_format       = I2S_CHANNEL_FMT_RIGHT_LEFT;
@@ -232,27 +199,12 @@ Audio::Audio(bool internalDAC /* = false */, uint8_t channelEnabled /* = I2S_SLO
     m_i2s_config.fixed_mclk           = true;
     m_i2s_config.mclk_multiple        = I2S_MCLK_MULTIPLE_128;
 
-    if (internalDAC)  {
-        #ifdef CONFIG_IDF_TARGET_ESP32  // ESP32S3 has no DAC
-        printf("internal DAC");
-        m_i2s_config.mode             = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_DAC_BUILT_IN );
-        m_i2s_config.communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_MSB); // vers >= 2.0.5
-        i2s_driver_install((i2s_port_t)m_i2s_num, &m_i2s_config, 0, NULL);
-        i2s_set_dac_mode((i2s_dac_mode_t)m_f_channelEnabled);
-        if(m_f_channelEnabled != I2S_DAC_CHANNEL_BOTH_EN) {
-            m_f_forceMono = true;
-        }
-        #endif
-    }
-    else {
-        m_i2s_config.mode             = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX);
-        m_i2s_config.communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S); // Arduino vers. > 2.0.0
-        i2s_driver_install((i2s_port_t)m_i2s_num, &m_i2s_config, 0, NULL);
-        m_f_forceMono = false;
-    }
+    m_i2s_config.mode             = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX);
+    m_i2s_config.communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S); // Arduino vers. > 2.0.0
+    i2s_driver_install((i2s_port_t)m_i2s_num, &m_i2s_config, 0, NULL);
+    m_f_forceMono = false;
     i2s_zero_dma_buffer((i2s_port_t) m_i2s_num);
 
-#endif // ESP_IDF_VERSION_MAJOR == 5
     for(int i = 0; i < 3; ++i) {
         m_filter[i].a0 = 1;
         m_filter[i].a1 = 0;
@@ -263,30 +215,17 @@ Audio::Audio(bool internalDAC /* = false */, uint8_t channelEnabled /* = I2S_SLO
     computeLimit();  // first init, vol = 21, vol_steps = 21
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Audio::~Audio() {
     // I2Sstop(m_i2s_num);
     // InBuff.~AudioBuffer(); #215 the AudioBuffer is automatically destroyed by the destructor
     setDefaults();
-#if ESP_IDF_VERSION_MAJOR == 5
-    i2s_del_channel(m_i2s_tx_handle);
-#else
     i2s_driver_uninstall((i2s_port_t)m_i2s_num); // #215 free I2S buffer
-#endif
     if(m_outBuff)     {free(m_outBuff);      m_outBuff      = NULL; }
-
     vSemaphoreDelete(mutex_audio);
 }
 // clang-format on
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void Audio::setBufsize(int rambuf_sz, int psrambuf_sz)
-{
-    if (InBuff.isInitialized())
-    {
-        log_e("Audio::setBufsize must not be called after audio is initialized");
-        return;
-    }
-    InBuff.setBufsize(rambuf_sz, psrambuf_sz);
-};
 
 void Audio::initInBuff()
 {
@@ -300,22 +239,14 @@ void Audio::initInBuff()
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 esp_err_t Audio::I2Sstart(uint8_t i2s_num)
 {
-#if ESP_IDF_VERSION_MAJOR == 5
-    return i2s_channel_enable(m_i2s_tx_handle);
-#else
     // It is not necessary to call this function after i2s_driver_install() (it is started automatically),
     // however it is necessary to call it after i2s_stop()
     return i2s_start((i2s_port_t)i2s_num);
-#endif
 }
 
 esp_err_t Audio::I2Sstop(uint8_t i2s_num)
 {
-#if ESP_IDF_VERSION_MAJOR == 5
-    return i2s_channel_disable(m_i2s_tx_handle);
-#else
     return i2s_stop((i2s_port_t)i2s_num);
-#endif
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void Audio::setDefaults()
@@ -808,12 +739,6 @@ void Audio::playChunk(bool i2s_only)
         }
         Gain(*sample);
 
-        if (m_f_internalDAC)
-        {
-            s2 = *sample;
-            s2[LEFTCHANNEL] += 0x8000;
-            s2[RIGHTCHANNEL] += 0x8000;
-        }
         i += 2;
         validSamples -= 1;
     }
@@ -1253,31 +1178,12 @@ bool Audio::setPinout(uint8_t BCLK, uint8_t LRC, uint8_t DOUT, int8_t MCLK)
 {
     esp_err_t result = ESP_OK;
 
-#if (ESP_ARDUINO_VERSION_MAJOR < 2)
-    log_e("Arduino Version too old!");
-#endif
-#if (ESP_ARDUINO_VERSION_MAJOR == 2 && ESP_ARDUINO_VERSION_PATCH < 8)
-    log_e("Arduino Version must be 2.0.8 or higher!");
-#endif
-
-#if (ESP_IDF_VERSION_MAJOR == 5)
-    i2s_std_gpio_config_t gpio_cfg = {};
-    gpio_cfg.bclk = (gpio_num_t)BCLK;
-    gpio_cfg.din = (gpio_num_t)I2S_GPIO_UNUSED;
-    gpio_cfg.dout = (gpio_num_t)DOUT;
-    gpio_cfg.mclk = (gpio_num_t)MCLK;
-    gpio_cfg.ws = (gpio_num_t)LRC;
-    I2Sstop(0);
-    result = i2s_channel_reconfig_std_gpio(m_i2s_tx_handle, &gpio_cfg);
-    I2Sstart(0);
-#else
     m_pin_config.bck_io_num = BCLK;
     m_pin_config.ws_io_num = LRC; //  wclk = lrc
     m_pin_config.data_out_num = DOUT;
     m_pin_config.data_in_num = I2S_GPIO_UNUSED;
     m_pin_config.mck_io_num = MCLK;
     result = i2s_set_pin((i2s_port_t)m_i2s_num, &m_pin_config);
-#endif
     return (result == ESP_OK);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1398,14 +1304,7 @@ bool Audio::audioFileSeek(const float speed)
         return false;
 
     uint32_t srate = getSampleRate() * speed;
-#if ESP_IDF_VERSION_MAJOR == 5
-    I2Sstop(0);
-    m_i2s_std_cfg.clk_cfg.sample_rate_hz = srate;
-    i2s_channel_reconfig_std_clock(m_i2s_tx_handle, &m_i2s_std_cfg.clk_cfg);
-    I2Sstart(0);
-#else
     i2s_set_sample_rates((i2s_port_t)m_i2s_num, srate);
-#endif
     return true;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1444,13 +1343,6 @@ uint8_t Audio::getChannels()
 
 void Audio::reconfigI2S()
 {
-
-#if ESP_IDF_VERSION_MAJOR == 5
-    I2Sstop(0);
-    m_i2s_std_cfg.clk_cfg.sample_rate_hz = m_sampleRate;
-    i2s_channel_reconfig_std_clock(m_i2s_tx_handle, &m_i2s_std_cfg.clk_cfg);
-    I2Sstart(0);
-#else
     if (m_channels == 1)
     {
         m_i2s_config.channel_format = I2S_CHANNEL_FMT_ALL_RIGHT;
@@ -1461,7 +1353,6 @@ void Audio::reconfigI2S()
         m_i2s_config.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
         i2s_set_clk((i2s_port_t)m_i2s_num, m_sampleRate, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
     }
-#endif
     memset(m_filterBuff, 0, sizeof(m_filterBuff));        // Clear FilterBuffer
     IIR_calculateCoefficients(m_gain0, m_gain1, m_gain2); // must be recalculated after each samplerate change
 
@@ -1485,8 +1376,6 @@ void Audio::setI2SCommFMT_LSB(bool commFMT)
     // false: I2S communication format is by default I2S_COMM_FORMAT_I2S_MSB, right->left (AC101, PCM5102A)
     // true:  changed to I2S_COMM_FORMAT_I2S_LSB for some DACs (PT8211)
     //        Japanese or called LSBJ (Least Significant Bit Justified) format
-
-#if ESP_IDF_VERSION_MAJOR < 5
     if (commFMT)
     {
         m_i2s_config.communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_MSB); // v >= 2.0.0
@@ -1498,19 +1387,6 @@ void Audio::setI2SCommFMT_LSB(bool commFMT)
 
     i2s_driver_uninstall((i2s_port_t)m_i2s_num);
     i2s_driver_install((i2s_port_t)m_i2s_num, &m_i2s_config, 0, NULL);
-#else
-    i2s_channel_disable(m_i2s_tx_handle);
-    if (commFMT)
-    {
-        m_i2s_std_cfg.slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_STEREO);
-    }
-    else
-    {
-        m_i2s_std_cfg.slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_STEREO);
-    }
-    i2s_channel_reconfig_std_slot(m_i2s_tx_handle, &m_i2s_std_cfg.slot_cfg);
-    i2s_channel_enable(m_i2s_tx_handle);
-#endif
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void Audio::computeVUlevel(int16_t sample[2])
