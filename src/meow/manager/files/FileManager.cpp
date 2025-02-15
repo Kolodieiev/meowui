@@ -158,7 +158,7 @@ namespace meow
 
     bool FileManager::readFromFile(FILE *file, void *out_buffer, size_t len, int32_t seek_pos)
     {
-        if (!file)
+        if (len == 0 || !file)
         {
             log_e("Bad arguments");
             return false;
@@ -174,7 +174,7 @@ namespace meow
 
         if (section_read == 0)
         {
-            log_e("Не вдалося прочитати всі %zu байт", len);
+            log_e("Не вдалося прочитати всі %zu байтів", len);
             return false;
         }
 
