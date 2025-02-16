@@ -65,7 +65,7 @@
         context = new test_server::TestServerContext(_display); \
         break;                                                  \
     case ContextID::ID_CONTEXT_SIMPLE_RPG:                      \
-        context = new simple_rpg::SimpleRpgContext(_display);     \
+        context = new simple_rpg::SimpleRpgContext(_display);   \
         break;
 
 // -------------------------------- Стартовий контекст
