@@ -1,0 +1,140 @@
+#pragma GCC optimize("O3")
+
+#include "I2C_Manager.h"
+#include <Wire.h>
+#include "meowui_setup/i2c_setup.h"
+
+namespace meow
+{
+    bool I2C_Manager::_is_inited = false;
+
+    I2C_Manager::I2C_Manager()
+    {
+    }
+
+    bool I2C_Manager::begin()
+    {
+        if (!_is_inited)
+        {
+            _is_inited = Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
+
+            if (!_is_inited)
+                log_e("Помилка ініціалізіції I2C");
+        }
+
+        return _is_inited;
+    }
+
+    void I2C_Manager::end()
+    {
+        Wire.end();
+        Wire.flush();
+        _is_inited = false;
+    }
+
+    bool I2C_Manager::hasConnect(uint8_t addr) const
+    {
+        if (!checkInit())
+            return false;
+
+        Wire.beginTransmission(addr);
+
+        bool success = !Wire.endTransmission();
+
+        if (!success)
+            log_e("Відсутнє з'єднання з пристроєм: %u", addr);
+
+        return success;
+    }
+
+    bool I2C_Manager::write(const void *data_buff, uint8_t addr, size_t data_size) const
+    {
+        if (!checkInit())
+            return false;
+
+        Wire.beginTransmission(addr);
+        Wire.write((uint8_t *)data_buff, data_size);
+        return !Wire.endTransmission();
+    }
+
+    bool I2C_Manager::writeRegister(const void *data_buff, uint8_t addr, uint8_t reg, size_t data_size) const
+    {
+        if (!checkInit())
+            return false;
+
+        Wire.beginTransmission(addr);
+        Wire.write(reg);
+        Wire.write((uint8_t *)data_buff, data_size);
+        return !Wire.endTransmission();
+    }
+
+    bool I2C_Manager::send(uint8_t value) const
+    {
+        if (!checkInit())
+            return false;
+        return Wire.write(value) == 1;
+    }
+
+    bool I2C_Manager::send(const void *data_buff, size_t data_size) const
+    {
+        if (!checkInit())
+            return false;
+        return Wire.write((uint8_t *)data_buff, data_size) == data_size;
+    }
+
+    bool I2C_Manager::readRegister(uint8_t *out_data_buff, uint8_t addr, uint8_t reg, uint8_t data_size) const
+    {
+        if (!checkInit())
+            return false;
+
+        Wire.beginTransmission(addr);
+        Wire.write(reg);
+        if (Wire.endTransmission())
+            return false;
+
+        return read(out_data_buff, addr, data_size);
+    }
+
+    bool I2C_Manager::read(uint8_t *out_data_buff, uint8_t addr, uint8_t data_size) const
+    {
+        if (!checkInit())
+            return false;
+
+        if (Wire.requestFrom(addr, data_size) != data_size)
+            return false;
+
+        unsigned long start_time = millis();
+        while (Wire.available() < data_size && (millis() - start_time) < I2C_AWAIT_TIME_MS)
+        {
+        }
+
+        for (uint8_t i = 0; i < data_size; ++i)
+            out_data_buff[i] = Wire.read();
+
+        return true;
+    }
+
+    void I2C_Manager::beginTransmission(uint8_t addr) const
+    {
+        if (!checkInit())
+            return;
+
+        Wire.beginTransmission(addr);
+    }
+
+    bool I2C_Manager::endTransmission() const
+    {
+        return !Wire.endTransmission();
+    }
+
+    bool I2C_Manager::checkInit() const
+    {
+        if (!_is_inited)
+        {
+            log_e("I2C не ініціалізовано");
+            return false;
+        }
+
+        return true;
+    }
+}
