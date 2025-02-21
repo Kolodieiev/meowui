@@ -3,7 +3,7 @@
 
 #include "./DS3231DateTime.h"
 #include "./DS3231ComnConst.h"
-#include "../../driver/i2c/I2C.h"
+#include "../../manager/i2c/I2C_Manager.h"
 
 namespace meow
 {
@@ -13,9 +13,9 @@ namespace meow
         bool begin();
         bool isDateTimeValid();
         bool isRunning();
-        void enable();
-        void disable();
-        void setDateTime(const DS3231DateTime &date_time);
+        bool enable();
+        bool disable();
+        bool setDateTime(const DS3231DateTime &date_time);
         bool connected() const;
         DS3231DateTime getDateTime();
         uint8_t dayOfWeek(uint16_t year, uint8_t month, uint8_t day_of_month);
@@ -30,6 +30,6 @@ namespace meow
         const uint8_t STS_BIT_EN32KHZ{3};
         const uint8_t STS_BIT_OSF{7};
 
-        I2C _i2c;
+        I2C_Manager _i2c;
     };
 }

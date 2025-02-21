@@ -17,11 +17,11 @@ namespace meow
     public:
         bool isEnabled();
         bool isAlarmed();
-        void setAlarmData(const DS3231AlarmTime &alarmData);
+        bool setAlarmData(const DS3231AlarmTime &alarmData);
         DS3231AlarmTime getAlarmTime();
-        void enable(bool enableWithoutExternalPower);
-        void disable();
-        void procAlarm();
+        bool enable(bool enableWithoutExternalPower);
+        bool disable();
+        bool procAlarm();
 
     private:
         const uint8_t REG_ALARMTWO = 0x0B;
@@ -35,6 +35,6 @@ namespace meow
         const uint8_t DS3231_A2F = 1;
         const uint8_t DS3231_AIFMASK = (_BV(DS3231_A1F) | _BV(DS3231_A2F));
         //
-        I2C _i2c;
+        I2C_Manager _i2c;
     };
 }

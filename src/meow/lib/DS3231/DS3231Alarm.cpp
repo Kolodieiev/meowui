@@ -5,17 +5,24 @@ namespace meow
 {
     bool DS3231Alarm::isEnabled()
     {
-        uint8_t ctrlReg = _i2c.readRegister(DS3231_ADDR, DS3231_REG_CTRL);
-        return ctrlReg &= _BV(DS3231_AIFMASK);
+        uint8_t ctrl_reg;
+        if (!_i2c.readRegister(&ctrl_reg, DS3231_ADDR, DS3231_REG_CTRL, sizeof(ctrl_reg)))
+            return false;
+
+        return ctrl_reg &= _BV(DS3231_AIFMASK);
     }
 
     bool DS3231Alarm::isAlarmed()
     {
-        uint8_t statusReg = _i2c.readRegister(DS3231_ADDR, DS3231_REG_STATUS);
-        return statusReg &= _BV(DS3231_CNTRL_BIT_A2IE);
+        uint8_t status_reg;
+
+        if (!_i2c.readRegister(&status_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(status_reg)))
+            return false;
+
+        return status_reg &= _BV(DS3231_CNTRL_BIT_A2IE);
     }
 
-    void DS3231Alarm::setAlarmData(const DS3231AlarmTime &alarmData)
+    bool DS3231Alarm::setAlarmData(const DS3231AlarmTime &alarmData)
     {
         uint8_t buffer[3];
 
@@ -25,18 +32,19 @@ namespace meow
         buffer[1] = uint8ToBcd(alarmData.minute) | ((flags & 0x01) << 7);
         buffer[2] = uint8ToBcd(alarmData.hour) | ((flags & 0x02) << 6); // 24 hour mode only
 
-        _i2c.write(DS3231_ADDR, buffer, 3);
+        return _i2c.write(buffer, DS3231_ADDR, 3);
     }
 
-    void DS3231Alarm::enable(bool enableWithoutExternalPower)
+    bool DS3231Alarm::enable(bool enableWithoutExternalPower)
     {
-        // 6 bit change
-        _i2c.writeRegister(DS3231_ADDR, DS3231_REG_CTRL, 0b00000110);
+        uint16_t data{0b00000110};
+        return _i2c.writeRegister(&data, DS3231_ADDR, DS3231_REG_CTRL, sizeof(data));
     }
 
-    void DS3231Alarm::disable()
+    bool DS3231Alarm::disable()
     {
-        _i2c.writeRegister(DS3231_ADDR, DS3231_REG_CTRL, 0b00000000);
+        uint16_t data{0b00000000};
+        return _i2c.writeRegister(&data, DS3231_ADDR, DS3231_REG_CTRL, sizeof(data));
     }
 
     DS3231AlarmTime DS3231Alarm::getAlarmTime()
@@ -44,10 +52,10 @@ namespace meow
         uint8_t buffer[REG_ALARMTWO_SIZE];
         buffer[0] = REG_ALARMTWO;
 
-        if (!_i2c.write(DS3231_ADDR, buffer, 1))
+        if (!_i2c.write(buffer, DS3231_ADDR, 1))
             return DS3231AlarmTime{0, 0};
 
-        if (!_i2c.read(DS3231_ADDR, buffer, REG_ALARMTWO_SIZE))
+        if (!_i2c.read(buffer, DS3231_ADDR, REG_ALARMTWO_SIZE))
             return DS3231AlarmTime{0, 0};
 
         uint8_t minute = bcdToUint8(buffer[0] & 0x7F);
@@ -56,10 +64,13 @@ namespace meow
         return DS3231AlarmTime{hour, minute};
     }
 
-    void DS3231Alarm::procAlarm()
+    bool DS3231Alarm::procAlarm()
     {
-        uint8_t sreg = _i2c.readRegister(DS3231_ADDR, DS3231_REG_STATUS);
-        sreg &= ~DS3231_AIFMASK; // clear the flags
-        _i2c.writeRegister(DS3231_ADDR, DS3231_REG_STATUS, sreg);
+        uint8_t s_reg;
+        if (!_i2c.readRegister(&s_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(s_reg)))
+            return false;
+
+        s_reg &= ~DS3231_AIFMASK; // clear the flags
+        return _i2c.writeRegister(&s_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(s_reg));
     }
 }
