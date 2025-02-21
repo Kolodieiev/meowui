@@ -1,9 +1,9 @@
 #pragma GCC optimize("O3")
 #include "AnalogMicrophone.h"
-
-#include "esp_timer.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include <WiFi.h>
+#include <esp_timer.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 const char ADC1_TIMER_NAME[] = "adc1";
 const char ADC2_TIMER_NAME[] = "adc2";
@@ -44,6 +44,12 @@ namespace meow
 
     bool AnalogMicrophone::initADC_2(adc2_channel_t channel, int16_t *out_samps_buff, uint16_t buff_size, uint16_t sample_rate)
     {
+        if (WiFi.getMode() != WIFI_OFF)
+        {
+            log_e("ADC_2 не може працювати коректно разом з WiFi");
+            esp_restart();
+        }
+
         checkInst();
 
         _adc_chann_2 = channel;
