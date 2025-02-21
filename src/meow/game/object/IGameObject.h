@@ -4,7 +4,7 @@
 #include <unordered_map>
 //
 #include "../../driver/graphics/GraphicsDriver.h"
-#include "../../driver/audio/wav/WavManager.h"
+#include "../../lib/audio/wav/WavManager.h"
 #include "../../game/ResManager.h"
 //
 #include "../DataStream.h"
@@ -13,7 +13,7 @@
 //
 #include "SpriteDescription.h"
 
-#include "../../driver/audio/wav/WavTrack.h"
+#include "../../lib/audio/wav/WavTrack.h"
 
 namespace meow
 {

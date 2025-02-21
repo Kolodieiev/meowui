@@ -8,7 +8,7 @@
 #include "../driver/graphics/GraphicsDriver.h"
 #include "../driver/input/Input.h"
 #include "./ResManager.h"
-#include "../driver/audio/wav/WavManager.h"
+#include "../lib/audio/wav/WavManager.h"
 //
 #include "./IGameUI.h"
 #include "./IGameMenu.h"
