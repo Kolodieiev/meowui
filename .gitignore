@@ -21,5 +21,9 @@
 !include/meowui_setup/
 !include/meowui_setup/**
 
+!include/
+!include/modules_setup/
+!include/modules_setup/**
+
 !docs/
 !docs/**
