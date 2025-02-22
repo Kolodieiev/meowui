@@ -16,6 +16,8 @@ plugins:
 
 theme:
   name: material
+  features:
+    - navigation.footer
   favicon: img/favicon.ico
   logo: img/pawprint.png
 
