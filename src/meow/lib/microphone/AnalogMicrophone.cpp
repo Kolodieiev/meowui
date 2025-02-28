@@ -17,13 +17,13 @@ namespace meow
         deinit();
     }
 
-    bool AnalogMicrophone::initADC_1(adc1_channel_t channel, int16_t *out_samps_buff, uint16_t buff_size, uint16_t sample_rate)
+    bool AnalogMicrophone::initADC_1(adc1_channel_t channel, int16_t *out_samps_buff, uint16_t frame_size, uint16_t sample_rate)
     {
         checkInst();
 
         _adc_chann_1 = channel;
         _samps_buff = out_samps_buff;
-        _buff_size = buff_size;
+        _frame_size = frame_size;
 
         bool result = false;
 
@@ -42,7 +42,7 @@ namespace meow
         return !result;
     }
 
-    bool AnalogMicrophone::initADC_2(adc2_channel_t channel, int16_t *out_samps_buff, uint16_t buff_size, uint16_t sample_rate)
+    bool AnalogMicrophone::initADC_2(adc2_channel_t channel, int16_t *out_samps_buff, uint16_t frame_size, uint16_t sample_rate)
     {
         if (WiFi.getMode() != WIFI_OFF)
         {
@@ -54,7 +54,7 @@ namespace meow
 
         _adc_chann_2 = channel;
         _samps_buff = out_samps_buff;
-        _buff_size = buff_size;
+        _frame_size = frame_size;
 
         bool result = false;
         result |= adc2_config_channel_atten(_adc_chann_2, ADC_ATTEN_DB_12);
@@ -88,12 +88,12 @@ namespace meow
     void AnalogMicrophone::adc1_timer_handler()
     {
         portENTER_CRITICAL_ISR(&_adc_mux);
-        if (_buff_index < _buff_size)
+        if (_frame_index < _frame_size)
         {
             int sample = adc1_get_raw(_adc_chann_1);
             int amplified_value = sample * _gain;
             int16_t clamped_value = constrain(amplified_value, INT16_MIN, INT16_MAX);
-            _samps_buff[_buff_index++] = clamped_value;
+            _samps_buff[_frame_index++] = clamped_value;
         }
         portEXIT_CRITICAL_ISR(&_adc_mux);
     }
@@ -106,13 +106,13 @@ namespace meow
     void AnalogMicrophone::adc2_timer_handler()
     {
         portENTER_CRITICAL_ISR(&_adc_mux);
-        if (_buff_index < _buff_size)
+        if (_frame_index < _frame_size)
         {
             int sample;
             adc2_get_raw(_adc_chann_2, ADC_WIDTH_BIT_12, &sample);
             int amplified_value = sample * _gain;
             int16_t clamped_value = constrain(amplified_value, INT16_MIN, INT16_MAX);
-            _samps_buff[_buff_index++] = clamped_value;
+            _samps_buff[_frame_index++] = clamped_value;
         }
         portEXIT_CRITICAL_ISR(&_adc_mux);
     }
