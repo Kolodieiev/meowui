@@ -15,24 +15,24 @@ namespace meow
          *
          * @param channel Канал, на якому буде оцифровуватися сигнал.
          * @param out_samps_buff Вихідний буфер, куди будуть записуватися дані.
-         * @param buff_size Розмір буфера.
+         * @param frame_size Розмір фрейма.
          * @param sample_rate Кількість вибірок за секунду.
          * @return true - Якщо ініціалізацію виконано успішно.
          * @return false - Інакше.
          */
-        bool initADC_1(adc1_channel_t channel, int16_t *out_samps_buff, uint16_t buff_size, uint16_t sample_rate = 16000);
+        bool initADC_1(adc1_channel_t channel, int16_t *out_samps_buff, uint16_t frame_size, uint16_t sample_rate = 16000);
 
         /**
          * @brief Ініціалізує ADC_2 модуль і таймер для зчитування аналогового сигналу з відповідного каналу.
          *
          * @param channel Канал, на якому буде оцифровуватися сигнал.
          * @param out_samps_buff Вихідний буфер, куди будуть записуватися дані.
-         * @param buff_size Розмір буфера.
+         * @param frame_size Розмір фрейма.
          * @param sample_rate Кількість вибірок за секунду.
          * @return true - Якщо ініціалізацію виконано успішно.
          * @return false - Інакше.
          */
-        bool initADC_2(adc2_channel_t channel, int16_t *out_samps_buff, uint16_t buff_size, uint16_t sample_rate = 16000);
+        bool initADC_2(adc2_channel_t channel, int16_t *out_samps_buff, uint16_t frame_size, uint16_t sample_rate = 16000);
 
         /**
          * @brief Деініціалізує ініціалізований раніше модуль ADC.
@@ -59,7 +59,7 @@ namespace meow
          */
         void unlockAndFlush()
         {
-            _buff_index = 0;
+            _frame_index = 0;
             portEXIT_CRITICAL_ISR(&_adc_mux);
         }
 
@@ -69,18 +69,18 @@ namespace meow
          * @return true - Якщо буфер заповнено.
          * @return false - Інакше.
          */
-        bool isFull() const { return _buff_index == _buff_size; }
+        bool isFull() const { return _frame_index == _frame_size; }
 
     private:
         static AnalogMicrophone *_instance;
         portMUX_TYPE _adc_mux = portMUX_INITIALIZER_UNLOCKED;
         uint8_t _gain = 1;
-        volatile uint16_t _buff_index;
+        volatile uint16_t _frame_index;
         adc1_channel_t _adc_chann_1;
         adc2_channel_t _adc_chann_2;
         esp_timer_handle_t _adc_timer;
         int16_t *_samps_buff;
-        uint16_t _buff_size;
+        uint16_t _frame_size;
 
         static void adc1_timer_callback(void *arg);
         void adc1_timer_handler();
