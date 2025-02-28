@@ -34,7 +34,7 @@ bool aes256Encrypt(const uint8_t *aes_key, const uint8_t *plain_data, size_t pla
                                   TAG_SIZE, tag) != 0)
     {
         esp_aes_gcm_free(&ctx);
-        log_e("Помилка шифрування даних");
+        log_e("Encrypt err");
         return false;
     }
 
@@ -72,12 +72,21 @@ bool aes256Decrypt(const uint8_t *aes_key, const uint8_t *cipher_data, size_t da
                                  out_plain_data) != 0)
     {
         esp_aes_gcm_free(&ctx);
-        log_e("Помилка декодування даних");
+        log_e("Decrypt err");
         return false;
     }
 
     esp_aes_gcm_free(&ctx);
     return true;
+}
+
+void generateAes256Key(uint8_t *out_aes_key_buff)
+{
+    for (size_t i = 0; i < AES_KEY_SIZE; i += sizeof(uint32_t))
+    {
+        uint32_t rand_val = esp_random();
+        memcpy(&out_aes_key_buff[i], &rand_val, 4);
+    }
 }
 
 // void test()
