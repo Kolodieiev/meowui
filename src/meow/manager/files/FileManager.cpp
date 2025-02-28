@@ -4,6 +4,7 @@
 #include "../sd/SD_Manager.h"
 #include "esp_task_wdt.h"
 #include <errno.h>
+#include <sys/stat.h>
 
 namespace meow
 {

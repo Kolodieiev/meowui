@@ -1,5 +1,5 @@
 #pragma once
-#include "meowui_setup/display_setup.h"
+#include <meowui_setup/display_setup.h>
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
