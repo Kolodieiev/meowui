@@ -4,18 +4,17 @@
 
 namespace meow
 {
-    bool I2SWriter::init(i2s_port_t port, uint16_t buff_size, uint16_t sample_rate)
+    bool I2SWriter::init(i2s_port_t port, uint16_t sample_rate)
     {
         _port = port;
-        _buff_size = buff_size;
 
         i2s_config_t m_i2s_config = {};
         m_i2s_config.sample_rate = sample_rate;
         m_i2s_config.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT;
         m_i2s_config.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
         m_i2s_config.intr_alloc_flags = ESP_INTR_FLAG_LEVEL1;
-        m_i2s_config.dma_buf_count = 5;
-        m_i2s_config.dma_buf_len = _buff_size;
+        m_i2s_config.dma_buf_len = 1024;
+        m_i2s_config.dma_buf_count = 8;
         m_i2s_config.use_apll = false;
         m_i2s_config.tx_desc_auto_clear = true;
         m_i2s_config.fixed_mclk = false;
@@ -42,7 +41,7 @@ namespace meow
         return !result;
     }
 
-    size_t I2SWriter::write(const void *buffer, bool one_chann_buff)
+    size_t I2SWriter::write(const int16_t *buffer, size_t buff_len, bool one_chann_buff)
     {
         if (!_is_inited)
         {
@@ -54,21 +53,20 @@ namespace meow
 
         if (one_chann_buff)
         {
-            int16_t buffer_copy[_buff_size * 2];
+            int16_t buffer_copy[buff_len * 2];
             int16_t *dst = buffer_copy;
-            const int16_t *in_buff = (const int16_t *)buffer;
 
-            for (int i = 0; i < _buff_size; ++i)
+            for (int i = 0; i < buff_len; ++i)
             {
-                *dst++ = in_buff[i];
-                *dst++ = in_buff[i];
+                *dst++ = buffer[i];
+                *dst++ = buffer[i];
             }
 
-            i2s_write(_port, buffer_copy, sizeof(buffer_copy), &bytes_written, 0);
+            i2s_write(_port, buffer_copy, buff_len * 2 * sizeof(int16_t), &bytes_written, 0);
         }
         else
         {
-            i2s_write(_port, buffer, _buff_size * sizeof(int16_t), &bytes_written, 0);
+            i2s_write(_port, buffer, buff_len * sizeof(int16_t), &bytes_written, 0);
         }
 
         return bytes_written;
