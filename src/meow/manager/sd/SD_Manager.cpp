@@ -1,6 +1,7 @@
 #include "SD_Manager.h"
 #include <dirent.h>
 #include <sd_diskio.h>
+#include <sys/stat.h>
 
 namespace meow
 {
