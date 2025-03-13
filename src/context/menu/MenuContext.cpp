@@ -53,19 +53,6 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     Label *mp3_lbl = creator.getItemLabel(STR_MUSIC_ITEM, 4, 2);
     mp3_item->setLbl(mp3_lbl);
 
-    // // Калькулятор
-    // MenuItem *calc_item = creator.getMenuItem(ID_CONTEXT_CALC);
-    // _menu->addItem(calc_item);
-
-    // Image *calc_img = new Image(1, _display);
-    // calc_item->setIco(calc_img);
-    // calc_img->setTransparentColor(Image::TRANSPARENT_COLOR);
-    // calc_img->init(ICO_WH, ICO_WH);
-    // calc_img->setSrc(CALC_IMG);
-
-    // Label *calc_lbl = creator.getItemLabel(STR_CALC_ITEM, 4, 2);
-    // calc_item->setLbl(calc_lbl);
-
     // Читалка
     MenuItem *read_item = creator.getMenuItem(ID_CONTEXT_READER);
     _menu->addItem(read_item);
