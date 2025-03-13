@@ -5,20 +5,19 @@
 
 namespace meow
 {
-    class I2SWriter
+    class I2SOut
     {
     public:
-        ~I2SWriter() { deinit(); }
+        ~I2SOut() { deinit(); }
 
         /**
          * @brief Ініціалізує шину I2S в режимі виводу.
          *
-         * @param port Порт, на якому буде ініціалізована шина.
          * @param sample_rate Кількість вибірок за секунду.
          * @return true - Якщо ініціалізацію виконано успішно.
          * @return false - Інакше.
          */
-        bool init(i2s_port_t port, uint16_t sample_rate = 16000);
+        bool init(uint16_t sample_rate = 16000);
 
         /**
          * @brief Деініціалізує ініціалізовану раніше шину I2S.
@@ -37,7 +36,6 @@ namespace meow
         size_t write(const int16_t *buffer, size_t buff_len, bool one_chann_buff = true);
 
     private:
-        bool _is_inited = false;
-        i2s_port_t _port;
+        static bool _is_inited;
     };
 }
