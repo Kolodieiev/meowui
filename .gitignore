@@ -1,29 +1,35 @@
-*
+.pio
+.vscode
 
-!.gitignore
-!README.md
-!LICENSE
+# *
 
-!images/
-!images/**
+# !.gitignore
+# !README.md
+# !LICENSE
 
-!src/
-!src/meow/
-!src/meow/**
-!src/main.cpp
+# !images/
+# !images/**
 
+# !src/
+# !src/meow/
+# !src/meow/**
+# !src/main.cpp
 
-!lib/
-!lib/TFT_eSPI/
-!lib/TFT_eSPI/**
+# !src/
+# !src/context/
+# !src/context/**
 
-!include/
-!include/meowui_setup/
-!include/meowui_setup/**
+# !lib/
+# !lib/TFT_eSPI/
+# !lib/TFT_eSPI/**
 
-!include/
-!include/modules_setup/
-!include/modules_setup/**
+# !include/
+# !include/meowui_setup/
+# !include/meowui_setup/**
 
-!docs/
-!docs/**
+# !include/
+# !include/modules_setup/
+# !include/modules_setup/**
+
+# !docs/
+# !docs/**

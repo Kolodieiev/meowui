@@ -1,6 +1,12 @@
 #pragma once
 #include <stdint.h>
 
+//
+//
+// УВАГА, ЦЕ ЛИШЕ ПРИКЛАД НАЛАШТУВАНЬ! Ви повинна налаштувати піни кнопок відповідно до свого проєкту!
+//
+//
+
 // #define TOUCHSCREEN_SUPPORT // Увімкнути підтримку сенсорного екрану
 
 #ifdef TOUCHSCREEN_SUPPORT
@@ -27,18 +33,9 @@ namespace meow
 {
     enum KeyID : uint8_t
     {
-        KEY_UP = 38,
-        KEY_LEFT = 39,
-        KEY_RIGHT = 40,
-        KEY_DOWN = 41,
-
-        KEY_D = 9,
         KEY_A = 5,
         KEY_C = 10,
         KEY_B = 6,
-
-        KEY_SAVE = 4, // START
-        KEY_EXIT = 0, // SELECT
     };
 }
 
@@ -46,16 +43,9 @@ namespace meow
 // -------------------------------- Де Pin(uint8_t key_id, bool is_touch)
 #define BUTTONS                                 \
     {                                           \
-        {KEY_UP, new Pin(KEY_UP, false)},       \
-        {KEY_DOWN, new Pin(KEY_DOWN, false)},   \
-        {KEY_LEFT, new Pin(KEY_LEFT, false)},   \
-        {KEY_RIGHT, new Pin(KEY_RIGHT, false)}, \
-        {KEY_D, new Pin(KEY_D, false)},         \
         {KEY_A, new Pin(KEY_A, false)},         \
         {KEY_C, new Pin(KEY_C, false)},         \
         {KEY_B, new Pin(KEY_B, false)},         \
-        {KEY_SAVE, new Pin(KEY_SAVE, false)},   \
-        {KEY_EXIT, new Pin(KEY_EXIT, false)},   \
     }
 
 // -------------------------------- Налаштування чутливості сенсорних кнопок
