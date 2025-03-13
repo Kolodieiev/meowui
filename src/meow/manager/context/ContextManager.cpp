@@ -11,7 +11,9 @@ namespace meow
 
     void ContextManager::run()
     {
+#ifdef GRAPHICS_ENABLED
         _display.init();
+#endif
 
         IContext *context = new START_CONTEXT(_display);
 
@@ -25,7 +27,7 @@ namespace meow
                 delete context;
                 switch (context->getNextContextID())
                 {
-                SCREEN_CASES
+                    SCREEN_CASES
                 default:
                     log_e("Некоректний context_id: %i", context->getNextContextID());
                     esp_restart();

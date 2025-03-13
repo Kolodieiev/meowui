@@ -20,6 +20,7 @@ namespace meow
 
                 update();
 
+#ifdef GRAPHICS_ENABLED
                 if (_gui_enabled)
                 {
                     xSemaphoreTake(_layout_mutex, portMAX_DELAY);
@@ -36,8 +37,9 @@ namespace meow
 
 #ifdef DOUBLE_BUFFERRING
                     _display._pushBuffer();
-#endif
+#endif // DOUBLE_BUFFERRING
                 }
+#endif // GRAPHICS_ENABLED
             }
     }
 

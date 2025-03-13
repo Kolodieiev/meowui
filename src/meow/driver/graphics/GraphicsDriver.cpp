@@ -22,6 +22,7 @@ namespace meow
 
     void GraphicsDriver::init()
     {
+#ifdef GRAPHICS_ENABLED
         _tft.setRotation(DISPLAY_ROTATION);
 
         _tft.init();
@@ -55,6 +56,11 @@ namespace meow
         }
 
         _rend_buf_ptr = &_renderer_buf;
+
+#else
+        log_e("Розкоментуйте відповідний прапор в налаштуваннях драйвера графіки");
+        esp_restart();
+#endif // GRAPHICS_ENABLED
     }
 
     void GraphicsDriver::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint16_t *data)
