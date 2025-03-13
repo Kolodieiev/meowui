@@ -23,7 +23,7 @@ void upsampleX2(const int16_t *in_buff, int16_t *out_buff, size_t in_size)
     }
 }
 
-void volumeUp(int16_t *in_buff, size_t in_size, int16_t gain)
+void volume(int16_t *in_buff, size_t in_size, int16_t gain)
 {
     for (size_t i = 0; i < in_size; ++i)
         in_buff[i] *= gain;
@@ -66,7 +66,7 @@ void HighPassFilter::filter(int16_t *buffer, size_t buffer_size)
 void AutoGainControl::filter(int16_t *buffer, size_t buff_size, int16_t max_gain_db)
 {
     constexpr float max_lvl = 32767.0f;
-    float max_gain = powf(10.0f, max_gain_db * 0.1f);
+    float max_gain = powf(10.0f, max_gain_db * 0.05f);
 
     for (size_t i = 0; i < buff_size; i++)
     {
@@ -75,7 +75,7 @@ void AutoGainControl::filter(int16_t *buffer, size_t buff_size, int16_t max_gain
 
         float tmp_gain = (abs_x > 1.0f) ? (max_lvl / abs_x) : max_gain;
 
-        curr_gain += (tmp_gain - curr_gain) * 0.1f;
+        curr_gain += (tmp_gain - curr_gain) * 0.05f;
         curr_gain = std::min(curr_gain, max_gain);
 
         float tmp_val = x * curr_gain;

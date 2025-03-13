@@ -4,7 +4,7 @@
 
 void downsampleX2(const int16_t *in_buff, int16_t *out_buff, size_t in_size);
 void upsampleX2(const int16_t *in_buff, int16_t *out_buff, size_t in_size);
-void volumeUp(int16_t *in_buff, size_t in_size, int16_t gain);
+void volume(int16_t *in_buff, size_t in_size, int16_t gain);
 
 
 class HighPassFilter
