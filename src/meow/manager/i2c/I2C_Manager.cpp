@@ -8,19 +8,32 @@ namespace meow
 {
     bool I2C_Manager::_is_inited = false;
 
-    I2C_Manager::I2C_Manager()
+    bool I2C_Manager::begin(I2C_MODE mode, uint8_t slave_addr, void (*receive_callback)(int), void (*request_callback)())
     {
-    }
-
-    bool I2C_Manager::begin()
-    {
-        if (!_is_inited)
+        if (mode == I2C_MODE_MASTER)
         {
-            _is_inited = Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
-
             if (!_is_inited)
-                log_e("Помилка ініціалізіції I2C");
+                _is_inited = Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
         }
+        else
+        {
+            if (!_is_inited)
+            {
+                if (!receive_callback || !request_callback)
+                {
+                    log_e("Відсутні обробники подій для режиму I2C_MODE_SLAVE");
+                    esp_restart();
+                }
+
+                _is_inited = Wire.begin(slave_addr, PIN_I2C_SDA, PIN_I2C_SCL, 0);
+
+                Wire.onReceive(receive_callback);
+                Wire.onRequest(request_callback);
+            }
+        }
+
+        if (!_is_inited)
+            log_e("Помилка ініціалізіції I2C");
 
         return _is_inited;
     }
@@ -47,7 +60,7 @@ namespace meow
         return success;
     }
 
-    bool I2C_Manager::write(const void *data_buff, uint8_t addr, size_t data_size) const
+    bool I2C_Manager::write(uint8_t addr, const void *data_buff, size_t data_size) const
     {
         if (!checkInit())
             return false;
@@ -57,7 +70,7 @@ namespace meow
         return !Wire.endTransmission();
     }
 
-    bool I2C_Manager::writeRegister(const void *data_buff, uint8_t addr, uint8_t reg, size_t data_size) const
+    bool I2C_Manager::writeRegister(uint8_t addr, uint8_t reg, const void *data_buff, size_t data_size) const
     {
         if (!checkInit())
             return false;
@@ -82,7 +95,7 @@ namespace meow
         return Wire.write((uint8_t *)data_buff, data_size) == data_size;
     }
 
-    bool I2C_Manager::readRegister(uint8_t *out_data_buff, uint8_t addr, uint8_t reg, uint8_t data_size) const
+    bool I2C_Manager::readRegister(uint8_t addr, uint8_t reg, void *out_data_buff, uint8_t data_size) const
     {
         if (!checkInit())
             return false;
@@ -92,10 +105,10 @@ namespace meow
         if (Wire.endTransmission())
             return false;
 
-        return read(out_data_buff, addr, data_size);
+        return read(addr, out_data_buff, data_size);
     }
 
-    bool I2C_Manager::read(uint8_t *out_data_buff, uint8_t addr, uint8_t data_size) const
+    bool I2C_Manager::read(uint8_t addr, void *out_data_buff, uint8_t data_size) const
     {
         if (!checkInit())
             return false;
@@ -104,12 +117,36 @@ namespace meow
             return false;
 
         unsigned long start_time = millis();
-        while (Wire.available() < data_size && (millis() - start_time) < I2C_AWAIT_TIME_MS)
+
+        while (Wire.available() < data_size)
         {
+            if ((millis() - start_time) > I2C_AWAIT_TIME_MS)
+                return false;
         }
 
+        uint8_t *temp_ptr = (uint8_t *)out_data_buff;
         for (uint8_t i = 0; i < data_size; ++i)
-            out_data_buff[i] = Wire.read();
+            temp_ptr[i] = Wire.read();
+
+        return true;
+    }
+
+    bool I2C_Manager::receive(void *out_data_buff) const
+    {
+        if (!checkInit())
+            return false;
+
+        unsigned long start_time = millis();
+        while (!Wire.available())
+        {
+            if ((millis() - start_time) > I2C_AWAIT_TIME_MS)
+                return false;
+        }
+
+        uint8_t *temp_ptr = (uint8_t *)out_data_buff;
+        uint16_t i = 0;
+        while (Wire.available())
+            temp_ptr[i++] = Wire.read();
 
         return true;
     }

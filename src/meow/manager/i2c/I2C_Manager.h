@@ -6,15 +6,23 @@ namespace meow
     class I2C_Manager
     {
     public:
-        I2C_Manager();
+        enum I2C_MODE : uint8_t
+        {
+            I2C_MODE_MASTER = 0,
+            I2C_MODE_SLAVE
+        };
 
         /**
-         * @brief Ініціалізує шину I2C.
+         * @brief Ініціалізує шину I2C для пристрою.
          *
+         * @param mode Режим, в якому буде працювати пристрій.
+         * @param slave_addr Адреса веденого пристрою для режиму I2C_MODE_SLAVE.
+         * @param receive_callback Обробник вхідних даних для режиму I2C_MODE_SLAVE.
+         * @param request_callback Обробник запитів даних для режиму I2C_MODE_SLAVE.
          * @return true - Якщо ініціалізацію виконано успішно.
          * @return false - Інакше.
          */
-        bool begin();
+        bool begin(I2C_MODE mode = I2C_MODE_MASTER, uint8_t slave_addr = 0, void (*receive_callback)(int) = nullptr, void (*request_callback)() = nullptr);
 
         /**
          * @brief Деініціалізує шину I2C.
@@ -34,48 +42,48 @@ namespace meow
         /**
          * @brief Записує дані до I2C-пристрою за вказаною адресою.
          *
-         * @param data_buff Буфер вхідних даних.
          * @param addr Адреса I2C-пристрою.
+         * @param data_buff Буфер з даними.
          * @param data_size Розмір даних.
          * @return true - Якщо дані було успішно записано.
          * @return false - Інакше.
          */
-        bool write(const void *data_buff, uint8_t addr, size_t data_size) const;
+        bool write(uint8_t addr, const void *data_buff, size_t data_size) const;
 
         /**
          * @brief Записує дані до регістра I2C-пристрою за вказаними адресами.
          *
-         * @param data_buff Буфер вхідних даних.
          * @param addr Адреса I2C-пристрою.
+         * @param data_buff Буфер з даними.
          * @param reg Адреса регістра.
          * @param data_size Розмір даних.
          * @return true - Якщо дані було успішно записано.
          * @return false - Інакше.
          */
-        bool writeRegister(const void *data_buff, uint8_t addr, uint8_t reg, size_t data_size) const;
+        bool writeRegister(uint8_t addr, uint8_t reg, const void *data_buff, size_t data_size) const;
 
         /**
          * @brief Читає дані з регістра I2C-пристрою за вказаними адресами.
          *
-         * @param out_byte_buff Буфер для вихідних даних.
          * @param addr Адреса I2C-пристрою.
+         * @param out_data_buff Буфер для вхідних даних.
          * @param reg Адреса регістра.
          * @param data_size Розмір даних.
          * @return true - Якщо дані було успішно прочитано.
          * @return false - Інакше.
          */
-        bool readRegister(uint8_t *out_byte_buff, uint8_t addr, uint8_t reg, uint8_t data_size = 1) const;
+        bool readRegister(uint8_t addr, uint8_t reg, void *out_data_buff, uint8_t data_size = 1) const;
 
         /**
          * @brief Читає дані з I2C-пристрою за вказаною адресою.
          *
-         * @param out_data_buff Буфер для вихідних даних.
          * @param addr Адреса I2C-пристрою.
+         * @param out_data_buff Буфер для вхідних даних.
          * @param data_size Розмір даних.
          * @return true - Якщо дані було успішно прочитано.
          * @return false - Інакше.
          */
-        bool read(uint8_t *out_data_buff, uint8_t addr, uint8_t data_size) const;
+        bool read(uint8_t addr, void *out_data_buff, uint8_t data_size) const;
 
         /**
          * @brief Розпочинає безперервне пересилання даних до I2C-пристрою за вказаною адресою.
@@ -104,12 +112,21 @@ namespace meow
         /**
          * @brief Надсилає буфер даних до поточної відкритої транзакції з I2C-пристроєм.
          *
-         * @param data_buff Буфер вхідних даних.
+         * @param data_buff Буфер з даними.
          * @param data_size Розмір даних.
          * @return true - Якщо дані було успішно записано.
          * @return false - Інакше.
          */
         bool send(const void *data_buff, size_t data_size) const;
+
+        /**
+         * @brief Читає дані з відкритої транзакції з I2C-пристроєм.
+         *
+         * @param out_data_buff Буфер, до якого будуть записані прочитані дані.
+         * @return true - Якщо дані було успішно прочитано.
+         * @return false - Інакше.
+         */
+        bool receive(void *out_data_buff) const;
 
     private:
         static bool _is_inited;
