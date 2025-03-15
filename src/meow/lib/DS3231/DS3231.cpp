@@ -15,17 +15,17 @@ namespace meow
 
         bool success = true;
 
-        success &= _i2c.readRegister(&status_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(status_reg));
+        success &= _i2c.readRegister(DS3231_ADDR, DS3231_REG_STATUS, &status_reg, sizeof(status_reg));
 
         // Вимкунути 32kHz пін
         status_reg &= ~_BV(STS_BIT_EN32KHZ);
-        success &= _i2c.writeRegister(&status_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(status_reg));
+        success &= _i2c.writeRegister(DS3231_ADDR, DS3231_REG_STATUS, &status_reg, sizeof(status_reg));
 
         // Встановити 24год формат
-        success &= _i2c.readRegister(&status_reg, DS3231_ADDR, 0x02, sizeof(status_reg));
+        success &= _i2c.readRegister(DS3231_ADDR, 0x02, &status_reg, sizeof(status_reg));
         status_reg &= ~_BV(6);
 
-        success &= _i2c.writeRegister(&status_reg, DS3231_ADDR, 0x02, sizeof(status_reg));
+        success &= _i2c.writeRegister(DS3231_ADDR, 0x02, &status_reg, sizeof(status_reg));
 
         if (!success)
             log_e("Помилка ініціалізації DS3231");
@@ -36,7 +36,7 @@ namespace meow
     bool DS3231::isDateTimeValid()
     {
         uint8_t status_reg;
-        if (!_i2c.readRegister(&status_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(status_reg)))
+        if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_STATUS, &status_reg, sizeof(status_reg)))
             return false;
 
         return !(status_reg & _BV(STS_BIT_OSF));
@@ -45,7 +45,7 @@ namespace meow
     bool DS3231::isRunning()
     {
         uint8_t ctrl_reg;
-        if (!_i2c.readRegister(&ctrl_reg, DS3231_ADDR, DS3231_REG_CTRL, sizeof(ctrl_reg)))
+        if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg)))
             return false;
 
         return !(ctrl_reg & _BV(CNTRL_BIT_EOSC));
@@ -54,32 +54,32 @@ namespace meow
     bool DS3231::enable()
     {
         uint8_t ctrl_reg;
-        if (!_i2c.readRegister(&ctrl_reg, DS3231_ADDR, DS3231_REG_CTRL, sizeof(ctrl_reg)))
+        if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg)))
             return false;
 
         ctrl_reg &= ~_BV(CNTRL_BIT_EOSC);
-        return _i2c.writeRegister(&ctrl_reg, DS3231_ADDR, DS3231_REG_CTRL, sizeof(ctrl_reg));
+        return _i2c.writeRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg));
     }
 
     bool DS3231::disable()
     {
         uint8_t ctrl_reg;
-        if (!_i2c.readRegister(&ctrl_reg, DS3231_ADDR, DS3231_REG_CTRL, sizeof(ctrl_reg)))
+        if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg)))
             return false;
 
         ctrl_reg |= _BV(CNTRL_BIT_EOSC);
-        return _i2c.writeRegister(&ctrl_reg, DS3231_ADDR, DS3231_REG_CTRL, sizeof(ctrl_reg));
+        return _i2c.writeRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg));
     }
 
     bool DS3231::setDateTime(const DS3231DateTime &date_time)
     {
         uint8_t status_reg;
-        if (!_i2c.readRegister(&status_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(status_reg)))
+        if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_STATUS, &status_reg, sizeof(status_reg)))
             return false;
 
         status_reg &= ~_BV(STS_BIT_OSF);
 
-        _i2c.writeRegister(&status_reg, DS3231_ADDR, DS3231_REG_STATUS, sizeof(status_reg));
+        _i2c.writeRegister(DS3231_ADDR, DS3231_REG_STATUS, &status_reg, sizeof(status_reg));
 
         uint8_t buffer[8];
         buffer[0] = REG_TIMEDATE;
@@ -104,7 +104,7 @@ namespace meow
         buffer[6] = uint8ToBcd(date_time.month) | century_flag;
         buffer[7] = uint8ToBcd(year);
 
-        return _i2c.write(buffer, DS3231_ADDR, 8);
+        return _i2c.write(DS3231_ADDR, buffer, 8);
     }
 
     bool DS3231::connected() const
@@ -119,10 +119,10 @@ namespace meow
         uint8_t buffer[REG_TIMEDATE_SIZE];
         buffer[0] = REG_TIMEDATE;
 
-        if (!_i2c.write(buffer, DS3231_ADDR, 1))
+        if (!_i2c.write(DS3231_ADDR, buffer, 1))
             return dt;
 
-        if (!_i2c.read(buffer, DS3231_ADDR, REG_TIMEDATE_SIZE))
+        if (!_i2c.read(DS3231_ADDR, buffer, REG_TIMEDATE_SIZE))
             return dt;
 
         uint8_t second = bcdToUint8(buffer[0] & 0x7F);
