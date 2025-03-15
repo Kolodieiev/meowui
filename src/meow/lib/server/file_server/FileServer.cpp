@@ -141,7 +141,7 @@ namespace meow
         while (_must_work)
         {
             _server->handleClient();
-            taskYIELD();
+            vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
         _is_working = false;
@@ -246,11 +246,17 @@ namespace meow
                 _server->send(500, "text/html", "");
                 return;
             }
+
+            _last_delay_time = millis();
         }
         else if (uploadfile.status == UPLOAD_FILE_WRITE)
         {
             _f_mgr.writeToFile(in_file, (const char *)uploadfile.buf, uploadfile.currentSize);
-            taskYIELD();
+            if (millis() - _last_delay_time > 1000)
+            {
+                vTaskDelay(1 / portTICK_PERIOD_MS);
+                _last_delay_time = millis();
+            }
         }
         else if (uploadfile.status == UPLOAD_FILE_END || uploadfile.status == UPLOAD_FILE_ABORTED)
         {

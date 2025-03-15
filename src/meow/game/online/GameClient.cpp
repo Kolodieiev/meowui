@@ -218,7 +218,7 @@ namespace meow
                     packet = nullptr;
                 }
             }
-            taskYIELD();
+            vTaskDelay(1 / portTICK_PERIOD_MS);
         }
     }
 

@@ -33,6 +33,8 @@ namespace meow
     private:
         bool _is_working{false};
 
+        unsigned long _last_delay_time = 0;
+
         String _server_addr;
         String _server_dir;
         String _domain_name;

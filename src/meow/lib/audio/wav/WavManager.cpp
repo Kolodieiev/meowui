@@ -148,7 +148,7 @@ namespace meow
                 i2s_write(I2S_NUM_0, _samples_buf, sizeof(uint16_t) * 256, &bytes_written, 200 / portTICK_PERIOD_MS);
             }
 
-            taskYIELD();
+            vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
         vTaskDelete(NULL);

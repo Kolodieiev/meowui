@@ -397,7 +397,7 @@ namespace meow
                 goto exit;
             }
 
-            taskYIELD();
+            vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
     exit:
@@ -543,7 +543,7 @@ namespace meow
         size_t writed_bytes_counter{0};
         size_t bytes_read;
 
-        uint8_t cycles_counter = 0;
+        unsigned long last_delay_time = 0;
         size_t byte_aval = 0;
 
         while (!_is_canceled && (byte_aval = available(file_size, o_f)) > 0)
@@ -555,12 +555,11 @@ namespace meow
             //
             writed_bytes_counter += writeOptimal(n_f, buffer, bytes_read);
             _copy_progress = ((float)writed_bytes_counter / file_size) * 100;
-            if (cycles_counter > 5)
+            if (millis() - last_delay_time > 1000)
             {
-                cycles_counter = 0;
-                taskYIELD();
+                vTaskDelay(1 / portTICK_PERIOD_MS);
+                last_delay_time = millis();
             }
-            ++cycles_counter;
         }
 
         free(buffer);
@@ -645,6 +644,7 @@ namespace meow
         String file_name;
         bool is_dir;
 
+        unsigned long last_delay_time = 0;
         while (1)
         {
             dir_entry = readdir(dir);
@@ -687,7 +687,11 @@ namespace meow
                 break;
             }
 
-            taskYIELD();
+            if (millis() - last_delay_time > 1000)
+            {
+                vTaskDelay(1 / portTICK_PERIOD_MS);
+                last_delay_time = millis();
+            }
         }
 
         std::sort(out_vec.begin(), out_vec.end());

@@ -12,7 +12,11 @@ namespace meow
         static unsigned long upd_time = 0;
 
         if (loop())
-            if ((millis() - upd_time) > UI_UPDATE_DELAY)
+            if ((millis() - upd_time) < UI_UPDATE_DELAY)
+            {
+                vTaskDelay(2 / portTICK_PERIOD_MS);
+            }
+            else
             {
                 upd_time = millis();
 
