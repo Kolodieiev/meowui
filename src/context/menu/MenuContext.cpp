@@ -156,7 +156,7 @@ void MenuContext::update()
         _input.lock(KeyID::KEY_B, HOLD_LOCK);
         down();
     }
-    if (_input.isReleased(KeyID::KEY_A))
+    else if (_input.isReleased(KeyID::KEY_A))
     {
         _input.lock(KeyID::KEY_A, CLICK_LOCK);
         ok();
