@@ -139,7 +139,6 @@ namespace meow
         try
         {
             DynamicMenu *clone = new DynamicMenu(id, IWidgetContainer::_display);
-
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;
@@ -152,6 +151,17 @@ namespace meow
             clone->_item_width = _item_width;
             clone->_items_spacing = _items_spacing;
             clone->_is_transparent = _is_transparent;
+            clone->_visibility = _visibility;
+            clone->_has_focus = _has_focus;
+            clone->_old_border_state = _old_border_state;
+            clone->_need_clear_border = _need_clear_border;
+            clone->_need_change_border = _need_change_border;
+            clone->_need_change_back = _need_change_back;
+            clone->_focus_border_color = _focus_border_color;
+            clone->_old_border_color = _old_border_color;
+            clone->_focus_back_color = _focus_back_color;
+            clone->_old_back_color = _old_back_color;
+            clone->_parent = _parent;
 
             for (const auto &widget_ptr : _widgets)
             {

@@ -56,6 +56,17 @@ namespace meow
             clone->_border_color = _border_color;
             clone->_corner_radius = _corner_radius;
             clone->_is_transparent = _is_transparent;
+            clone->_visibility = _visibility;
+            clone->_has_focus = _has_focus;
+            clone->_old_border_state = _old_border_state;
+            clone->_need_clear_border = _need_clear_border;
+            clone->_need_change_border = _need_change_border;
+            clone->_need_change_back = _need_change_back;
+            clone->_focus_border_color = _focus_border_color;
+            clone->_old_border_color = _old_border_color;
+            clone->_focus_back_color = _focus_back_color;
+            clone->_old_back_color = _old_back_color;
+            clone->_parent = _parent;
 
             for (const auto &widget_ptr : _widgets)
             {
