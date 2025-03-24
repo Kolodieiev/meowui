@@ -14,7 +14,7 @@ namespace meow
         WiFi.onEvent(onEvent, ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
         WiFi.onEvent(onEvent, ARDUINO_EVENT_WIFI_STA_GOT_IP);
         WiFi.setAutoReconnect(autoreconnect);
-
+        WiFi.persistent(false);
         wl_status_t status = WiFi.begin(ssid, pwd, wifi_chan);
 
         if (status != WL_DISCONNECTED)
@@ -59,16 +59,10 @@ namespace meow
 
     void WiFiConnect::callOnDoneHandler()
     {
-        if (!_onConnectHandler)
-        {
-            WiFi.disconnect(true);
-            WiFi.mode(WIFI_OFF);
-        }
-        else
-        {
-            log_i("WiFi.status: %d", WiFi.status());
+        log_i("WiFi.status: %d", WiFi.status());
+
+        if (_onConnectHandler)
             _onConnectHandler(_onConnectHandlerArg, WiFi.status());
-        }
     }
 
     void WiFiConnect::onEvent(WiFiEvent_t event)
@@ -79,7 +73,7 @@ namespace meow
         if (event == ARDUINO_EVENT_WIFI_STA_GOT_IP)
         {
             long unsigned got_ip_time = millis();
-            while (millis() - got_ip_time < 2000 || WiFi.status() != WL_CONNECTED)
+            while (millis() - got_ip_time < 2000 && WiFi.status() != WL_CONNECTED)
                 vTaskDelay(50 / portTICK_PERIOD_MS);
         }
 
