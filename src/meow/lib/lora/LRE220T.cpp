@@ -2,7 +2,6 @@
 #include "LRE220T.h"
 #include <HardwareSerial.h>
 #include "modules_setup/lora/LRE220.h"
-#include "meow/util/crypto/aes256.h"
 
 namespace meow
 {
@@ -52,8 +51,54 @@ namespace meow
 
         setMode(MODE_NORMAL);
 
+        flushBuffer();
         log_i("Налаштування збережено");
         return true;
+    }
+
+    void LRE220T::setTransmitPower(TransmitPower power)
+    {
+        if (power > POWER_LOW)
+            _transmit_power = POWER_LOW;
+        else
+            _transmit_power = power;
+    }
+
+    void LRE220T::setAirDataRate(AirDataRate rate)
+    {
+        if (rate < AIR_DATA_RATE_2_4K)
+            _air_data_rate = AIR_DATA_RATE_2_4K;
+        else if (rate > AIR_DATA_RATE_62_5K)
+            _air_data_rate = AIR_DATA_RATE_62_5K;
+        else
+            _air_data_rate = rate;
+    }
+
+    void LRE220T::setPacketLen(PacketLen len)
+    {
+        if (len > PACK_LEN_32B)
+            len = PACK_LEN_32B;
+
+        _packet_len = len;
+
+        switch (len)
+        {
+        case PACK_LEN_200B:
+            _real_packet_len = 200;
+            break;
+
+        case PACK_LEN_128B:
+            _real_packet_len = 128;
+            break;
+
+        case PACK_LEN_64B:
+            _real_packet_len = 64;
+            break;
+
+        case PACK_LEN_32B:
+            _real_packet_len = 32;
+            break;
+        }
     }
 
     void LRE220T::warmUp()
@@ -71,46 +116,34 @@ namespace meow
         if (!_is_inited)
             return;
 
-        if (_has_encrypt)
-        {
-            uint8_t encrypted_packet[_settings.pack_byte_len];
-
-            // #define IV_SIZE 12
-            // #define TAG_SIZE 16 //TODO Розмір корисних даних повинен бути меншим
-
-            if (aes256Encrypt(_settings.aes_key, buff, _settings.pack_byte_len, encrypted_packet))
-            {
-                waitBusy();
-                Serial1.write(encrypted_packet, _settings.pack_byte_len);
-            }
-        }
-        else
-        {
-            waitBusy();
-            Serial1.write(buff, _settings.pack_byte_len);
-        }
+        waitBusy();
+        Serial1.write(buff, _real_packet_len);
     }
 
     bool LRE220T::readPacket(uint8_t *out_buff)
     {
         uint8_t data_counter = 0;
 
-        while (dataAvailable())
+        while (Serial1.available())
             out_buff[data_counter++] = Serial1.read();
 
-        if (_has_encrypt)
-        {
-            // TODO decrypt
-
-            return false;
-        }
-
-        return true;
+        return data_counter == _real_packet_len;
     }
 
-    uint8_t LRE220T::dataAvailable()
+    bool LRE220T::packetAvailable()
     {
-        return Serial1.available();
+        if (Serial1.available() > 0)
+        {
+            if (Serial1.available() < _real_packet_len)
+            {
+                delay(5);
+                return Serial1.available() == _real_packet_len;
+            }
+
+            return Serial1.available() == _real_packet_len;
+        }
+
+        return false;
     }
 
     void LRE220T::flushBuffer()
@@ -119,7 +152,7 @@ namespace meow
             Serial1.read();
     }
 
-    void LRE220T::setMode(Mode mode)
+    void LRE220T::setMode(LRE220T_Mode mode)
     {
         waitBusy();
 
@@ -134,6 +167,8 @@ namespace meow
             digitalWrite(PIN_LRE220_M0, LOW);
             digitalWrite(PIN_LRE220_M1, LOW);
             delay(80);
+
+            _mode = MODE_NORMAL;
         }
         else if (mode == MODE_CONFIG)
         {
@@ -143,12 +178,19 @@ namespace meow
             digitalWrite(PIN_LRE220_M0, HIGH);
             digitalWrite(PIN_LRE220_M1, HIGH);
             delay(100);
+
+            _mode = MODE_CONFIG;
         }
         else
         {
             log_e("Unknown mode");
             esp_restart();
         }
+    }
+
+    void LRE220T::setChannel(uint8_t channel)
+    {
+        channel > 80 ? _channel = 80 : _channel = channel;
     }
 
     bool LRE220T::isBusy()
@@ -165,23 +207,19 @@ namespace meow
 
     void LRE220T::setup()
     {
-        // uint16_t value = 0x1234;
-        // _reg_0->addr_high = (value >> 8);
-        // _reg_1->addr_low = value & 0xFF;
-
         _reg_0->addr_high = 0;
         _reg_1->addr_low = 0;
         //
         _reg_2->serial_rate = 7;
         _reg_2->pairity_bit = 0;
-        _reg_2->air_data_rate = 2;
+        _reg_2->air_data_rate = _air_data_rate;
         //
-        _reg_3->packet_len = _settings.pack_bit_len;
+        _reg_3->packet_len = _packet_len;
         _reg_3->rssi_amb_en = 0;
         _reg_3->RESERVED = 0;
-        _reg_3->transmit_power = _settings.transmit_power;
+        _reg_3->transmit_power = _transmit_power;
         //
-        _reg_4->channel = _settings.channel;
+        _reg_4->channel = _channel;
         //
         _reg_5->rssi_byte_en = 0;
         _reg_5->transmit_meth = 0,
@@ -254,34 +292,4 @@ namespace meow
 
         return true;
     }
-
-    void LRE220T::setPacketLen(PacketLen len)
-    {
-        _settings.pack_bit_len = len;
-
-        if (_settings.pack_bit_len == PACKET_LEN_200)
-            _settings.pack_byte_len = 200;
-        else if (_settings.pack_bit_len == PACKET_LEN_128)
-            _settings.pack_byte_len = 128;
-        else if (_settings.pack_bit_len == PACKET_LEN_64)
-            _settings.pack_byte_len = 64;
-        else
-            _settings.pack_byte_len = 32;
-    }
-
-    bool LRE220T::importSettings(char *file_name)
-    {
-        return false; // TODO
-    }
-
-    bool LRE220T::exportSettings(char *file_name)
-    {
-        return false; // TODO
-    }
-
-    void LRE220T::createNewKeys()
-    {
-        // TODO
-    }
-
 } // namespace meowui
