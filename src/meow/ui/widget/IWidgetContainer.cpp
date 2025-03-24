@@ -20,7 +20,7 @@ namespace meow
     {
         if (!widget_ptr)
         {
-            log_e("*IWidget не може бути NULL.");
+            log_e("Контейнер: %u. *IWidget не може бути NULL.", _id);
             esp_restart();
         }
 
@@ -28,7 +28,7 @@ namespace meow
 
         if (search_ID == 0)
         {
-            log_e("WidgetID повинен бути > 0.");
+            log_e("Контейнер: %u. WidgetID повинен бути > 0.", _id);
             esp_restart();
         }
 
@@ -37,7 +37,7 @@ namespace meow
         for (const auto &widget : _widgets)
             if (widget->getID() == search_ID)
             {
-                log_e("WidgetID повинен бути унікальним.");
+                log_e("Контейнер: %u. WidgetID повинен бути унікальним. Повторюється з: %u.", _id, widget->getID());
                 esp_restart();
             }
 
