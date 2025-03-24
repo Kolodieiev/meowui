@@ -11,7 +11,7 @@ namespace meow
 
         WavHeader header;
 
-        _file_mngr.readFile((char *)&header, path_to_wav, HEADER_SIZE);
+        _file_mngr.readFile(path_to_wav, &header, HEADER_SIZE);
 
         if (!validateHeader(header))
         {
@@ -32,7 +32,7 @@ namespace meow
             return wav_data;
         }
 
-        size_t bytes_read = _file_mngr.readFile((char *)data, path_to_wav, header.data_size, HEADER_SIZE);
+        size_t bytes_read = _file_mngr.readFile(path_to_wav, data, header.data_size, HEADER_SIZE);
 
         if (bytes_read != header.data_size)
         {
