@@ -46,14 +46,8 @@ bool aes256Encrypt(const uint8_t *aes_key, const uint8_t *plain_data, size_t pla
     return true;
 }
 
-bool aes256Decrypt(const uint8_t *aes_key, const uint8_t *cipher_data, size_t data_len, uint8_t *out_plain_data)
+bool aes256Decrypt(const uint8_t *aes_key, const uint8_t *cipher_data, size_t plain_data_len, uint8_t *out_plain_data)
 {
-    if (data_len < IV_SIZE + TAG_SIZE + 1)
-    {
-        log_e("Некоректний розмір даних");
-        return false;
-    }
-
     mbedtls_gcm_context ctx;
     esp_aes_gcm_init(&ctx);
 
@@ -64,7 +58,7 @@ bool aes256Decrypt(const uint8_t *aes_key, const uint8_t *cipher_data, size_t da
         return false;
     }
 
-    if (esp_aes_gcm_auth_decrypt(&ctx, data_len - IV_SIZE - TAG_SIZE,
+    if (esp_aes_gcm_auth_decrypt(&ctx, plain_data_len,
                                  cipher_data, IV_SIZE,
                                  NULL, 0,
                                  cipher_data + IV_SIZE, TAG_SIZE,
@@ -88,26 +82,3 @@ void generateAes256Key(uint8_t *out_aes_key_buff)
         memcpy(&out_aes_key_buff[i], &rand_val, 4);
     }
 }
-
-// void test()
-// {
-//     String test_text = "hello from aes256!";
-//     uint8_t encrypted_data[test_text.length() + IV_SIZE + TAG_SIZE];
-
-//     unsigned long start_time = micros();
-//     if (aes256Encrypt((const uint8_t *)test_text.c_str(), test_text.length(), encrypted_data))
-//     {
-//         log_i("Time aes256Encrypt: %lu", micros() - start_time);
-
-//         uint8_t decrypted_data[test_text.length()];
-//         start_time = micros();
-
-//         if (aes256Decrypt(encrypted_data, test_text.length() + IV_SIZE + TAG_SIZE, decrypted_data))
-//         {
-//             log_i("Time aes256Decrypt: %lu", micros() - start_time);
-
-//             for (uint8_t i = 0; i < test_text.length(); ++i)
-//                 log_i("%c", decrypted_data[i]);
-//         }
-//     }
-// }
