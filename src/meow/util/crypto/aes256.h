@@ -8,77 +8,33 @@
 #define IV_SIZE 12
 #define TAG_SIZE 16
 
-bool aes256Encrypt(const uint8_t *aes_key, const uint8_t *plain_data, size_t plain_data_len, uint8_t *out_cipher_data)
-{
-    mbedtls_gcm_context ctx;
-    esp_aes_gcm_init(&ctx);
+/**
+ * @brief Шифрує дані в режимі GCM.
+ *
+ * @param aes_key 32-байтовий ключ, яким буде зашифровано дані.
+ * @param plain_data Дані, які буде зашифровано.
+ * @param plain_data_len Розмір даних, які повинні бути зашифровані.
+ * @param out_cipher_data Вихідний буфер, куди буде записано IV + TAG + дані.
+ * @return true - Якщо шифрування виконано успішно.
+ * @return false - Інакше.
+ */
+bool aes256Encrypt(const uint8_t *aes_key, const uint8_t *plain_data, size_t plain_data_len, uint8_t *out_cipher_data);
 
-    if (esp_aes_gcm_setkey(&ctx, MBEDTLS_CIPHER_ID_AES, aes_key, 256) != 0)
-    {
-        esp_aes_gcm_free(&ctx);
-        log_e("Помилка mbedtls_gcm_setkey");
-        return false;
-    }
+/**
+ * @brief Розшифровує дані в режимі GCM.
+ *
+ * @param aes_key 32-байтовий ключ, яким буде розшифровано дані.
+ * @param cipher_data Буфер, що містить IV + TAG + зашифровані дані.
+ * @param plain_data_len Розмір зашифрованих даних.
+ * @param out_plain_data Вихідний буфер, куди буде записано розшифровані дані.
+ * @return true - Якщо дешифрування виконано успішно.
+ * @return false - Інакше.
+ */
+bool aes256Decrypt(const uint8_t *aes_key, const uint8_t *cipher_data, size_t plain_data_len, uint8_t *out_plain_data);
 
-    uint8_t iv[IV_SIZE];
-    uint8_t tag[TAG_SIZE];
-
-    esp_fill_random(iv, IV_SIZE);
-
-    if (esp_aes_gcm_crypt_and_tag(&ctx, MBEDTLS_GCM_ENCRYPT,
-                                  plain_data_len,
-                                  iv, IV_SIZE,
-                                  NULL, 0,
-                                  plain_data,
-                                  out_cipher_data + IV_SIZE + TAG_SIZE,
-                                  TAG_SIZE, tag) != 0)
-    {
-        esp_aes_gcm_free(&ctx);
-        log_e("Encrypt err");
-        return false;
-    }
-
-    esp_aes_gcm_free(&ctx);
-
-    memcpy(out_cipher_data, iv, IV_SIZE);
-    memcpy(out_cipher_data + IV_SIZE, tag, TAG_SIZE);
-
-    return true;
-}
-
-bool aes256Decrypt(const uint8_t *aes_key, const uint8_t *cipher_data, size_t plain_data_len, uint8_t *out_plain_data)
-{
-    mbedtls_gcm_context ctx;
-    esp_aes_gcm_init(&ctx);
-
-    if (esp_aes_gcm_setkey(&ctx, MBEDTLS_CIPHER_ID_AES, aes_key, 256) != 0)
-    {
-        esp_aes_gcm_free(&ctx);
-        log_e("Помилка mbedtls_gcm_setkey");
-        return false;
-    }
-
-    if (esp_aes_gcm_auth_decrypt(&ctx, plain_data_len,
-                                 cipher_data, IV_SIZE,
-                                 NULL, 0,
-                                 cipher_data + IV_SIZE, TAG_SIZE,
-                                 cipher_data + IV_SIZE + TAG_SIZE,
-                                 out_plain_data) != 0)
-    {
-        esp_aes_gcm_free(&ctx);
-        log_e("Decrypt err");
-        return false;
-    }
-
-    esp_aes_gcm_free(&ctx);
-    return true;
-}
-
-void generateAes256Key(uint8_t *out_aes_key_buff)
-{
-    for (size_t i = 0; i < AES_KEY_SIZE; i += sizeof(uint32_t))
-    {
-        uint32_t rand_val = esp_random();
-        memcpy(&out_aes_key_buff[i], &rand_val, 4);
-    }
-}
+/**
+ * @brief Генерує 32-байтовий ключ з допомогою псевдовипадкового генератора чисел.
+ *
+ * @param out_aes_key_buff Вихідний буфер розміром 32 байти, куди буде записано ключ.
+ */
+void generateAes256Key(uint8_t *out_aes_key_buff);
