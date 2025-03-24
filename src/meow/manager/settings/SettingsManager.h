@@ -32,7 +32,13 @@ namespace meow
          */
         String get(const char *pref_name);
 
-    private:
-        String getPrefFilePath(const char *pref_name);
+        /**
+         * @brief Повертає повний шлях до файла в каталозі налаштувань.
+         * Якщо каталог налаштувань не існує, буде виконана спроба його створення.
+         *
+         * @param pref_name Шлях до файла з налаштуваннями.
+         * @return String - Рядок, що містить повний шлях до файла, або порожній рядок, у разі помилки.
+         */
+        String getSettingsFilePath(const char *pref_name);
     };
 }
