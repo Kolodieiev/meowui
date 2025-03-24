@@ -46,7 +46,7 @@ namespace meow
         if (!data)
         {
             f_mgr.closeFile(f);
-            log_e("Помилка виділення %zu байт PSRAM", data_size);
+            log_e("Помилка виділення %zu байтів PSRAM", data_size);
             return srcNotFound();
         }
 
