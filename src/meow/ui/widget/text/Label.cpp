@@ -252,7 +252,7 @@ namespace meow
         {
             unicode = utf8ToUnicode(ch_str_p8, byte_pos, len - byte_pos);
             unicode = getCharPos(unicode);
-            pix_sum += pgm_read_byte(width_table + unicode);
+            pix_sum += (*(const unsigned char *)(width_table + unicode));
         }
 
         return pix_sum * _text_size;
@@ -375,7 +375,7 @@ namespace meow
 
             pos = getCharPos(code);
 
-            uint16_t char_w = pgm_read_byte(width_table + pos) * _text_size;
+            uint16_t char_w = (*(const unsigned char *)(width_table + pos)) * _text_size;
 
             if (pix_sum + char_w >= _width - _text_offset - 3)
                 break;
@@ -512,7 +512,7 @@ namespace meow
         if (!_is_transparent)
             clear();
 
-        if (_temp_width != 0)
+        if (_temp_width > 0)
         {
             _width = _temp_width;
             _temp_width = 0;
