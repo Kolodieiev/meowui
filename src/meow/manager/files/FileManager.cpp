@@ -129,7 +129,7 @@ namespace meow
         return result;
     }
 
-    size_t FileManager::readFile(char *out_buffer, const char *path, size_t len, int32_t seek_pos)
+    size_t FileManager::readFile(const char *path, void *out_buffer, size_t len, int32_t seek_pos)
     {
         String full_path;
         makeFullPath(full_path, path);
@@ -284,7 +284,7 @@ namespace meow
         return ftell(file);
     }
 
-    size_t FileManager::available(size_t file_size, FILE *file)
+    size_t FileManager::available(FILE *file, size_t file_size)
     {
         if (!file || feof(file))
             return 0;
@@ -397,7 +397,7 @@ namespace meow
                 goto exit;
             }
 
-            vTaskDelay(1 / portTICK_PERIOD_MS);
+            taskYIELD();
         }
 
     exit:
@@ -543,10 +543,10 @@ namespace meow
         size_t writed_bytes_counter{0};
         size_t bytes_read;
 
-        unsigned long last_delay_time = 0;
+        uint8_t cycles_counter = 0;
         size_t byte_aval = 0;
 
-        while (!_is_canceled && (byte_aval = available(file_size, o_f)) > 0)
+        while (!_is_canceled && (byte_aval = available(o_f, file_size)) > 0)
         {
             if (byte_aval < buf_size)
                 bytes_read = fread(buffer, byte_aval, 1, o_f) * byte_aval;
@@ -555,11 +555,12 @@ namespace meow
             //
             writed_bytes_counter += writeOptimal(n_f, buffer, bytes_read);
             _copy_progress = ((float)writed_bytes_counter / file_size) * 100;
-            if (millis() - last_delay_time > 1000)
+            if (cycles_counter > 5)
             {
-                vTaskDelay(1 / portTICK_PERIOD_MS);
-                last_delay_time = millis();
+                cycles_counter = 0;
+                taskYIELD();
             }
+            ++cycles_counter;
         }
 
         free(buffer);
@@ -644,7 +645,6 @@ namespace meow
         String file_name;
         bool is_dir;
 
-        unsigned long last_delay_time = 0;
         while (1)
         {
             dir_entry = readdir(dir);
@@ -687,11 +687,7 @@ namespace meow
                 break;
             }
 
-            if (millis() - last_delay_time > 1000)
-            {
-                vTaskDelay(1 / portTICK_PERIOD_MS);
-                last_delay_time = millis();
-            }
+            taskYIELD();
         }
 
         std::sort(out_vec.begin(), out_vec.end());
