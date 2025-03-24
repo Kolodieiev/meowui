@@ -33,7 +33,7 @@ bool aes256Encrypt(const uint8_t *aes_key, const uint8_t *plain_data, size_t pla
 bool aes256Decrypt(const uint8_t *aes_key, const uint8_t *cipher_data, size_t plain_data_len, uint8_t *out_plain_data);
 
 /**
- * @brief Генерує 32-байтовий ключ з допомогою псевдовипадкового генератора чисел.
+ * @brief Генерує 32-байтовий ключ за допомоги генератора псевдовипадкових чисел.
  *
  * @param out_aes_key_buff Вихідний буфер розміром 32 байти, куди буде записано ключ.
  */
