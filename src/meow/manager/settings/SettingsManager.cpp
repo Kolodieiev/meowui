@@ -14,7 +14,7 @@ namespace meow
             return false;
         }
 
-        String path = getPrefFilePath(pref_name);
+        String path = getSettingsFilePath(pref_name);
 
         if (path.isEmpty())
             return false;
@@ -30,7 +30,7 @@ namespace meow
             return "";
         }
 
-        String path = getPrefFilePath(pref_name);
+        String path = getSettingsFilePath(pref_name);
 
         if (path.isEmpty())
             return "";
@@ -48,7 +48,7 @@ namespace meow
             return "";
         }
 
-        size_t bytes_read = readFile(buffer, path.c_str(), file_size);
+        size_t bytes_read = readFile(path.c_str(), buffer, file_size);
         buffer[bytes_read] = '\0';
 
         String ret;
@@ -59,7 +59,7 @@ namespace meow
         return ret;
     }
 
-    String SettingsManager::getPrefFilePath(const char *pref_name)
+    String SettingsManager::getSettingsFilePath(const char *pref_name)
     {
         if (!pref_name)
         {
