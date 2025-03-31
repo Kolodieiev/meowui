@@ -8,7 +8,7 @@ namespace meow
         if (!_i2c.begin())
             return false;
 
-        if (!_i2c.hasConnect(DS3231_REG_STATUS))
+        if (!_i2c.hasConnect(DS3231_ADDR))
             return false;
 
         uint8_t status_reg;
