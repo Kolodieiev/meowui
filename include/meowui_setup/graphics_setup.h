@@ -8,6 +8,8 @@
 
 // #define SHOW_FPS // Відображати значення FPS на дисплеї
 
+#define UI_UPDATE_DELAY 20 // Затримка (мс) між фреймами
+
 // -------------------------------- Глибина кольору зображення
 #define COLOR_16BIT
 // #define COLOR_8BIT
