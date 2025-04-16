@@ -4,9 +4,8 @@
 
 namespace meow
 {
-    IWidgetContainer::IWidgetContainer(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display)
+    IWidgetContainer::IWidgetContainer(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID) : IWidget(widget_ID, display, class_ID, true)
     {
-        _is_container = true;
         _widg_mutex = xSemaphoreCreateMutex();
     }
 
@@ -20,7 +19,7 @@ namespace meow
     {
         if (!widget_ptr)
         {
-            log_e("Контейнер: %u. *IWidget не може бути NULL.", _id);
+            log_e("Контейнер: %u. *IWidget не може бути NULL.", getID());
             esp_restart();
         }
 
@@ -28,7 +27,7 @@ namespace meow
 
         if (search_ID == 0)
         {
-            log_e("Контейнер: %u. WidgetID повинен бути > 0.", _id);
+            log_e("Контейнер: %u. WidgetID повинен бути > 0.", getID());
             esp_restart();
         }
 
@@ -37,7 +36,7 @@ namespace meow
         for (const auto &widget : _widgets)
             if (widget->getID() == search_ID)
             {
-                log_e("Контейнер: %u. WidgetID повинен бути унікальним. Повторюється з: %u.", _id, widget->getID());
+                log_e("Контейнер: %u. WidgetID повинен бути унікальним. Повторюється з: %u.", getID(), widget->getID());
                 esp_restart();
             }
 

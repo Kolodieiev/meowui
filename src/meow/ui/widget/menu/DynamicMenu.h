@@ -9,7 +9,7 @@ namespace meow
     typedef std::function<void(std::vector<MenuItem *> &items, uint8_t size, uint16_t cur_id, void *arg)> OnNextItemsLoad;
     typedef std::function<void(std::vector<MenuItem *> &items, uint8_t size, uint16_t cur_id, void *arg)> OnPrevItemsLoad;
 
-    class DynamicMenu : public Menu
+    class DynamicMenu final : public Menu
     {
     public:
         DynamicMenu(uint16_t widget_ID, GraphicsDriver &display);

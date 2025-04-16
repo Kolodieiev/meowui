@@ -5,7 +5,7 @@
 namespace meow
 {
 
-    class NavBar : public IWidget
+    class NavBar final : public IWidget
     {
     public:
         NavBar(uint16_t widget_ID, GraphicsDriver &display);
@@ -22,13 +22,13 @@ namespace meow
          * @brief Повертає вказівник на глибоку копію віджета.
          *
          * @param id Ідентифікатор, який буде присвоєно новому віджету.
-         * @return NavBar* 
+         * @return NavBar*
          */
         NavBar *clone(uint16_t id) const override;
 
         /**
          * @brief Встановлює віджети, які будуть відображатися на панелі навігації.
-         * 
+         *
          * @param start Крайній лівий віджет.
          * @param middle Центральний віджет.
          * @param last Крайній правий віджет.

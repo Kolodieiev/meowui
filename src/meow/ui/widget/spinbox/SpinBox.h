@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    class SpinBox : public Label
+    class SpinBox final : public Label
     {
 
     public:
@@ -98,9 +98,14 @@ namespace meow
         SpinType getType() const { return _spin_type; }
 
     private:
+        using Label::initWidthToFit;
         using Label::isTicker;
-        using Label::setText;
+        using Label::isTickerInFocus;
+        using Label::setAlign;
+        using Label::setGravity;
         using Label::setTicker;
+        using Label::setTickerInFocus;
+        using Label::updateWidthToFit;
 
         float _min = 0.0f;
         float _max = 0.0f;

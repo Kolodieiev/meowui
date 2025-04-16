@@ -7,7 +7,7 @@
 
 namespace meow
 {
-    class Keyboard : public IWidgetContainer
+    class Keyboard final : public IWidgetContainer
     {
     public:
         Keyboard(uint16_t widget_ID, GraphicsDriver &display);

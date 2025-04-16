@@ -8,7 +8,7 @@
 
 namespace meow
 {
-    class ToggleItem : public MenuItem
+    class ToggleItem final : public MenuItem
     {
     public:
         ToggleItem(uint16_t widget_ID, GraphicsDriver &display);

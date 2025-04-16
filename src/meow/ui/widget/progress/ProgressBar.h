@@ -7,7 +7,7 @@
 namespace meow
 {
 
-    class ProgressBar : public IWidget
+    class ProgressBar final : public IWidget
     {
 
     public:

@@ -7,7 +7,7 @@
 namespace meow
 {
 
-    class ScrollBar : public IWidget
+    class ScrollBar final : public IWidget
     {
     public:
         ScrollBar(uint16_t widget_ID, GraphicsDriver &display);

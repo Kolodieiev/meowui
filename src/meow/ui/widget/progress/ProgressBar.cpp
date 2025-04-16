@@ -5,7 +5,7 @@
 namespace meow
 {
 
-    ProgressBar::ProgressBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display) {}
+    ProgressBar::ProgressBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, CLASS_ID_PROGRESSBAR) {}
 
     ProgressBar::~ProgressBar() {}
 
@@ -35,8 +35,34 @@ namespace meow
     {
         try
         {
-            ProgressBar *clone = new ProgressBar(*this);
-            clone->_id = id;
+            ProgressBar *clone = new ProgressBar(id, _display);
+            clone->_has_border = _has_border;
+            clone->_x_pos = _x_pos;
+            clone->_y_pos = _y_pos;
+            clone->_width = _width;
+            clone->_height = _height;
+            clone->_back_color = _back_color;
+            clone->_border_color = _border_color;
+            clone->_corner_radius = _corner_radius;
+            clone->_is_transparent = _is_transparent;
+            clone->_visibility = _visibility;
+            clone->_has_focus = _has_focus;
+            clone->_old_border_state = _old_border_state;
+            clone->_need_clear_border = _need_clear_border;
+            clone->_need_change_border = _need_change_border;
+            clone->_need_change_back = _need_change_back;
+            clone->_focus_border_color = _focus_border_color;
+            clone->_old_border_color = _old_border_color;
+            clone->_focus_back_color = _focus_back_color;
+            clone->_old_back_color = _old_back_color;
+            clone->_parent = _parent;
+
+            clone->_progress = _progress;
+            clone->_max = _max;
+            clone->_progress_color = _progress_color;
+            clone->_orientation = _orientation;
+            clone->_prev_progress = _prev_progress;
+
             return clone;
         }
         catch (const std::bad_alloc &e)

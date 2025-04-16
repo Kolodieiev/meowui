@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    class FixedMenu : public Menu
+    class FixedMenu final : public Menu
     {
     public:
         FixedMenu(uint16_t widget_ID, GraphicsDriver &display);

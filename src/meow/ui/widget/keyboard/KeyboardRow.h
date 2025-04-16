@@ -6,7 +6,7 @@
 
 namespace meow
 {
-    class KeyboardRow : public IWidgetContainer
+    class KeyboardRow final : public IWidgetContainer
     {
 
     public:

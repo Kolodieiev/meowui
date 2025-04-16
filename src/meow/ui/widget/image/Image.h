@@ -7,7 +7,7 @@
 
 namespace meow
 {
-    class Image : public IWidget
+    class Image final : public IWidget
     {
         // TODO додати анімацію
     public:

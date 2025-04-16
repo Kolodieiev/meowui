@@ -11,7 +11,7 @@ namespace meow
     {
 
     public:
-        IWidgetContainer(uint16_t widget_ID, GraphicsDriver &display);
+        IWidgetContainer(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID);
         virtual ~IWidgetContainer();
 
         /**

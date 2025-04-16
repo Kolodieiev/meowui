@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    FixedMenu::FixedMenu(uint16_t widget_ID, GraphicsDriver &display) : Menu(widget_ID, display) {}
+    FixedMenu::FixedMenu(uint16_t widget_ID, GraphicsDriver &display) : Menu(widget_ID, display, CLASS_ID_FIX_MENU) {}
 
     bool FixedMenu::focusUp()
     {

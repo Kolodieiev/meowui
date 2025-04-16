@@ -3,7 +3,9 @@
 
 namespace meow
 {
-    TextBox::TextBox(uint16_t widget_ID, GraphicsDriver &display) : Label(widget_ID, display)
+    TextBox::TextBox(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID) : Label(widget_ID,
+                                                                                                     display,
+                                                                                                     class_ID == CLASS_ID_UNKNOWN ? CLASS_ID_TEXTBOX : class_ID)
     {
         _text_gravity = GRAVITY_CENTER;
         _back_color = TFT_WHITE;
@@ -14,9 +16,49 @@ namespace meow
     {
         try
         {
-            TextBox *clone = new TextBox(*this);
-            clone->_id = id;
+            TextBox *clone = new TextBox(id, _display);
+            clone->_has_border = _has_border;
+            clone->_x_pos = _x_pos;
+            clone->_y_pos = _y_pos;
+            clone->_width = _width;
+            clone->_height = _height;
+            clone->_back_color = _back_color;
+            clone->_border_color = _border_color;
+            clone->_corner_radius = _corner_radius;
+            clone->_is_transparent = _is_transparent;
+            clone->_visibility = _visibility;
+            clone->_has_focus = _has_focus;
+            clone->_old_border_state = _old_border_state;
+            clone->_need_clear_border = _need_clear_border;
+            clone->_need_change_border = _need_change_border;
+            clone->_need_change_back = _need_change_back;
+            clone->_focus_border_color = _focus_border_color;
+            clone->_old_border_color = _old_border_color;
+            clone->_focus_back_color = _focus_back_color;
+            clone->_old_back_color = _old_back_color;
+            clone->_parent = _parent;
+
+            clone->_is_multiline = _is_multiline;
             clone->setText(_text);
+            clone->_text_size = _text_size;
+            clone->_text_color = _text_color;
+            clone->_font_ID = _font_ID;
+            clone->_text_offset = _text_offset;
+            clone->_text_gravity = _text_gravity;
+            clone->_text_alignment = _text_alignment;
+            clone->_is_ticker = _is_ticker;
+            clone->_temp_is_ticker = _temp_is_ticker;
+            clone->_is_ticker_in_focus = _is_ticker_in_focus;
+            clone->_temp_is_ticker_in_focus = _temp_is_ticker_in_focus;
+            clone->_temp_width = _temp_width;
+
+            if (_back_img)
+            {
+                clone->_back_img = _back_img->clone(_back_img->getID());
+            }
+
+            clone->_type = _type;
+
             return clone;
         }
         catch (const std::bad_alloc &e)

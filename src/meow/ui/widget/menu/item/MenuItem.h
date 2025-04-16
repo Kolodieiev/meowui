@@ -11,7 +11,7 @@ namespace meow
     class MenuItem : public IWidget
     {
     public:
-        MenuItem(uint16_t widget_ID, GraphicsDriver &display);
+        MenuItem(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID = CLASS_ID_UNKNOWN);
         virtual ~MenuItem();
 
         /**

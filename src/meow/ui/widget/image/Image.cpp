@@ -5,7 +5,7 @@
 
 namespace meow
 {
-    Image::Image(uint16_t wiget_ID, GraphicsDriver &display) : IWidget(wiget_ID, display) {}
+    Image::Image(uint16_t wiget_ID, GraphicsDriver &display) : IWidget(wiget_ID, display, CLASS_ID_IMAGE) {}
 
 #ifdef DOUBLE_BUFFERRING
 

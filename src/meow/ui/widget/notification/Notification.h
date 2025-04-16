@@ -5,7 +5,7 @@
 
 namespace meow
 {
-    class Notification : public IWidget
+    class Notification final : public IWidget
     {
 
     public:

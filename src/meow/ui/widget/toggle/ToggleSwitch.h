@@ -4,10 +4,10 @@
 
 namespace meow
 {
-    class ToggleSwitch : public IWidget
+    class ToggleSwitch final : public IWidget
     {
     public:
-        ToggleSwitch(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display) {}
+        ToggleSwitch(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, CLASS_ID_TOGGLE_SWITCH) {}
         virtual ~ToggleSwitch() {};
 
         /**

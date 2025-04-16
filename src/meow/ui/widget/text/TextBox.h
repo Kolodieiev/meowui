@@ -19,7 +19,7 @@ namespace meow
             TYPE_PASSWORD
         };
 
-        TextBox(uint16_t widget_ID, GraphicsDriver &display);
+        TextBox(uint16_t widget_ID, GraphicsDriver &displa, IWidget::ClassID class_ID = CLASS_ID_UNKNOWN);
         virtual ~TextBox() {}
 
         /**
@@ -71,8 +71,10 @@ namespace meow
     private:
         using Label::initWidthToFit;
         using Label::isTicker;
+        using Label::isTickerInFocus;
         using Label::setGravity;
         using Label::setTicker;
+        using Label::setTickerInFocus;
         using Label::updateWidthToFit;
 
         FieldType _type = TYPE_TEXT;

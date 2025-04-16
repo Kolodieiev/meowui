@@ -10,6 +10,27 @@ namespace meow
     {
 
     public:
+        enum ClassID : uint8_t
+        {
+            CLASS_ID_UNKNOWN = 0,
+            CLASS_ID_IMAGE,
+            CLASS_ID_KEYBOARD,
+            CLASS_ID_KB_ROW,
+            CLASS_ID_EMPTY_LAYOUT,
+            CLASS_ID_MENU_ITEM,
+            CLASS_ID_TOGGLE_ITEM,
+            CLASS_ID_DYN_MENU,
+            CLASS_ID_FIX_MENU,
+            CLASS_ID_NAVBAR,
+            CLASS_ID_NOTIFICATION,
+            CLASS_ID_PROGRESSBAR,
+            CLASS_ID_SCROLLBAR,
+            CLASS_ID_SPINBOX,
+            CLASS_ID_LABEL,
+            CLASS_ID_TEXTBOX,
+            CLASS_ID_TOGGLE_SWITCH,
+        };
+
         enum Alignment : uint8_t
         {
             ALIGN_START = 0,
@@ -36,7 +57,7 @@ namespace meow
             INVISIBLE,
         };
 
-        IWidget(uint16_t widget_ID, GraphicsDriver &display);
+        IWidget(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID, bool is_container = false);
         virtual ~IWidget() = 0;
 
         /**
@@ -53,6 +74,13 @@ namespace meow
          *
          */
         virtual void onDraw() = 0;
+
+        /**
+         * @brief Повертає ідентифікатор типу віджета.
+         *
+         * @return ClassID
+         */
+        ClassID getClassID() const { return _class_ID; }
 
         /**
          * @brief Викликає примусове перемальовування віджета,
@@ -310,8 +338,6 @@ namespace meow
         bool isTransparent() const { return _is_transparent; }
 
     protected:
-        uint16_t _id{0};
-        bool _is_container{false};
         bool _is_changed{true};
         bool _has_border{false};
         bool _is_transparent{false};
@@ -352,6 +378,11 @@ namespace meow
          * @brief  Приховати елемент. Працює, якщо віджет має батьківський контейнер.
          */
         void hide();
+
+    private:
+        const uint16_t _id;
+        const ClassID _class_ID;
+        const bool _is_container;
     };
 
 }

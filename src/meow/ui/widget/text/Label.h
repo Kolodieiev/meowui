@@ -11,7 +11,7 @@ namespace meow
     class Label : public IWidget
     {
     public:
-        Label(uint16_t widget_ID, GraphicsDriver &display);
+        Label(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID = CLASS_ID_UNKNOWN);
         virtual ~Label() {};
 
         /**
