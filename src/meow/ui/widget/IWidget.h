@@ -10,25 +10,25 @@ namespace meow
     {
 
     public:
-        enum ClassID : uint8_t
+        enum TypeID : uint8_t
         {
-            CLASS_ID_UNKNOWN = 0,
-            CLASS_ID_IMAGE,
-            CLASS_ID_KEYBOARD,
-            CLASS_ID_KB_ROW,
-            CLASS_ID_EMPTY_LAYOUT,
-            CLASS_ID_MENU_ITEM,
-            CLASS_ID_TOGGLE_ITEM,
-            CLASS_ID_DYN_MENU,
-            CLASS_ID_FIX_MENU,
-            CLASS_ID_NAVBAR,
-            CLASS_ID_NOTIFICATION,
-            CLASS_ID_PROGRESSBAR,
-            CLASS_ID_SCROLLBAR,
-            CLASS_ID_SPINBOX,
-            CLASS_ID_LABEL,
-            CLASS_ID_TEXTBOX,
-            CLASS_ID_TOGGLE_SWITCH,
+            TYPE_ID_UNKNOWN = 0,
+            TYPE_ID_IMAGE,
+            TYPE_ID_KEYBOARD,
+            TYPE_ID_KB_ROW,
+            TYPE_ID_EMPTY_LAYOUT,
+            TYPE_ID_MENU_ITEM,
+            TYPE_ID_TOGGLE_ITEM,
+            TYPE_ID_DYN_MENU,
+            TYPE_ID_FIX_MENU,
+            TYPE_ID_NAVBAR,
+            TYPE_ID_NOTIFICATION,
+            TYPE_ID_PROGRESSBAR,
+            TYPE_ID_SCROLLBAR,
+            TYPE_ID_SPINBOX,
+            TYPE_ID_LABEL,
+            TYPE_ID_TEXTBOX,
+            TYPE_ID_TOGGLE_SWITCH,
         };
 
         enum Alignment : uint8_t
@@ -57,7 +57,7 @@ namespace meow
             INVISIBLE,
         };
 
-        IWidget(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID, bool is_container = false);
+        IWidget(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID class_ID, bool is_container = false);
         virtual ~IWidget() = 0;
 
         /**
@@ -78,9 +78,9 @@ namespace meow
         /**
          * @brief Повертає ідентифікатор типу віджета.
          *
-         * @return ClassID
+         * @return TypeID
          */
-        ClassID getClassID() const { return _class_ID; }
+        TypeID getTypeID() const { return _class_ID; }
 
         /**
          * @brief Викликає примусове перемальовування віджета,
@@ -381,7 +381,7 @@ namespace meow
 
     private:
         const uint16_t _id;
-        const ClassID _class_ID;
+        const TypeID _class_ID;
         const bool _is_container;
     };
 

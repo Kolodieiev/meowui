@@ -2,7 +2,7 @@
 
 namespace meow
 {
-    NavBar::NavBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, CLASS_ID_NAVBAR) {}
+    NavBar::NavBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, TYPE_ID_NAVBAR) {}
 
     NavBar::~NavBar()
     {

@@ -57,7 +57,7 @@ namespace meow
          *
          * @return int16_t
          */
-        int16_t getClassID() const { return _class_ID; }
+        int16_t getTypeID() const { return _class_ID; }
 
         /**
          * @brief Повертає вказівник на рядок з ім'ям об'єкта, якщо було задано. Інакше на порожій рядок.

@@ -3,7 +3,7 @@
 #include "ToggleItem.h"
 namespace meow
 {
-    ToggleItem::ToggleItem(uint16_t widget_ID, GraphicsDriver &display) : MenuItem(widget_ID, display, CLASS_ID_TOGGLE_ITEM) {}
+    ToggleItem::ToggleItem(uint16_t widget_ID, GraphicsDriver &display) : MenuItem(widget_ID, display, TYPE_ID_TOGGLE_ITEM) {}
 
     ToggleItem::~ToggleItem()
     {

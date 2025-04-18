@@ -5,7 +5,7 @@
 namespace meow
 {
 
-    SpinBox::SpinBox(uint16_t widget_ID, GraphicsDriver &display) : Label(widget_ID, display, CLASS_ID_SPINBOX)
+    SpinBox::SpinBox(uint16_t widget_ID, GraphicsDriver &display) : Label(widget_ID, display, TYPE_ID_SPINBOX)
     {
         setAlign(IWidget::ALIGN_CENTER);
         setGravity(IWidget::GRAVITY_CENTER);

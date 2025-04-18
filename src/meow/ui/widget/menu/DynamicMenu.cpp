@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    DynamicMenu::DynamicMenu(uint16_t widget_ID, GraphicsDriver &display) : Menu(widget_ID, display, CLASS_ID_DYN_MENU) {}
+    DynamicMenu::DynamicMenu(uint16_t widget_ID, GraphicsDriver &display) : Menu(widget_ID, display, TYPE_ID_DYN_MENU) {}
 
     bool DynamicMenu::focusUp()
     {

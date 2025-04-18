@@ -3,7 +3,7 @@
 
 namespace meow
 {
-    Menu::Menu(uint16_t widget_ID, GraphicsDriver &display, IWidget::ClassID class_ID) : IWidgetContainer(widget_ID, display, class_ID) {}
+    Menu::Menu(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID class_ID) : IWidgetContainer(widget_ID, display, class_ID) {}
 
     MenuItem *Menu::findItemByID(uint16_t itemID) const
     {
