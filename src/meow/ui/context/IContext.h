@@ -23,10 +23,10 @@ namespace meow
         IContext &operator=(const IContext &rhs) = delete;
 
         /**
-         * @brief Службовий метод, необхідний для функціонування програми. Не викликай його з робочого коду.
-         *
+         * @brief Метод, що викликається для контексту кожен доступний тік.
+         * Виклик методу мусить виконувати об'єкт, що керує цим контекстом. 
          */
-        void _tick();
+        void tick();
 
         /**
          * @brief Повертає ідентифікатор контексту, який було встановлено методом openContextByID.
@@ -104,7 +104,7 @@ namespace meow
 
         /**
          * @brief Встановлює стан поточного контексту в такий, що повинен бути звільнений.
-         * 
+         *
          */
         void release();
 
@@ -139,6 +139,8 @@ namespace meow
         //
         bool _is_released{false};
         ContextID _next_context_ID;
+        //
+        unsigned long _upd_time{0};
         //
         bool _has_toast{false};
         Label *_toast_label{nullptr};

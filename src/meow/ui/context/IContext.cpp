@@ -7,18 +7,17 @@ namespace meow
 {
     Input IContext::_input;
 
-    void IContext::_tick()
+    void IContext::tick()
     {
-        static unsigned long upd_time = 0;
-
         if (loop())
-            if ((millis() - upd_time) < UI_UPDATE_DELAY)
+        {
+            if ((millis() - _upd_time) < UI_UPDATE_DELAY)
             {
                 vTaskDelay(2 / portTICK_PERIOD_MS);
             }
             else
             {
-                upd_time = millis();
+                _upd_time = millis();
 
                 _input._update();
 
@@ -45,6 +44,7 @@ namespace meow
                 }
 #endif // GRAPHICS_ENABLED
             }
+        }
     }
 
     IContext::IContext(GraphicsDriver &display) : _display{display}
