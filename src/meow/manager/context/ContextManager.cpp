@@ -21,7 +21,7 @@ namespace meow
         while (1)
         {
             if (!context->isReleased())
-                context->_tick();
+                context->tick();
             else
             {
                 delete context;
