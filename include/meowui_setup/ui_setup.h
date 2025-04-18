@@ -13,7 +13,6 @@
 
 #include "context/splash/SplashContext.h"
 #include "context/menu/MenuContext.h"
-#include "context/lua_runner/LuaRunnerContext.h"
 
 // -------------------------------- Додай перемикання контексту за прикладом
 #define SCREEN_CASES                         \
@@ -25,5 +24,4 @@
 //     break;
 
 // -------------------------------- Стартовий контекст
-#define START_CONTEXT LuaRunnerContext
-// #define START_CONTEXT SplashContext
+#define START_CONTEXT SplashContext
