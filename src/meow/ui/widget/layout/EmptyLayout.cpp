@@ -4,9 +4,9 @@
 
 namespace meow
 {
-    EmptyLayout::EmptyLayout(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID class_ID) : IWidgetContainer(widget_ID,
-                                                                                                                        display,
-                                                                                                                        class_ID == TYPE_ID_UNKNOWN ? TYPE_ID_EMPTY_LAYOUT : class_ID) {}
+    EmptyLayout::EmptyLayout(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : IWidgetContainer(widget_ID,
+                                                                                                                      display,
+                                                                                                                      type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_EMPTY_LAYOUT : type_ID) {}
 
     EmptyLayout::~EmptyLayout() {}
 

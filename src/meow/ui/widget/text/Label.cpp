@@ -2,9 +2,9 @@
 #include "Label.h"
 namespace meow
 {
-    Label::Label(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID class_ID) : IWidget(widget_ID,
-                                                                                                  display,
-                                                                                                  class_ID == TYPE_ID_UNKNOWN ? TYPE_ID_LABEL : class_ID)
+    Label::Label(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : IWidget(widget_ID,
+                                                                                                 display,
+                                                                                                 type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_LABEL : type_ID)
     {
         _height = chr_hgt_font2;
     }

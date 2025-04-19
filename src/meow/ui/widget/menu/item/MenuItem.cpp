@@ -4,9 +4,9 @@
 
 namespace meow
 {
-    MenuItem::MenuItem(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID class_ID) : IWidget(widget_ID,
-                                                                                                         display,
-                                                                                                         class_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : class_ID) {}
+    MenuItem::MenuItem(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : IWidget(widget_ID,
+                                                                                                       display,
+                                                                                                       type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : type_ID) {}
 
     MenuItem::~MenuItem()
     {

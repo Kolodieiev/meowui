@@ -57,7 +57,7 @@ namespace meow
             INVISIBLE,
         };
 
-        IWidget(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID class_ID, bool is_container = false);
+        IWidget(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID, bool is_container = false);
         virtual ~IWidget() = 0;
 
         /**
@@ -80,7 +80,7 @@ namespace meow
          *
          * @return TypeID
          */
-        TypeID getTypeID() const { return _class_ID; }
+        TypeID getTypeID() const { return _type_ID; }
 
         /**
          * @brief Викликає примусове перемальовування віджета,
@@ -381,7 +381,7 @@ namespace meow
 
     private:
         const uint16_t _id;
-        const TypeID _class_ID;
+        const TypeID _type_ID;
         const bool _is_container;
     };
 

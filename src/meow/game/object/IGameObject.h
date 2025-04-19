@@ -57,7 +57,7 @@ namespace meow
          *
          * @return int16_t
          */
-        int16_t getTypeID() const { return _class_ID; }
+        int16_t getTypeID() const { return _type_ID; }
 
         /**
          * @brief Повертає вказівник на рядок з ім'ям об'єкта, якщо було задано. Інакше на порожій рядок.
@@ -106,7 +106,7 @@ namespace meow
 
     protected:
         const uint32_t _obj_ID;                                  // Ідентифікатор об'єкта. Може не використовуватися в локальній грі.
-        uint8_t _class_ID{0};                                    // Ідентифікатор типу об'єкта
+        uint8_t _type_ID{0};                                     // Ідентифікатор типу об'єкта
         uint8_t _trigger_ID{0};                                  // Ідентифіктор тригера. Може не використовуватися, якщо об'єкт не тригериться.
         bool _is_triggered{false};                               // Прапор спрацювання тригера об'єкта.  Може не використовуватися, якщо об'єкт не тригериться.
         String _name;                                            // Ім'я об'єкта, може не використовуватися
@@ -147,41 +147,41 @@ namespace meow
         /**
          * @brief Повертає список усіх об'єктів на сцені з заданим ідентифікатором класу.
          *
-         * @param class_id Ідентифікатор класу.
+         * @param type_ID Ідентифікатор класу.
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjByClass(uint8_t class_id);
+        std::list<IGameObject *> getObjByClass(uint8_t type_ID);
 
         /**
          * @brief Повертає список усіх об'єктів, що знаходяться в заданій точці і мають відповідний ідентифікатор класу.
          *
-         * @param class_id Ідентифікатор класу.
+         * @param type_ID Ідентифікатор класу.
          * @param x Координата точки.
          * @param y Координата точки.
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjByClassAt(uint8_t class_id, uint16_t x, uint16_t y);
+        std::list<IGameObject *> getObjByClassAt(uint8_t type_ID, uint16_t x, uint16_t y);
 
         /**
          * @brief Повертає список усіх об'єктів, що знаходяться в заданому прямокутнику і мають відповідний ідентифікатор класу.
          *
-         * @param class_id Ідентифікатор класу.
+         * @param type_ID Ідентифікатор класу.
          * @param x_start Координата верхнього лівого кута прямокутника.
          * @param y_start Координата верхнього лівого кута прямокутника.
          * @param rect_width Ширина прямокутника.
          * @param rect_height Висота прямокутника.
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjByClassInRect(uint8_t class_id, uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height);
+        std::list<IGameObject *> getObjByClassInRect(uint8_t type_ID, uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height);
 
         /**
          * @brief Повертає список усіх об'єктів, що знаходяться в колі із заданим радіусом навколо об'єкта і мають відповідний ідентифікатор класу.
          *
-         * @param class_id Ідентифікатор класу.
+         * @param type_ID Ідентифікатор класу.
          * @param radius Радіус пошуку
          * @return std::list<IGameObject *>
          */
-        std::list<IGameObject *> getObjByClassInRadius(uint8_t class_id, uint16_t radius);
+        std::list<IGameObject *> getObjByClassInRadius(uint8_t type_ID, uint16_t radius);
 
         /**
          * @brief Повертає список об'єктів, відповідно до фільтра, які перетинаються з заданою точкою.
