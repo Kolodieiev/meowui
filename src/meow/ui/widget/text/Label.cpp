@@ -3,8 +3,8 @@
 namespace meow
 {
     Label::Label(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID class_ID) : IWidget(widget_ID,
-                                                                                                   display,
-                                                                                                   class_ID == TYPE_ID_UNKNOWN ? TYPE_ID_LABEL : class_ID)
+                                                                                                  display,
+                                                                                                  class_ID == TYPE_ID_UNKNOWN ? TYPE_ID_LABEL : class_ID)
     {
         _height = chr_hgt_font2;
     }
@@ -604,10 +604,14 @@ namespace meow
 
                 if (_temp_is_ticker || (_temp_is_ticker_in_focus && _has_focus))
                 {
-                    if (_first_draw_char_pos == _text_len - 1 || sub_str_pix_num == 0)
-                        _first_draw_char_pos = 0;
-                    else
-                        ++_first_draw_char_pos;
+                    if ((millis() - _last_time_ticker_update) > TICKER_UPDATE_DELAY)
+                    {
+                        if (_first_draw_char_pos == _text_len - 1 || sub_str_pix_num == 0)
+                            _first_draw_char_pos = 0;
+                        else
+                            ++_first_draw_char_pos;
+                        _last_time_ticker_update = millis();
+                    }
                 }
 
                 _display.drawString(sub_str, _x_pos + x_offset + txt_x_pos, _y_pos + y_offset + txtYPos);
