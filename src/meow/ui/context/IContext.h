@@ -8,6 +8,7 @@
 #include "../../driver/graphics/GraphicsDriver.h"
 #include "../widget/IWidgetContainer.h"
 #include "../widget/text/Label.h"
+#include "../widget/notification/Notification.h"
 
 namespace meow
 {
@@ -24,7 +25,7 @@ namespace meow
 
         /**
          * @brief Метод, що викликається для контексту кожен доступний тік.
-         * Виклик методу мусить виконувати об'єкт, що керує цим контекстом. 
+         * Виклик методу мусить виконувати об'єкт, що керує цим контекстом.
          */
         void tick();
 
@@ -133,6 +134,20 @@ namespace meow
          */
         uint16_t getCenterY(IWidget *widget) const { return widget ? (D_HEIGHT - widget->getHeight()) / 2 : 0; }
 
+        /**
+         * @brief Відображає віджет Notification для поточного макету.
+         *
+         * @param notification Вказівник на віджет.
+         */
+        void showNotification(Notification *notification);
+
+        /**
+         * @brief Прибирає віджет Notification з відображення у макеті.
+         * Пам'ять, яку займає об'єкт віджета не буде звільнено.
+         *
+         */
+        void hideNotification();
+
     private:
         SemaphoreHandle_t _layout_mutex;
         IWidgetContainer *_layout;
@@ -142,11 +157,12 @@ namespace meow
         //
         unsigned long _upd_time{0};
         //
-        bool _has_toast{false};
         Label *_toast_label{nullptr};
         unsigned long _toast_lifetime;
         unsigned long _toast_birthtime;
         void removeToast();
+        //
+        Notification *_notification{nullptr};
     };
 
 }

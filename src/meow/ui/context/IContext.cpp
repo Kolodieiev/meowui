@@ -29,7 +29,12 @@ namespace meow
                     xSemaphoreTake(_layout_mutex, portMAX_DELAY);
                     _layout->onDraw();
 
-                    if (_has_toast)
+                    if (_notification)
+                    {
+                        _notification->onDraw();
+                    }
+
+                    if (_toast_label)
                     {
                         if (millis() - _toast_birthtime > _toast_lifetime)
                             removeToast();
@@ -133,14 +138,23 @@ namespace meow
             _toast_label->setWidth(120);
 
         _toast_label->setPos(getCenterX(_toast_label), D_HEIGHT - _toast_label->getHeight() - 15);
+    }
 
-        _has_toast = true;
+    void IContext::showNotification(Notification *notifaction)
+    {
+        _notification = notifaction;
+    }
+
+    void IContext::hideNotification()
+    {
+        _notification = nullptr;
+
+        if (_layout)
+            _layout->forcedDraw();
     }
 
     void IContext::removeToast()
     {
-        _has_toast = false;
-
         delete _toast_label;
         _toast_label = nullptr;
 
