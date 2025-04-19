@@ -69,11 +69,13 @@ namespace meow
         void addChars(const char *ch);
 
     private:
+        using Label::getTickerDelay;
         using Label::initWidthToFit;
         using Label::isTicker;
         using Label::isTickerInFocus;
         using Label::setGravity;
         using Label::setTicker;
+        using Label::setTickerDelay;
         using Label::setTickerInFocus;
         using Label::updateWidthToFit;
 
