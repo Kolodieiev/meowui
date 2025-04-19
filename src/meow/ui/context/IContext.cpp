@@ -125,11 +125,12 @@ namespace meow
         _toast_label->setBorder(true);
         _toast_label->setBorderColor(TFT_ORANGE);
         _toast_label->setHeight(25);
+        _toast_label->setTextOffset(4);
 
-        if (D_WIDTH < 100)
+        if (D_WIDTH < 120)
             _toast_label->setWidth(D_WIDTH - 6);
         else
-            _toast_label->setWidth(100);
+            _toast_label->setWidth(120);
 
         _toast_label->setPos(getCenterX(_toast_label), D_HEIGHT - _toast_label->getHeight() - 15);
 
