@@ -135,6 +135,12 @@ namespace meow
         _is_changed = true;
     }
 
+    void Label::setTickerDelay(uint16_t delay)
+    {
+        _ticker_update_delay = delay;
+        _is_changed = true;
+    }
+
     void Label::setTicker(bool state)
     {
         _is_ticker = state;
@@ -531,7 +537,7 @@ namespace meow
         {
             if (!_is_ticker && !(_is_ticker_in_focus && _has_focus) || _visibility == INVISIBLE)
                 return;
-            else if ((millis() - _last_time_ticker_update) < TICKER_UPDATE_DELAY)
+            else if ((millis() - _last_time_ticker_update) < _ticker_update_delay)
                 return;
             else
                 _last_time_ticker_update = millis();
@@ -604,7 +610,7 @@ namespace meow
 
                 if (_temp_is_ticker || (_temp_is_ticker_in_focus && _has_focus))
                 {
-                    if ((millis() - _last_time_ticker_update) > TICKER_UPDATE_DELAY)
+                    if ((millis() - _last_time_ticker_update) > _ticker_update_delay)
                     {
                         if (_first_draw_char_pos == _text_len - 1 || sub_str_pix_num == 0)
                             _first_draw_char_pos = 0;

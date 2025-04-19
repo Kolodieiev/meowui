@@ -192,6 +192,20 @@ namespace meow
          */
         bool isMultiline() const { return _is_multiline; }
 
+        /**
+         * @brief Встановлює затримку між зміщеннями тексту у віджеті.
+         *
+         * @param delay Час затримки у мілісекундах.
+         */
+        void setTickerDelay(uint16_t delay);
+
+        /**
+         * @brief Повертає значення затримки між зміщеннями тексту у віджеті.
+         *
+         * @return uint16_t - Час затримки у мілісекундах.
+         */
+        uint16_t getTickerDelay() const { return _ticker_update_delay; }
+
     protected:
         bool _is_multiline{false};
         uint16_t _text_len{0};
@@ -209,7 +223,7 @@ namespace meow
         bool _temp_is_ticker_in_focus{false};
 
         unsigned long _last_time_ticker_update{0};
-        const uint8_t TICKER_UPDATE_DELAY{160};
+        uint16_t _ticker_update_delay{160};
 
         uint16_t _temp_width{0};
 
