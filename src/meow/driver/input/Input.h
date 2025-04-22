@@ -35,7 +35,7 @@ namespace meow
          *
          * @param key_id Номер віртуального піна.
          */
-        void enablePin(KeyID key_id) { _buttons.at(key_id)->enable(); }
+        void enablePin(KeyID key_id);
 
         /**
          * @brief Вимикає пін, переводить його в режим високоімпедансного входу, та скидає стани віртуального піна з цим номером.
@@ -45,10 +45,10 @@ namespace meow
          *
          * @param key_id Номер віртуального піна.
          */
-        void disablePin(KeyID key_id) { _buttons.at(key_id)->disable(); }
+        void disablePin(KeyID key_id);
 
         /**
-         * @brief Перевіряє чи знаходиться зараз віртуальний пін з таким номер в активному стані. 
+         * @brief Перевіряє чи знаходиться зараз віртуальний пін з таким номер в активному стані.
          * Тобто чи натиснута кнопка або чи фіксується дотик на цьому піні.
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
@@ -57,7 +57,7 @@ namespace meow
          * @return true - Якщо пін утримується.
          * @return false - Інакше.
          */
-        bool isHolded(KeyID key_id) const { return _buttons.at(key_id)->isHolded(); }
+        bool isHolded(KeyID key_id) const;
 
         /**
          * @brief Перевіряє чи утримується пін більше n мілісекунд, що задано в налаштуваннях вводу.
@@ -67,7 +67,7 @@ namespace meow
          * @return true - Якщо пін утримується більше n мілісекунд.
          * @return false - Інакше.
          */
-        bool isPressed(KeyID key_id) const { return _buttons.at(key_id)->isPressed(); }
+        bool isPressed(KeyID key_id) const;
 
         /**
          * @brief Перевіряє чи було пін раніше активовано натисканням та відпущено.
@@ -77,18 +77,18 @@ namespace meow
          * @return true - Якщо пін раніше було активовано та відпущено.
          * @return false - Інакше.
          */
-        bool isReleased(KeyID key_id) const { return _buttons.at(key_id)->isReleased(); }
+        bool isReleased(KeyID key_id) const;
 
         /**
-         * @brief Блокує віртуальний пін, щоб запобігти випадковим спрацюванням через брязкіт контактів, 
-         * або щоб задати час очікування до наступного спрацюванням цього піна. Під час виклику скидає стан віртуального піна 
+         * @brief Блокує віртуальний пін, щоб запобігти випадковим спрацюванням через брязкіт контактів,
+         * або щоб задати час очікування до наступного спрацюванням цього піна. Під час виклику скидає стан віртуального піна
          * та блокує його оновлення, доки не сплине час блокування.
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
          * @param key_id Номер віртуального піна.
          * @param lock_duration Час в мілісекундах, на який потрібно заблокувати віртуальний пін.
          */
-        void lock(KeyID key_id, unsigned long lock_duration) { _buttons.at(key_id)->lock(lock_duration); }
+        void lock(KeyID key_id, unsigned long lock_duration);
 
         /**
          * @brief Службовий метод. Може бути використаний виключно для відлагодження. Виводить в консоль режим, в якому знаходиться фізичний пін мікроконтролера.

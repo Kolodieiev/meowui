@@ -11,6 +11,8 @@
 #include "./touchscreen_driver/GT911.h"
 #endif
 
+const char STR_UNKNOWN_PIN[] = "Незареєстрована віртуальна кнопка";
+
 namespace meow
 {
         Input::Input()
@@ -62,5 +64,80 @@ namespace meow
                         log_i("Pin %d: Pull-down enabled", key_id);
                 else
                         log_i("Pin %d: is floating", key_id);
+        }
+
+        void Input::enablePin(KeyID key_id)
+        {
+                try
+                {
+                        _buttons.at(key_id)->enable();
+                }
+                catch (const std::out_of_range &ignored)
+                {
+                        log_e("%s", STR_UNKNOWN_PIN);
+                }
+        }
+
+        void Input::disablePin(KeyID key_id)
+        {
+                try
+                {
+                        _buttons.at(key_id)->disable();
+                }
+                catch (const std::out_of_range &ignored)
+                {
+                        log_e("%s", STR_UNKNOWN_PIN);
+                }
+        }
+
+        bool Input::isHolded(KeyID key_id) const
+        {
+                try
+                {
+                        return _buttons.at(key_id)->isHolded();
+                }
+                catch (const std::out_of_range &ignored)
+                {
+                        log_e("%s", STR_UNKNOWN_PIN);
+                        return false;
+                }
+        }
+
+        bool Input::isPressed(KeyID key_id) const
+        {
+                try
+                {
+                        return _buttons.at(key_id)->isPressed();
+                }
+                catch (const std::out_of_range &ignored)
+                {
+                        log_e("%s", STR_UNKNOWN_PIN);
+                        return false;
+                }
+        }
+
+        bool Input::isReleased(KeyID key_id) const
+        {
+                try
+                {
+                        return _buttons.at(key_id)->isReleased();
+                }
+                catch (const std::out_of_range &ignored)
+                {
+                        log_e("%s", STR_UNKNOWN_PIN);
+                        return false;
+                }
+        }
+
+        void Input::lock(KeyID key_id, unsigned long lock_duration)
+        {
+                try
+                {
+                        _buttons.at(key_id)->lock(lock_duration);
+                }
+                catch (const std::out_of_range &ignored)
+                {
+                        log_e("%s", STR_UNKNOWN_PIN);
+                }
         }
 }
