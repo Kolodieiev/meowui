@@ -30,6 +30,14 @@ namespace meow
         MenuItem *clone(uint16_t id) const override;
 
         /**
+         * @brief Повертає ідентифікатор типу.
+         * Використовується в системі приведення типу.
+         *
+         * @return constexpr TypeID
+         */
+        static constexpr TypeID staticType() { return TypeID::TYPE_ID_MENU_ITEM; }
+
+        /**
          * @brief Встановлює вказівник на віджет Image, що буде використано в якості іконки.
          * Image не буде видалено автоматично разом з віджетом.
          * Один і той же Image може бути закріплений за різними елементами списку.

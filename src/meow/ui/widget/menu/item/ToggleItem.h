@@ -30,6 +30,14 @@ namespace meow
         ToggleItem *clone(uint16_t id) const override;
 
         /**
+         * @brief Повертає ідентифікатор типу.
+         * Використовується в системі приведення типу.
+         *
+         * @return constexpr TypeID
+         */
+        static constexpr TypeID staticType() { return TypeID::TYPE_ID_TOGGLE_ITEM; }
+
+        /**
          * @brief Встановлює вказівник на віджет ToggleSwitch, що буде відображатися віджеті елемента списку.
          * ToggleSwitch буде видалено автоматично разом з віджетом.
          * Для кожного елемента списку повинен використовуватися власний ToggleSwitch.

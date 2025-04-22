@@ -30,6 +30,14 @@ namespace meow
         }
 
         /**
+         * @brief Повертає ідентифікатор типу.
+         * Використовується в системі приведення типу.
+         *
+         * @return constexpr TypeID
+         */
+        static constexpr TypeID staticType() { return TypeID::TYPE_ID_NOTIFICATION; }
+
+        /**
          * @brief Встановлює вказівники на віджети текстових міток, які будуть використовуватися у повідомленні.
          * Пам'ять, зайнята віджетами, буде автоматично очищена в деструкторі Notification.
          *

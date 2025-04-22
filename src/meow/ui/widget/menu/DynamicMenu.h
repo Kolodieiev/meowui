@@ -24,6 +24,14 @@ namespace meow
         virtual DynamicMenu *clone(uint16_t id) const override;
 
         /**
+         * @brief Повертає ідентифікатор типу.
+         * Використовується в системі приведення типу.
+         *
+         * @return constexpr TypeID
+         */
+        static constexpr TypeID staticType() { return TypeID::TYPE_ID_DYN_MENU; }
+
+        /**
          * @brief Переміщує фокус на попередній віджет у контейнері.
          *
          * @return true - Якщо операцію виконано успішно.

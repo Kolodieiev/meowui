@@ -30,6 +30,14 @@ namespace meow
         virtual Label *clone(uint16_t id) const override;
 
         /**
+         * @brief Повертає ідентифікатор типу.
+         * Використовується в системі приведення типу.
+         *
+         * @return constexpr TypeID
+         */
+        static constexpr TypeID staticType() { return TypeID::TYPE_ID_LABEL; }
+
+        /**
          * @brief Автоматично розраховує початкову ширину віджета.
          * Викликайте цей метод тільки після того, як налаштували інші параметри для віджета.
          * Задає початкову ширину віджета таким чином, щоб вмістити текст + відступ.

@@ -29,6 +29,14 @@ namespace meow
         virtual KeyboardRow *clone(uint16_t id) const override;
 
         /**
+         * @brief Повертає ідентифікатор типу.
+         * Використовується в системі приведення типу.
+         *
+         * @return constexpr TypeID
+         */
+        static constexpr TypeID staticType() { return TypeID::TYPE_ID_KB_ROW; }
+
+        /**
          * @brief Повертає ідентифікатор віджета, на якому встановлено фокус.
          *
          * @return uint16_t

@@ -83,6 +83,17 @@ namespace meow
         TypeID getTypeID() const { return _type_ID; }
 
         /**
+         * @brief Якщо можливо, приводить вказівник на віджет до відповідного типу.
+         *
+         * @tparam T Тип, до якого потрібно привести віджет.
+         * @param widget Вказівник на об'єкт базового класу.
+         * @return T* - Вказівник на віджет, якщо приведення можливе. Інакше - nullptr.
+         * @return nullptr - Інакше.
+         */
+        template <typename T>
+        static T *castTo(IWidget *widget);
+
+        /**
          * @brief Викликає примусове перемальовування віджета,
          * навіть, якщо його не було змінено.
          *
@@ -385,4 +396,12 @@ namespace meow
         const bool _is_container;
     };
 
+    template <typename T>
+    inline T *IWidget::castTo(IWidget *widget)
+    {
+        if (widget && widget->getTypeID() == T::staticType())
+            return reinterpret_cast<T *>(widget);
+
+        return nullptr;
+    }
 }

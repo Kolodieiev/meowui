@@ -26,5 +26,13 @@ namespace meow
      * @return EmptyLayout*
      */
     EmptyLayout *clone(uint16_t id) const override;
+
+    /**
+     * @brief Повертає ідентифікатор типу.
+     * Використовується в системі приведення типу.
+     *
+     * @return constexpr TypeID
+     */
+    static constexpr TypeID staticType() { return TypeID::TYPE_ID_EMPTY_LAYOUT; }
   };
 }
