@@ -10,7 +10,6 @@ void meow::DisplayUtil::enableBackLight()
 
 void meow::DisplayUtil::disableBackLight()
 {
-    ledcDetachPin(pin);
     digitalWrite(BACKLIGHT_PIN, LOW);
 }
 
