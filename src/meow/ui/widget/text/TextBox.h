@@ -19,7 +19,7 @@ namespace meow
             TYPE_PASSWORD
         };
 
-        TextBox(uint16_t widget_ID, GraphicsDriver &displa, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
+        TextBox(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
         virtual ~TextBox() {}
 
         /**

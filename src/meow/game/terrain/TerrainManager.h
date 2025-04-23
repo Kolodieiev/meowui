@@ -20,11 +20,10 @@ namespace meow
         const uint16_t HALF_VIEW_W; // Використовується для позиціонування об'єктів
         const uint16_t HALF_VIEW_H; // Використовується для позиціонування об'єктів
         //
-        TerrainManager(GraphicsDriver &display) : _display{display},
-                                                  VIEW_W{display.width()},
-                                                  VIEW_H{display.height()},
-                                                  HALF_VIEW_W{static_cast<uint16_t>(display.width() * 0.5f)},
-                                                  HALF_VIEW_H{static_cast<uint16_t>(display.height() * 0.5f)} {}
+        TerrainManager() : VIEW_W{_display.width()},
+                           VIEW_H{_display.height()},
+                           HALF_VIEW_W{static_cast<uint16_t>(_display.width() * 0.5f)},
+                           HALF_VIEW_H{static_cast<uint16_t>(_display.height() * 0.5f)} {}
 
         ~TerrainManager();
 
@@ -152,8 +151,6 @@ namespace meow
         uint8_t _tile_side_len{0};                        // Розмір сторони плитки
         uint16_t _tile_x_num{0};                          // Кількість плиток мапи по горизонталі
         uint16_t _tile_y_num{0};                          // Кількість плиток мапи по вертикалі
-
-        GraphicsDriver &_display;
 
         void freeMem();
         void freeTilesDescriptionData();

@@ -11,7 +11,7 @@ namespace meow
     {
         // TODO додати анімацію
     public:
-        Image(uint16_t widget_ID, GraphicsDriver &display);
+        Image(uint16_t widget_ID);
         virtual ~Image();
 
         /**

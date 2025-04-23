@@ -8,11 +8,11 @@ namespace meow
     class IGameNotification
     {
     public:
-        IGameNotification(GraphicsDriver &display) : _display{display}
+        IGameNotification()
         {
             try
             {
-                _notification = new Notification(1, _display);
+                _notification = new Notification(1);
             }
             catch (const std::bad_alloc &e)
             {
@@ -30,12 +30,7 @@ namespace meow
         IGameNotification(const IGameNotification &rhs) = delete;
         IGameNotification &operator=(const IGameNotification &rhs) = delete;
 
-        void show() { _notification->show(); }
-        void hide() { _notification->hide(); }
-        bool isHidden() const { return _notification->isHidden(); }
-
     protected:
-        GraphicsDriver &_display;
         Notification *_notification{nullptr};
     };
 }

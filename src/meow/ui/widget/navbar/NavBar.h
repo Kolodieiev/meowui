@@ -4,11 +4,10 @@
 
 namespace meow
 {
-
     class NavBar final : public IWidget
     {
     public:
-        NavBar(uint16_t widget_ID, GraphicsDriver &display);
+        NavBar(uint16_t widget_ID);
         virtual ~NavBar();
 
         /**

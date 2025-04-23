@@ -8,12 +8,12 @@ namespace meow
     class IGameMenu
     {
     public:
-        IGameMenu(GraphicsDriver &display) : _display{display}
+        IGameMenu()
         {
             try
             {
-                _menu = new FixedMenu(1, _display);
-                _menu_back = new EmptyLayout(1, _display);
+                _menu = new FixedMenu(1);
+                _menu_back = new EmptyLayout(1);
                 _menu_back->addWidget(_menu);
             }
             catch (const std::bad_alloc &e)
@@ -38,7 +38,6 @@ namespace meow
         uint16_t getCurrentItemID() const { return _menu->getCurrentItemID(); }
 
     protected:
-        GraphicsDriver &_display;
         FixedMenu *_menu;
         EmptyLayout *_menu_back;
     };

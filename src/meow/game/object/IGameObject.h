@@ -37,8 +37,7 @@ namespace meow
         IGameObject(const IGameObject &rhs) = delete;
         IGameObject &operator=(const IGameObject &rhs) = delete;
 
-        IGameObject(GraphicsDriver &display,
-                    ResManager &res,
+        IGameObject(ResManager &res,
                     WavManager &audio,
                     TerrainManager &terrain,
                     std::unordered_map<uint32_t, IGameObject *> &game_objs);
@@ -116,8 +115,7 @@ namespace meow
         WavManager &_audio;                                      // Менеджер аудіо
         TerrainManager &_terrain;                                // Поверхня ігрового рівня
         std::unordered_map<uint32_t, IGameObject *> &_game_objs; // Список ігрових об'єктів на сцені
-        GraphicsDriver &_display;
-        SpriteDescription _sprite{}; // Об'єкт структури, яка описує спрайт об'єкта та його стани
+        SpriteDescription _sprite{};                             // Об'єкт структури, яка описує спрайт об'єкта та його стани
 
         /**
          * @brief Метод, в якому рекомендується ралізовувати ініціалізацію об'єкта.

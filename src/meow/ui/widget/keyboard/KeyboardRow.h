@@ -10,7 +10,7 @@ namespace meow
     {
 
     public:
-        KeyboardRow(uint16_t widget_ID, GraphicsDriver &display);
+        KeyboardRow(uint16_t widget_ID);
         virtual ~KeyboardRow() {}
 
         /**

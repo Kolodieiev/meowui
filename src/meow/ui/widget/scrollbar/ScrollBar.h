@@ -6,11 +6,10 @@
 
 namespace meow
 {
-
     class ScrollBar final : public IWidget
     {
     public:
-        ScrollBar(uint16_t widget_ID, GraphicsDriver &display);
+        ScrollBar(uint16_t widget_ID);
         virtual ~ScrollBar() {}
 
         /**

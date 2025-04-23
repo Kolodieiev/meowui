@@ -14,7 +14,7 @@ namespace meow
             TYPE_FLOAT
         };
 
-        SpinBox(uint16_t widget_id, GraphicsDriver &display);
+        SpinBox(uint16_t widget_id);
         virtual ~SpinBox() {}
 
         /**

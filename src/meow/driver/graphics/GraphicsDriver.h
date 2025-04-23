@@ -177,5 +177,6 @@ namespace meow
                 static void displayRendererTask(void *params);
 #endif
         };
-
+        
+        extern GraphicsDriver _display;
 }

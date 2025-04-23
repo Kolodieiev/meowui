@@ -2,7 +2,7 @@
 
 namespace meow
 {
-    NavBar::NavBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, TYPE_ID_NAVBAR) {}
+    NavBar::NavBar(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_NAVBAR) {}
 
     NavBar::~NavBar()
     {
@@ -81,7 +81,7 @@ namespace meow
     {
         try
         {
-            NavBar *clone = new NavBar(id, _display);
+            NavBar *clone = new NavBar(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

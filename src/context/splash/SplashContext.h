@@ -8,7 +8,7 @@ using namespace meow;
 class SplashContext : public IContext
 {
 public:
-    SplashContext(GraphicsDriver &display);
+    SplashContext();
     virtual ~SplashContext(){};
 
 protected:

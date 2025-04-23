@@ -15,12 +15,12 @@
 #include "context/menu/MenuContext.h"
 
 // -------------------------------- Додай перемикання контексту за прикладом
-#define SCREEN_CASES                         \
-    case ContextID::ID_CONTEXT_MENU:         \
-        context = new MenuContext(_display); \
+#define SCREEN_CASES                 \
+    case ContextID::ID_CONTEXT_MENU: \
+        context = new MenuContext(); \
         break;
 // case ContextID::ID_CONTEXT_HOME:
-//     context = new HomeContext(_display);
+//     context = new HomeContext();
 //     break;
 
 // -------------------------------- Стартовий контекст

@@ -2,8 +2,7 @@
 
 namespace meow
 {
-
-    Notification::Notification(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, TYPE_ID_NOTIFICATION) {}
+    Notification::Notification(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_NOTIFICATION) {}
 
     Notification::~Notification()
     {

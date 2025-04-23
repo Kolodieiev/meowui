@@ -19,14 +19,14 @@
 
 uint8_t MenuContext::_last_sel_item_pos;
 
-MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
+MenuContext::MenuContext()
 {
-    WidgetCreator creator{_display};
+    WidgetCreator creator;
     //
     EmptyLayout *layout = creator.getEmptyLayout();
     setLayout(layout);
     //
-    _menu = new FixedMenu(ID_MENU, _display);
+    _menu = new FixedMenu(ID_MENU);
     layout->addWidget(_menu);
     _menu->setBackColor(COLOR_MAIN_BACK);
     _menu->setWidth(_display.width() - SCROLLBAR_WIDTH - DISPLAY_PADDING * 2);
@@ -34,7 +34,7 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     _menu->setItemHeight((_menu->getHeight() - 2) / 4);
     _menu->setPos(DISPLAY_PADDING, TFT_CUTOUT);
     //
-    _scrollbar = new ScrollBar(ID_SCROLLBAR, _display);
+    _scrollbar = new ScrollBar(ID_SCROLLBAR);
     layout->addWidget(_scrollbar);
     _scrollbar->setWidth(SCROLLBAR_WIDTH);
     _scrollbar->setHeight(_menu->getHeight());
@@ -44,7 +44,7 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     MenuItem *mp3_item = creator.getMenuItem(ID_CONTEXT_MP3);
     _menu->addItem(mp3_item);
 
-    Image *mp3_img = new Image(1, _display);
+    Image *mp3_img = new Image(1);
     mp3_item->setIco(mp3_img);
     mp3_img->setTransparentColor(TFT_TRANSPARENT);
     mp3_img->init(ICO_WH, ICO_WH);
@@ -57,7 +57,7 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     MenuItem *read_item = creator.getMenuItem(ID_CONTEXT_READER);
     _menu->addItem(read_item);
 
-    Image *read_img = new Image(1, _display);
+    Image *read_img = new Image(1);
     read_item->setIco(read_img);
     read_img->setTransparentColor(TFT_TRANSPARENT);
     read_img->init(ICO_WH, ICO_WH);
@@ -70,7 +70,7 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     MenuItem *game_item = creator.getMenuItem(ID_CONTEXT_GAMES);
     _menu->addItem(game_item);
 
-    Image *game_img = new Image(1, _display);
+    Image *game_img = new Image(1);
     game_item->setIco(game_img);
     game_img->setTransparentColor(TFT_TRANSPARENT);
     game_img->init(ICO_WH, ICO_WH);
@@ -83,7 +83,7 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     MenuItem *files_item = creator.getMenuItem(ID_CONTEXT_FILES);
     _menu->addItem(files_item);
 
-    Image *files_img = new Image(1, _display);
+    Image *files_img = new Image(1);
     files_item->setIco(files_img);
     files_img->setTransparentColor(TFT_TRANSPARENT);
     files_img->init(ICO_WH, ICO_WH);
@@ -96,7 +96,7 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     MenuItem *pref_item = creator.getMenuItem(ID_CONTEXT_PREF_SEL);
     _menu->addItem(pref_item);
 
-    Image *pref_img = new Image(1, _display);
+    Image *pref_img = new Image(1);
     pref_item->setIco(pref_img);
     pref_img->setTransparentColor(TFT_TRANSPARENT);
     pref_img->init(ICO_WH, ICO_WH);
@@ -109,7 +109,7 @@ MenuContext::MenuContext(GraphicsDriver &display) : IContext(display)
     MenuItem *firm_item = creator.getMenuItem(ID_CONTEXT_FIRMWARE);
     _menu->addItem(firm_item);
 
-    Image *firm_img = new Image(1, _display);
+    Image *firm_img = new Image(1);
     firm_item->setIco(firm_img);
     firm_img->setTransparentColor(TFT_TRANSPARENT);
     firm_img->init(ICO_WH, ICO_WH);

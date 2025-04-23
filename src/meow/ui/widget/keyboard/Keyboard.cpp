@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    Keyboard::Keyboard(uint16_t widget_ID, GraphicsDriver &display) : IWidgetContainer(widget_ID, display, TYPE_ID_KEYBOARD) {}
+    Keyboard::Keyboard(uint16_t widget_ID) : IWidgetContainer(widget_ID, TYPE_ID_KEYBOARD) {}
 
     Keyboard *Keyboard::clone(uint16_t id) const
     {
@@ -12,7 +12,7 @@ namespace meow
 
         try
         {
-            Keyboard *clone = new Keyboard(id, _display);
+            Keyboard *clone = new Keyboard(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

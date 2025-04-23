@@ -6,15 +6,13 @@ namespace meow
 {
   uint32_t IGameObject::_global_obj_id_counter{0};
 
-  IGameObject::IGameObject(GraphicsDriver &display,
-                           ResManager &res,
+  IGameObject::IGameObject(ResManager &res,
                            WavManager &audio,
                            TerrainManager &terrain,
                            std::unordered_map<uint32_t, IGameObject *> &game_objs)
-      : _display{display},
-        _res_manager{res},
+      : _res_manager{res},
         _audio{audio},
-        _obj_sprite{TFT_eSprite(display.getTFT())},
+        _obj_sprite{TFT_eSprite(_display.getTFT())},
         _terrain{terrain},
         _game_objs{game_objs},
         _obj_ID{++_global_obj_id_counter}

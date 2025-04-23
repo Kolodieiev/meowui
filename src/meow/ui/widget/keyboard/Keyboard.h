@@ -10,7 +10,7 @@ namespace meow
     class Keyboard final : public IWidgetContainer
     {
     public:
-        Keyboard(uint16_t widget_ID, GraphicsDriver &display);
+        Keyboard(uint16_t widget_ID);
         virtual ~Keyboard() {}
 
         /**

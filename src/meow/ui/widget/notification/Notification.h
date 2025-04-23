@@ -9,7 +9,7 @@ namespace meow
     {
 
     public:
-        Notification(uint16_t widget_ID, GraphicsDriver &display);
+        Notification(uint16_t widget_ID);
         virtual ~Notification();
 
         /**

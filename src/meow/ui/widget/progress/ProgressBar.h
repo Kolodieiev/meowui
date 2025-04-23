@@ -6,12 +6,11 @@
 
 namespace meow
 {
-
     class ProgressBar final : public IWidget
     {
 
     public:
-        ProgressBar(uint16_t widget_ID, GraphicsDriver &display);
+        ProgressBar(uint16_t widget_ID);
         virtual ~ProgressBar();
 
         /**

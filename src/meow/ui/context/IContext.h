@@ -18,7 +18,7 @@ namespace meow
     class IContext
     {
     public:
-        IContext(GraphicsDriver &display);
+        IContext();
         virtual ~IContext() = 0;
         IContext(const IContext &rhs) = delete;
         IContext &operator=(const IContext &rhs) = delete;
@@ -51,12 +51,6 @@ namespace meow
          *
          */
         static Input _input;
-
-        /**
-         * @brief Об'єкт, що відповідає за вивід зображення на дисплей.
-         *
-         */
-        GraphicsDriver &_display;
 
         /**
          * @brief Прапор, який дозволяє повністю вимкнути відрисовку GUI.

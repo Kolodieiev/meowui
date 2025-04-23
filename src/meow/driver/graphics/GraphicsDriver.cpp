@@ -205,4 +205,5 @@ namespace meow
     }
 #endif
 
+    GraphicsDriver _display;
 }

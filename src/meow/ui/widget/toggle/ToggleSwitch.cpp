@@ -2,7 +2,6 @@
 
 namespace meow
 {
-
     void ToggleSwitch::onDraw()
     {
         if (_is_changed)
@@ -71,7 +70,7 @@ namespace meow
     {
         try
         {
-            ToggleSwitch *clone = new ToggleSwitch(id, _display);
+            ToggleSwitch *clone = new ToggleSwitch(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

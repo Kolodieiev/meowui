@@ -52,10 +52,10 @@ namespace meow
         }
     }
 
-    IContext::IContext(GraphicsDriver &display) : _display{display}
+    IContext::IContext()
     {
         _layout_mutex = xSemaphoreCreateMutex();
-        _layout = new EmptyLayout(1, _display);
+        _layout = new EmptyLayout(1);
         _layout->setBackColor(TFT_YELLOW);
         _layout->setWidth(_display.width());
         _layout->setHeight(_display.height());
@@ -119,7 +119,7 @@ namespace meow
             return;
         }
 
-        _toast_label = new Label(1, _display);
+        _toast_label = new Label(1);
         _toast_label->setText(msg_txt);
         _toast_label->setBackColor(TFT_WHITE);
         _toast_label->setTextColor(TFT_BLACK);

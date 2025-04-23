@@ -3,9 +3,8 @@
 
 namespace meow
 {
-    TextBox::TextBox(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : Label(widget_ID,
-                                                                                                   display,
-                                                                                                   type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_TEXTBOX : type_ID)
+    TextBox::TextBox(uint16_t widget_ID, IWidget::TypeID type_ID) : Label(widget_ID,
+                                                                          type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_TEXTBOX : type_ID)
     {
         _text_gravity = GRAVITY_CENTER;
         _back_color = TFT_WHITE;
@@ -16,7 +15,7 @@ namespace meow
     {
         try
         {
-            TextBox *clone = new TextBox(id, _display);
+            TextBox *clone = new TextBox(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

@@ -4,9 +4,10 @@
 
 namespace meow
 {
-    EmptyLayout::EmptyLayout(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : IWidgetContainer(widget_ID,
-                                                                                                                      display,
-                                                                                                                      type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_EMPTY_LAYOUT : type_ID) {}
+    EmptyLayout::EmptyLayout(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidgetContainer(widget_ID,
+                                                                                             type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_EMPTY_LAYOUT : type_ID)
+    {
+    }
 
     EmptyLayout::~EmptyLayout() {}
 
@@ -48,7 +49,7 @@ namespace meow
 
         try
         {
-            EmptyLayout *clone = new EmptyLayout(id, IWidgetContainer::_display);
+            EmptyLayout *clone = new EmptyLayout(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

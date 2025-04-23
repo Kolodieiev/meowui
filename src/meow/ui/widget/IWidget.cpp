@@ -4,10 +4,9 @@
 
 namespace meow
 {
-    IWidget::IWidget(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID, bool is_container) : _id{widget_ID},
-                                                                                                                _display{display},
-                                                                                                                _type_ID{type_ID},
-                                                                                                                _is_container{is_container}
+    IWidget::IWidget(uint16_t widget_ID, IWidget::TypeID type_ID, bool is_container) : _id{widget_ID},
+                                                                                       _type_ID{type_ID},
+                                                                                       _is_container{is_container}
 
     {
         if (widget_ID == 0)

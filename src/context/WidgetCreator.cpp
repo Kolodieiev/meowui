@@ -3,13 +3,11 @@
 #include "./resources/color.h"
 #include "./resources/kb_btn_id.h"
 
-WidgetCreator::WidgetCreator(GraphicsDriver &display) : _display{display} {}
-
 EmptyLayout *WidgetCreator::getEmptyLayout()
 {
     try
     {
-        EmptyLayout *layout = new EmptyLayout(1, _display);
+        EmptyLayout *layout = new EmptyLayout(1);
         layout->setBackColor(COLOR_MAIN_BACK);
         layout->setWidth(_display.width());
         layout->setHeight(_display.height());
@@ -26,7 +24,7 @@ Label *WidgetCreator::getDisplayDescription(uint16_t id, const char *text)
 {
     try
     {
-        Label *display_descr = new Label(1, _display);
+        Label *display_descr = new Label(1);
         display_descr->setText(text);
         display_descr->setWidth(_display.width());
         display_descr->setHeight(DISPLAY_DESCRIPT_HEIGHT);
@@ -49,7 +47,7 @@ Label *WidgetCreator::getItemLabel(const char *text, uint8_t font_id, uint8_t te
 {
     try
     {
-        Label *item = new Label(1, _display);
+        Label *item = new Label(1);
         item->setText(text);
         item->setFontID(font_id);
         item->setTextSize(text_size);
@@ -69,7 +67,7 @@ MenuItem *WidgetCreator::getMenuItem(uint16_t id)
 {
     try
     {
-        MenuItem *item = new MenuItem(id, _display);
+        MenuItem *item = new MenuItem(id);
         item->setFocusBorderColor(COLOR_LIME);
         item->setFocusBackColor(COLOR_FOCUS_BACK);
         item->setBackColor(COLOR_MENU_ITEM);
@@ -88,7 +86,7 @@ DynamicMenu *WidgetCreator::getDynamicMenu(uint16_t id)
 {
     try
     {
-        DynamicMenu *menu = new DynamicMenu(id, _display);
+        DynamicMenu *menu = new DynamicMenu(id);
         menu->setBackColor(TFT_BLACK);
         menu->setWidth(_display.width());
         menu->setHeight(_display.height() - TFT_CUTOUT * 2 - 2);
@@ -103,7 +101,7 @@ DynamicMenu *WidgetCreator::getDynamicMenu(uint16_t id)
 
 Label *WidgetCreator::getStatusMsgLable(uint16_t id, const char *text, uint8_t text_size)
 {
-    Label *lbl = new Label(id, _display);
+    Label *lbl = new Label(id);
     lbl->setText(text);
     lbl->setTextSize(text_size);
     lbl->setAlign(IWidget::ALIGN_CENTER);
@@ -117,13 +115,13 @@ Label *WidgetCreator::getStatusMsgLable(uint16_t id, const char *text, uint8_t t
 
 Keyboard *WidgetCreator::getStandardEnKeyboard(uint16_t id)
 {
-    Keyboard *_keyboard = new Keyboard(id, _display);
+    Keyboard *_keyboard = new Keyboard(id);
     _keyboard->setWidth(_display.width());
     _keyboard->setHeight(_display.height() - 50 - TFT_CUTOUT * 2);
     _keyboard->setPos(0, 50 + TFT_CUTOUT);
     _keyboard->setCornerRadius(5);
 
-    KeyboardRow *row1 = new KeyboardRow(1, _display); // Цифри
+    KeyboardRow *row1 = new KeyboardRow(1); // Цифри
     _keyboard->addWidget(row1);
     row1->setHeight(25);
     row1->setBtnHeight(23);
@@ -144,7 +142,7 @@ Keyboard *WidgetCreator::getStandardEnKeyboard(uint16_t id)
     _keyboard->addWidget(row5);
     row5->setBtnWidth(40);
 
-    Label *q = new Label(ID_KBTN_Q, _display);
+    Label *q = new Label(ID_KBTN_Q);
     q->setText("q");
     q->setFontID(2);
     q->setGravity(IWidget::GRAVITY_CENTER);

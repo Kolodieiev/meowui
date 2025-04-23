@@ -17,14 +17,14 @@
 #define LBL_X_OFFSET 70
 #define SLEEP_PIN 46
 
-SplashContext::SplashContext(GraphicsDriver &display) : IContext(display)
+SplashContext::SplashContext()
 {
     pinMode(SLEEP_PIN, OUTPUT);
     digitalWrite(SLEEP_PIN, HIGH);
 
     _start_time = millis();
 
-    WidgetCreator creator{_display};
+    WidgetCreator creator;
     //
     EmptyLayout *layout = creator.getEmptyLayout();
     setLayout(layout);
@@ -73,7 +73,7 @@ void SplashContext::addLabel(uint16_t x_pos, uint16_t y_pos, const char *res_str
 {
     EmptyLayout *layout = (EmptyLayout *)getLayout();
 
-    Label *lbl = new Label(_widget_id, _display);
+    Label *lbl = new Label(_widget_id);
     layout->addWidget(lbl);
     lbl->setText(res_str);
     lbl->setBackColor(COLOR_MAIN_BACK);

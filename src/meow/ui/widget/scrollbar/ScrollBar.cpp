@@ -4,13 +4,13 @@
 
 namespace meow
 {
-    ScrollBar::ScrollBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, TYPE_ID_SCROLLBAR) {}
+    ScrollBar::ScrollBar(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_SCROLLBAR) {}
 
     ScrollBar *ScrollBar::clone(uint16_t id) const
     {
         try
         {
-            ScrollBar *clone = new ScrollBar(id, _display);
+            ScrollBar *clone = new ScrollBar(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

@@ -5,7 +5,7 @@
 
 namespace meow
 {
-    Image::Image(uint16_t wiget_ID, GraphicsDriver &display) : IWidget(wiget_ID, display, TYPE_ID_IMAGE) {}
+    Image::Image(uint16_t wiget_ID) : IWidget(wiget_ID, TYPE_ID_IMAGE) {}
 
 #ifdef DOUBLE_BUFFERRING
 
@@ -13,7 +13,7 @@ namespace meow
     {
         try
         {
-            Image *clone = new Image(id, _display);
+            Image *clone = new Image(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

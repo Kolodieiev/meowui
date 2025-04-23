@@ -11,7 +11,7 @@ using namespace meow;
 class MenuContext : public IContext
 {
 public:
-    MenuContext(GraphicsDriver &display);
+    MenuContext();
     virtual ~MenuContext();
 
 protected:

@@ -4,9 +4,8 @@
 
 namespace meow
 {
-    MenuItem::MenuItem(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : IWidget(widget_ID,
-                                                                                                       display,
-                                                                                                       type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : type_ID) {}
+    MenuItem::MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID,
+                                                                              type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : type_ID) {}
 
     MenuItem::~MenuItem()
     {
@@ -76,7 +75,7 @@ namespace meow
     {
         try
         {
-            MenuItem *clone = new MenuItem(id, _display);
+            MenuItem *clone = new MenuItem(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

@@ -12,7 +12,7 @@ namespace meow
     class DynamicMenu final : public Menu
     {
     public:
-        DynamicMenu(uint16_t widget_ID, GraphicsDriver &display);
+        DynamicMenu(uint16_t widget_ID);
         virtual ~DynamicMenu() {}
 
         /**

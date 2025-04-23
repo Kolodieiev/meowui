@@ -7,12 +7,11 @@
 
 namespace meow
 {
-
     class Menu : public IWidgetContainer
     {
 
     public:
-        Menu(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID);
+        Menu(uint16_t widget_ID, IWidget::TypeID type_ID);
         virtual ~Menu() {}
 
         virtual bool focusUp() = 0;

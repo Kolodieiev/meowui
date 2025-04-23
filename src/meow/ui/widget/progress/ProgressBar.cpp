@@ -4,8 +4,7 @@
 
 namespace meow
 {
-
-    ProgressBar::ProgressBar(uint16_t widget_ID, GraphicsDriver &display) : IWidget(widget_ID, display, TYPE_ID_PROGRESSBAR) {}
+    ProgressBar::ProgressBar(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_PROGRESSBAR) {}
 
     ProgressBar::~ProgressBar() {}
 
@@ -35,7 +34,7 @@ namespace meow
     {
         try
         {
-            ProgressBar *clone = new ProgressBar(id, _display);
+            ProgressBar *clone = new ProgressBar(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

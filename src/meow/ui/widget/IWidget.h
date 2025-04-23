@@ -57,7 +57,7 @@ namespace meow
             INVISIBLE,
         };
 
-        IWidget(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID, bool is_container = false);
+        IWidget(uint16_t widget_ID, IWidget::TypeID type_ID, bool is_container = false);
         virtual ~IWidget() = 0;
 
         /**
@@ -377,7 +377,6 @@ namespace meow
         uint16_t _focus_back_color{0xFFFF};
         uint16_t _old_back_color{0xFFFF};
         //
-        GraphicsDriver &_display;
         const IWidget *_parent{nullptr};
 
         /*!

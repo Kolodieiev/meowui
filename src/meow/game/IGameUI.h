@@ -7,13 +7,10 @@ namespace meow
     class IGameUI
     {
     public:
-        IGameUI(GraphicsDriver &display) : _display{display} {}
+        IGameUI() {}
         virtual ~IGameUI() {}
         virtual void onDraw() = 0;
         IGameUI(const IGameUI &rhs) = delete;
         IGameUI &operator=(const IGameUI &rhs) = delete;
-
-    protected:
-        GraphicsDriver &_display;
     };
 }

@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    IWidgetContainer::IWidgetContainer(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : IWidget(widget_ID, display, type_ID, true)
+    IWidgetContainer::IWidgetContainer(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID, type_ID, true)
     {
         _widg_mutex = xSemaphoreCreateMutex();
     }

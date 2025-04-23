@@ -11,7 +11,7 @@ namespace meow
     class ToggleItem final : public MenuItem
     {
     public:
-        ToggleItem(uint16_t widget_ID, GraphicsDriver &display);
+        ToggleItem(uint16_t widget_ID);
         virtual ~ToggleItem();
 
         /**

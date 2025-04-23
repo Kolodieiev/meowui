@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    FixedMenu::FixedMenu(uint16_t widget_ID, GraphicsDriver &display) : Menu(widget_ID, display, TYPE_ID_FIX_MENU) {}
+    FixedMenu::FixedMenu(uint16_t widget_ID) : Menu(widget_ID, TYPE_ID_FIX_MENU) {}
 
     bool FixedMenu::focusUp()
     {
@@ -131,7 +131,7 @@ namespace meow
 
         try
         {
-            FixedMenu *clone = new FixedMenu(id, IWidgetContainer::_display);
+            FixedMenu *clone = new FixedMenu(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

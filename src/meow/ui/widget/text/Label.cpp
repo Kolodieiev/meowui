@@ -2,9 +2,8 @@
 #include "Label.h"
 namespace meow
 {
-    Label::Label(uint16_t widget_ID, GraphicsDriver &display, IWidget::TypeID type_ID) : IWidget(widget_ID,
-                                                                                                 display,
-                                                                                                 type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_LABEL : type_ID)
+    Label::Label(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID,
+                                                                        type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_LABEL : type_ID)
     {
         _height = chr_hgt_font2;
     }
@@ -13,7 +12,7 @@ namespace meow
     {
         try
         {
-            Label *clone = new Label(id, _display);
+            Label *clone = new Label(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;

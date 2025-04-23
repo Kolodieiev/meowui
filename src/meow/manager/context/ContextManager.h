@@ -8,10 +8,7 @@ namespace meow
     public:
         void run();
 
-    private:
-        GraphicsDriver _display;
     };
 
     extern ContextManager MEOW;
-
 }

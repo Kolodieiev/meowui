@@ -15,7 +15,7 @@ namespace meow
         _display.init();
 #endif
 
-        IContext *context = new START_CONTEXT(_display);
+        IContext *context = new START_CONTEXT();
 
         // Основний цикл GUI.
         while (1)

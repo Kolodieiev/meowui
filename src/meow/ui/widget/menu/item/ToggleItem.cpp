@@ -3,7 +3,7 @@
 #include "ToggleItem.h"
 namespace meow
 {
-    ToggleItem::ToggleItem(uint16_t widget_ID, GraphicsDriver &display) : MenuItem(widget_ID, display, TYPE_ID_TOGGLE_ITEM) {}
+    ToggleItem::ToggleItem(uint16_t widget_ID) : MenuItem(widget_ID, TYPE_ID_TOGGLE_ITEM) {}
 
     ToggleItem::~ToggleItem()
     {
@@ -73,7 +73,7 @@ namespace meow
     {
         try
         {
-            ToggleItem *clone = new ToggleItem(id, _display);
+            ToggleItem *clone = new ToggleItem(id);
             clone->_has_border = _has_border;
             clone->_x_pos = _x_pos;
             clone->_y_pos = _y_pos;
