@@ -146,19 +146,19 @@ bool MenuContext::loop()
 
 void MenuContext::update()
 {
-    if (_input.isHolded(KeyID::KEY_C))
+    if (_input.isHolded(BtnID::BTN_C))
     {
-        _input.lock(KeyID::KEY_C, HOLD_LOCK);
+        _input.lock(BtnID::BTN_C, HOLD_LOCK);
         up();
     }
-    else if (_input.isHolded(KeyID::KEY_B))
+    else if (_input.isHolded(BtnID::BTN_B))
     {
-        _input.lock(KeyID::KEY_B, HOLD_LOCK);
+        _input.lock(BtnID::BTN_B, HOLD_LOCK);
         down();
     }
-    else if (_input.isReleased(KeyID::KEY_A))
+    else if (_input.isReleased(BtnID::BTN_A))
     {
-        _input.lock(KeyID::KEY_A, CLICK_LOCK);
+        _input.lock(BtnID::BTN_A, CLICK_LOCK);
         ok();
     }
 }

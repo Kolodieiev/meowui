@@ -5,7 +5,7 @@
 
 #include "meowui_setup/input_setup.h"
 
-#include "Pin.h"
+#include "Button.h"
 #include "ITouchscreen.h"
 #include <unordered_map>
 
@@ -33,9 +33,9 @@ namespace meow
          * @brief Вмикає фізичний пін та ініціалізує його в тому режимі, який було передано в конструктор під час створення об'єкта віртуального піна з цим номером.
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
-         * @param key_id Номер віртуального піна.
+         * @param btn_id Номер віртуального піна.
          */
-        void enablePin(KeyID key_id);
+        void enableBtn(BtnID btn_id);
 
         /**
          * @brief Вимикає пін, переводить його в режим високоімпедансного входу, та скидає стани віртуального піна з цим номером.
@@ -43,9 +43,9 @@ namespace meow
          * Вимкнення піна на тривалий період, може трохи скоротити споживання струму мікроконтролером.
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
-         * @param key_id Номер віртуального піна.
+         * @param btn_id Номер віртуального піна.
          */
-        void disablePin(KeyID key_id);
+        void disableBtn(BtnID btn_id);
 
         /**
          * @brief Перевіряє чи знаходиться зараз віртуальний пін з таким номер в активному стані.
@@ -53,31 +53,31 @@ namespace meow
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
          *
-         * @param key_id Номер віртуального піна.
+         * @param btn_id Номер віртуального піна.
          * @return true - Якщо пін утримується.
          * @return false - Інакше.
          */
-        bool isHolded(KeyID key_id) const;
+        bool isHolded(BtnID btn_id) const;
 
         /**
          * @brief Перевіряє чи утримується пін більше n мілісекунд, що задано в налаштуваннях вводу.
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
-         * @param key_id Номер віртуального піна.
+         * @param btn_id Номер віртуального піна.
          * @return true - Якщо пін утримується більше n мілісекунд.
          * @return false - Інакше.
          */
-        bool isPressed(KeyID key_id) const;
+        bool isPressed(BtnID btn_id) const;
 
         /**
          * @brief Перевіряє чи було пін раніше активовано натисканням та відпущено.
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
-         * @param key_id Номер віртуального піна.
+         * @param btn_id Номер віртуального піна.
          * @return true - Якщо пін раніше було активовано та відпущено.
          * @return false - Інакше.
          */
-        bool isReleased(KeyID key_id) const;
+        bool isReleased(BtnID btn_id) const;
 
         /**
          * @brief Блокує віртуальний пін, щоб запобігти випадковим спрацюванням через брязкіт контактів,
@@ -85,17 +85,17 @@ namespace meow
          * та блокує його оновлення, доки не сплине час блокування.
          * Якщо віртуальний пін з таким номером відсутній, буде викликано виключення std::out_of_range.
          *
-         * @param key_id Номер віртуального піна.
+         * @param btn_id Номер віртуального піна.
          * @param lock_duration Час в мілісекундах, на який потрібно заблокувати віртуальний пін.
          */
-        void lock(KeyID key_id, unsigned long lock_duration);
+        void lock(BtnID btn_id, unsigned long lock_duration);
 
         /**
          * @brief Службовий метод. Може бути використаний виключно для відлагодження. Виводить в консоль режим, в якому знаходиться фізичний пін мікроконтролера.
          *
-         * @param key_id Номер піна мікроконтролера.
+         * @param pin_id Номер піна мікроконтролера.
          */
-        void _printPinMode(KeyID key_id);
+        void _printPinMode(BtnID pin_id);
 
 #ifdef TOUCHSCREEN_SUPPORT
         bool isHolded() const { return _touchscreen->isHolded(); }
@@ -110,7 +110,7 @@ namespace meow
 #endif
 
     private:
-        std::unordered_map<KeyID, Pin *> _buttons = BUTTONS;
+        std::unordered_map<BtnID, Button *> _buttons = BUTTONS;
 
 #ifdef TOUCHSCREEN_SUPPORT
         ITouchscreen *_touchscreen;

@@ -31,28 +31,28 @@
 
 namespace meow
 {
-    enum KeyID : uint8_t
+    enum BtnID : uint8_t
     {
-        KEY_A = 5,
-        KEY_C = 10,
-        KEY_B = 6,
+        BTN_A = 5,
+        BTN_C = 10,
+        BTN_B = 6,
     };
 }
 
-// -------------------------------- Макрос з ініціалізацією пінів. Між фігурними дужками потрібно додати ініціалізацію пінів, як показано нижче
-// -------------------------------- Де Pin(uint8_t key_id, bool is_touch)
+// -------------------------------- Макрос з ініціалізацією кнопок. Між фігурними дужками потрібно додати ініціалізацію кнопок, як показано нижче
+// -------------------------------- Де Button(uint8_t btn_id, bool is_touch)
 #define BUTTONS                                 \
     {                                           \
-        {KEY_A, new Pin(KEY_A, false)},         \
-        {KEY_C, new Pin(KEY_C, false)},         \
-        {KEY_B, new Pin(KEY_B, false)},         \
+        {BTN_A, new Button(BTN_A, false)},         \
+        {BTN_C, new Button(BTN_C, false)},         \
+        {BTN_B, new Button(BTN_B, false)},         \
     }
 
 // -------------------------------- Налаштування чутливості сенсорних кнопок
 #if defined(CONFIG_IDF_TARGET_ESP32S3)
-#define KEY_TOUCH_TRESHOLD 50000
+#define BTN_TOUCH_TRESHOLD 50000
 #else
-#define KEY_TOUCH_TRESHOLD 65
+#define BTN_TOUCH_TRESHOLD 65
 #endif
 
 #define PRESS_DURATION (unsigned long)1500 // Час, після спливання якого дія вважається утримуваною.

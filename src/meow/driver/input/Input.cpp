@@ -48,29 +48,29 @@ namespace meow
                         btn.second->reset();
         }
 
-        void Input::_printPinMode(KeyID key_id)
+        void Input::_printPinMode(BtnID pin_id)
         {
-                if ((gpio_num_t)key_id >= GPIO_NUM_MAX)
+                if ((gpio_num_t)pin_id >= GPIO_NUM_MAX)
                 {
-                        log_i("Invalid pin number: %d", key_id);
+                        log_i("Invalid pin number: %d", pin_id);
                         return;
                 }
 
-                uint32_t io_mux_reg = GPIO_PIN_MUX_REG[key_id]; // Отримати адресу IOMUX регістра
+                uint32_t io_mux_reg = GPIO_PIN_MUX_REG[pin_id]; // Отримати адресу IOMUX регістра
 
                 if (REG_GET_BIT(io_mux_reg, FUN_PU))
-                        log_i("Pin %d: Pull-up enabled", key_id);
+                        log_i("Pin %d: Pull-up enabled", pin_id);
                 else if (REG_GET_BIT(io_mux_reg, FUN_PD))
-                        log_i("Pin %d: Pull-down enabled", key_id);
+                        log_i("Pin %d: Pull-down enabled", pin_id);
                 else
-                        log_i("Pin %d: is floating", key_id);
+                        log_i("Pin %d: is floating", pin_id);
         }
 
-        void Input::enablePin(KeyID key_id)
+        void Input::enableBtn(BtnID btn_id)
         {
                 try
                 {
-                        _buttons.at(key_id)->enable();
+                        _buttons.at(btn_id)->enable();
                 }
                 catch (const std::out_of_range &ignored)
                 {
@@ -78,11 +78,11 @@ namespace meow
                 }
         }
 
-        void Input::disablePin(KeyID key_id)
+        void Input::disableBtn(BtnID btn_id)
         {
                 try
                 {
-                        _buttons.at(key_id)->disable();
+                        _buttons.at(btn_id)->disable();
                 }
                 catch (const std::out_of_range &ignored)
                 {
@@ -90,24 +90,11 @@ namespace meow
                 }
         }
 
-        bool Input::isHolded(KeyID key_id) const
+        bool Input::isHolded(BtnID btn_id) const
         {
                 try
                 {
-                        return _buttons.at(key_id)->isHolded();
-                }
-                catch (const std::out_of_range &ignored)
-                {
-                        log_e("%s", STR_UNKNOWN_PIN);
-                        return false;
-                }
-        }
-
-        bool Input::isPressed(KeyID key_id) const
-        {
-                try
-                {
-                        return _buttons.at(key_id)->isPressed();
+                        return _buttons.at(btn_id)->isHolded();
                 }
                 catch (const std::out_of_range &ignored)
                 {
@@ -116,11 +103,11 @@ namespace meow
                 }
         }
 
-        bool Input::isReleased(KeyID key_id) const
+        bool Input::isPressed(BtnID btn_id) const
         {
                 try
                 {
-                        return _buttons.at(key_id)->isReleased();
+                        return _buttons.at(btn_id)->isPressed();
                 }
                 catch (const std::out_of_range &ignored)
                 {
@@ -129,11 +116,24 @@ namespace meow
                 }
         }
 
-        void Input::lock(KeyID key_id, unsigned long lock_duration)
+        bool Input::isReleased(BtnID btn_id) const
         {
                 try
                 {
-                        _buttons.at(key_id)->lock(lock_duration);
+                        return _buttons.at(btn_id)->isReleased();
+                }
+                catch (const std::out_of_range &ignored)
+                {
+                        log_e("%s", STR_UNKNOWN_PIN);
+                        return false;
+                }
+        }
+
+        void Input::lock(BtnID btn_id, unsigned long lock_duration)
+        {
+                try
+                {
+                        _buttons.at(btn_id)->lock(lock_duration);
                 }
                 catch (const std::out_of_range &ignored)
                 {
