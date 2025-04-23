@@ -103,7 +103,7 @@ namespace meow
         {
             try
             {
-                return new T(_display, _res_manager, _audio, _terrain, _game_objs);
+                return new T(_res_manager, _audio, _terrain, _game_objs);
             }
             catch (const std::bad_alloc &e)
             {
