@@ -4,9 +4,8 @@
 
 namespace meow
 {
-    IGameScene::IGameScene(Input &input, DataStream &stored_objs) : _input{input},
-                                                                    _terrain{TerrainManager()},
-                                                                    _stored_objs{stored_objs}
+    IGameScene::IGameScene(DataStream &stored_objs) : _terrain{TerrainManager()},
+                                                      _stored_objs{stored_objs}
     {
         _obj_mutex = xSemaphoreCreateMutex();
 

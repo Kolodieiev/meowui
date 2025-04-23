@@ -116,4 +116,6 @@ namespace meow
         ITouchscreen *_touchscreen;
 #endif
     };
+
+    extern Input _input;
 }

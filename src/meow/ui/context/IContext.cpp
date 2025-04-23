@@ -5,8 +5,6 @@
 
 namespace meow
 {
-    Input IContext::_input;
-
     void IContext::tick()
     {
         if (loop())

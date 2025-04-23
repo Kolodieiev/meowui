@@ -140,4 +140,6 @@ namespace meow
                         log_e("%s", STR_UNKNOWN_PIN);
                 }
         }
+
+        Input _input;
 }

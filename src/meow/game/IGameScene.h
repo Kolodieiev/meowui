@@ -20,7 +20,7 @@ namespace meow
     class IGameScene
     {
     public:
-        IGameScene(Input &input, DataStream &stored_objs);
+        IGameScene(DataStream &stored_objs);
         virtual ~IGameScene() = 0;
 
         /**
@@ -68,7 +68,6 @@ namespace meow
         IGameObject *_main_obj{nullptr};                        // Об'єкт, за яким завжди слідує камера
         TerrainManager _terrain;                                // Самий нижній шар сцени
         std::unordered_map<uint32_t, IGameObject *> _game_objs; // Список усіх ігрових об'єктів на сцені, які повинні взаємодіяти один з одним
-        Input &_input;                                          // Ввід
         WavManager _audio;                                      // Звуковий менеджер
         ResManager _res_manager;                                // Менеджер ресурсів
         DataStream &_stored_objs;                               // Контейнер для перенесення відбитків об'єктів до наступної сцени
