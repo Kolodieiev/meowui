@@ -41,11 +41,11 @@ namespace meow
 
 // -------------------------------- Макрос з ініціалізацією кнопок. Між фігурними дужками потрібно додати ініціалізацію кнопок, як показано нижче
 // -------------------------------- Де Button(uint8_t btn_id, bool is_touch)
-#define BUTTONS                                 \
-    {                                           \
-        {BTN_A, new Button(BTN_A, false)},         \
-        {BTN_C, new Button(BTN_C, false)},         \
-        {BTN_B, new Button(BTN_B, false)},         \
+#define BUTTONS                            \
+    {                                      \
+        {BTN_A, new Button(BTN_A, false)}, \
+        {BTN_C, new Button(BTN_C, false)}, \
+        {BTN_B, new Button(BTN_B, false)}, \
     }
 
 // -------------------------------- Налаштування чутливості сенсорних кнопок
