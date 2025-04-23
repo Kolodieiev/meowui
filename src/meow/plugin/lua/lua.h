@@ -10,3 +10,4 @@ extern "C"
 #include "./lua_err_msg.h"
 
 typedef int (*LuaRegisterFunc)(lua_State *L);
+typedef int (*LuaOpenFunc)(lua_State *L);
