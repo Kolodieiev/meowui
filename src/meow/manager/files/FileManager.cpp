@@ -227,8 +227,16 @@ namespace meow
         size_t full_blocks = len / opt_size;
         size_t remaining_bytes = len % opt_size;
 
+        unsigned long last_delay_time = millis();
         for (size_t i = 0; i < full_blocks; ++i)
+        {
             total_written += fwrite((uint8_t *)buffer + total_written, opt_size, 1, file) * opt_size;
+            if (millis() - last_delay_time > 1000)
+            {
+                vTaskDelay(1 / portTICK_PERIOD_MS);
+                last_delay_time = millis();
+            }
+        }
 
         if (remaining_bytes > 0)
             total_written += fwrite((uint8_t *)buffer + total_written, remaining_bytes, 1, file) * remaining_bytes;
@@ -397,7 +405,7 @@ namespace meow
                 goto exit;
             }
 
-            taskYIELD();
+            vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
     exit:
@@ -529,38 +537,34 @@ namespace meow
 
         size_t file_size = getFileSize(_copy_from_path.c_str());
 
-        if (file_size == 0)
+        if (file_size > 0)
         {
-            log_e("Некоректний розмір файлу");
-            taskDone(false);
-            return;
-        }
+            log_i("Починаю копіювання");
+            log_i("Із: %s", from.c_str());
+            log_i("До: %s", to.c_str());
 
-        log_i("Починаю копіювання");
-        log_i("Із: %s", from.c_str());
-        log_i("До: %s", to.c_str());
+            size_t writed_bytes_counter{0};
+            size_t bytes_read;
 
-        size_t writed_bytes_counter{0};
-        size_t bytes_read;
+            unsigned long last_delay_time = millis();
+            size_t byte_aval = 0;
 
-        uint8_t cycles_counter = 0;
-        size_t byte_aval = 0;
-
-        while (!_is_canceled && (byte_aval = available(o_f, file_size)) > 0)
-        {
-            if (byte_aval < buf_size)
-                bytes_read = fread(buffer, byte_aval, 1, o_f) * byte_aval;
-            else
-                bytes_read = fread(buffer, buf_size, 1, o_f) * buf_size;
-            //
-            writed_bytes_counter += writeOptimal(n_f, buffer, bytes_read);
-            _copy_progress = ((float)writed_bytes_counter / file_size) * 100;
-            if (cycles_counter > 5)
+            while (!_is_canceled && (byte_aval = available(o_f, file_size)) > 0)
             {
-                cycles_counter = 0;
-                taskYIELD();
+                if (byte_aval < buf_size)
+                    bytes_read = fread(buffer, byte_aval, 1, o_f) * byte_aval;
+                else
+                    bytes_read = fread(buffer, buf_size, 1, o_f) * buf_size;
+                //
+                writed_bytes_counter += writeOptimal(n_f, buffer, bytes_read);
+                _copy_progress = ((float)writed_bytes_counter / file_size) * 100;
+
+                if (millis() - last_delay_time > 1000)
+                {
+                    vTaskDelay(1 / portTICK_PERIOD_MS);
+                    last_delay_time = millis();
+                }
             }
-            ++cycles_counter;
         }
 
         free(buffer);
@@ -645,6 +649,8 @@ namespace meow
         String file_name;
         bool is_dir;
 
+        unsigned long last_delay_time = millis();
+
         while (1)
         {
             dir_entry = readdir(dir);
@@ -665,6 +671,7 @@ namespace meow
             else
                 continue;
 
+            out_vec.reserve(10);
             switch (mode)
             {
             case INDX_MODE_DIR:
@@ -686,8 +693,13 @@ namespace meow
                     out_vec.emplace_back(file_name, false);
                 break;
             }
+            out_vec.shrink_to_fit();
 
-            taskYIELD();
+            if (millis() - last_delay_time > 1000)
+            {
+                vTaskDelay(1 / portTICK_PERIOD_MS);
+                last_delay_time = millis();
+            }
         }
 
         std::sort(out_vec.begin(), out_vec.end());
@@ -744,12 +756,12 @@ namespace meow
 
     //------------------------------------------------------------------------------------------------------------------------
 
-    FileInfo::FileInfo(const String &name, bool is_dir) : _is_dir{is_dir}
+    FileInfo::FileInfo(const String &name, bool is_dir) : _is_dir{is_dir}, _name_len{name.length()}
     {
         if (psramInit())
-            _name = (char *)ps_malloc(name.length() + 1);
+            _name = (char *)ps_malloc(_name_len + 1);
         else
-            _name = (char *)malloc(name.length() + 1);
+            _name = (char *)malloc(_name_len + 1);
 
         if (!_name)
         {
@@ -757,9 +769,82 @@ namespace meow
             esp_restart();
         }
 
-        _name[name.length()] = '\0';
+        std::memcpy(_name, name.c_str(), _name_len);
+        _name[_name_len] = '\0';
+    }
 
-        std::memcpy(_name, name.c_str(), name.length());
+    FileInfo::~FileInfo()
+    {
+        free(_name);
+    }
+
+    bool FileInfo::nameEndsWith(const char *suffix) const
+    {
+        if (!suffix)
+            return false;
+
+        size_t suffix_len = strlen(suffix);
+
+        if (_name_len < suffix_len)
+            return false;
+
+        return strcmp(_name + _name_len - suffix_len, suffix) == 0;
+    }
+
+    bool FileInfo::operator<(const FileInfo &other) const
+    {
+        if (_is_dir != other._is_dir)
+            return _is_dir;
+
+        const char *lhs = _name;
+        const char *rhs = other._name;
+
+        while (*lhs && *rhs)
+        {
+            if (std::isdigit(*lhs) && std::isdigit(*rhs))
+            {
+                char *end_lhs;
+                char *end_rhs;
+                long num_lhs = std::strtol(lhs, &end_lhs, 10);
+                long num_rhs = std::strtol(rhs, &end_rhs, 10);
+
+                if (num_lhs != num_rhs)
+                {
+                    return num_lhs < num_rhs;
+                }
+                lhs = end_lhs;
+                rhs = end_rhs;
+            }
+            else
+            {
+                if (*lhs != *rhs)
+                {
+                    return *lhs < *rhs;
+                }
+                ++lhs;
+                ++rhs;
+            }
+        }
+
+        return std::strcmp(lhs, rhs) < 0;
+    }
+
+    FileInfo::FileInfo(FileInfo &&other) noexcept : _name(other._name), _is_dir(other._is_dir), _name_len{other._name_len}
+    {
+        other._name = nullptr;
+    }
+
+    FileInfo &FileInfo::operator=(FileInfo &&other) noexcept
+    {
+        if (this != &other)
+        {
+            free(_name);
+            _name = other._name;
+            _is_dir = other._is_dir;
+            _name_len = other._name_len;
+            other._name = nullptr;
+        }
+        return *this;
     }
 
     //------------------------------------------------------------------------------------------------------------------------

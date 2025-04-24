@@ -17,7 +17,7 @@ namespace meow
     {
     public:
         FileInfo(const String &name, bool is_dir);
-        ~FileInfo() { free(_name); }
+        ~FileInfo();
 
         /**
          * @brief Повертає стан прапора, який було встановлено під час створення об'єкта, та який вказує чи є ВказівникНаФайл папкою.
@@ -28,75 +28,37 @@ namespace meow
         bool isDir() const { return _is_dir; }
 
         /**
+         * @brief Перевіряє чи закінчується ім'я файла вказаною послідовністю символів.
+         *
+         * @param suffix Вказівник на очікувану послідовність символів.
+         * @return true - Якщо закінчується.
+         * @return false - Інакше.
+         */
+        bool nameEndsWith(const char *suffix) const;
+
+        /**
+         * @brief Повертає кількість байтів, які займає в пам'яті ім'я файла.
+         *
+         * @return uint32_t
+         */
+        uint32_t getNameLen() const { return _name_len; }
+
+        /**
          * @brief Повертає ім'я об'єкта, на який вказує ВказівникНаФайл.
          *
          * @return const char* - вказівник на масив символів, що містить ім'я об'єкта.
          */
         const char *getName() const { return _name; }
         //
-        bool operator<(const FileInfo &other) const
-        {
-            if (_is_dir != other._is_dir)
-                return _is_dir;
-
-            const char *lhs = _name;
-            const char *rhs = other._name;
-
-            while (*lhs && *rhs)
-            {
-                if (std::isdigit(*lhs) && std::isdigit(*rhs))
-                {
-                    char *end_lhs;
-                    char *end_rhs;
-                    long num_lhs = std::strtol(lhs, &end_lhs, 10);
-                    long num_rhs = std::strtol(rhs, &end_rhs, 10);
-
-                    if (num_lhs != num_rhs)
-                    {
-                        return num_lhs < num_rhs;
-                    }
-                    lhs = end_lhs;
-                    rhs = end_rhs;
-                }
-                else
-                {
-                    if (*lhs != *rhs)
-                    {
-                        return *lhs < *rhs;
-                    }
-                    ++lhs;
-                    ++rhs;
-                }
-            }
-
-            return std::strcmp(lhs, rhs) < 0;
-        }
-
+        bool operator<(const FileInfo &other) const;
         FileInfo(const FileInfo &) = delete;
         FileInfo &operator=(const FileInfo &) = delete;
-
-        FileInfo(FileInfo &&other) noexcept
-            : _name(other._name), _is_dir(other._is_dir)
-        {
-            other._name = nullptr;
-        }
-
-        FileInfo &operator=(FileInfo &&other) noexcept
-        {
-            if (this != &other)
-            {
-                free(_name);
-
-                _name = other._name;
-                _is_dir = other._is_dir;
-
-                other._name = nullptr;
-            }
-            return *this;
-        }
+        FileInfo(FileInfo &&other) noexcept;
+        FileInfo &operator=(FileInfo &&other) noexcept;
 
     private:
         char *_name{nullptr};
+        uint32_t _name_len;
         bool _is_dir;
     };
 
