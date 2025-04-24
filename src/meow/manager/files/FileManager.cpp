@@ -478,20 +478,23 @@ namespace meow
 
     void FileManager::copyFile()
     {
+        uint16_t counter = 1;
+        String to_temp = _copy_to_path;
+        while (_copy_from_path.equals(_copy_to_path) || fileExist(_copy_to_path.c_str(), true))
+        {
+            _copy_to_path = to_temp.substring(0, to_temp.lastIndexOf("."));
+            _copy_to_path += "(";
+            _copy_to_path += counter;
+            _copy_to_path += ")";
+            _copy_to_path += to_temp.substring(to_temp.lastIndexOf("."));
+            ++counter;
+        }
+
         String from;
         String to;
 
         makeFullPath(from, _copy_from_path.c_str());
         makeFullPath(to, _copy_to_path.c_str());
-
-        if (fileExist(_copy_to_path.c_str(), true))
-        {
-            if (!rmFile(to.c_str()))
-            {
-                taskDone(false);
-                return;
-            }
-        }
 
         FILE *n_f = fopen(to.c_str(), "a");
 
@@ -565,6 +568,11 @@ namespace meow
                     last_delay_time = millis();
                 }
             }
+        }
+        else
+        {
+            _copy_progress = 100;
+            vTaskDelay(50 / portTICK_PERIOD_MS);
         }
 
         free(buffer);
