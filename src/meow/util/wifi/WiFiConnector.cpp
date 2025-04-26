@@ -1,15 +1,15 @@
-#include "WiFiConnect.h"
+#include "WiFiConnector.h"
 
 namespace meow
 {
-    WiFiConnect *WiFiConnect::_instance;
+    WiFiConnector *WiFiConnector::_instance;
 
-    WiFiConnect::WiFiConnect()
+    WiFiConnector::WiFiConnector()
     {
         _instance = this;
     }
 
-    bool WiFiConnect::tryConnectTo(String ssid, String pwd, int32_t wifi_chan, bool autoreconnect)
+    bool WiFiConnector::tryConnectTo(String ssid, String pwd, int32_t wifi_chan, bool autoreconnect)
     {
         WiFi.onEvent(onEvent, ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
         WiFi.onEvent(onEvent, ARDUINO_EVENT_WIFI_STA_GOT_IP);
@@ -28,13 +28,13 @@ namespace meow
         return true;
     }
 
-    void WiFiConnect::setOnDoneHandler(WiFiConnectHandler handler, void *arg)
+    void WiFiConnector::setOnDoneHandler(WiFiConnectHandler handler, void *arg)
     {
         _onConnectHandler = handler;
         _onConnectHandlerArg = arg;
     }
 
-    void WiFiConnect::setWiFiPower(WiFiPowerLevel power_lvl)
+    void WiFiConnector::setWiFiPower(WiFiPowerLevel power_lvl)
     {
         switch (power_lvl)
         {
@@ -50,14 +50,14 @@ namespace meow
         }
     }
 
-    void WiFiConnect::disconnect()
+    void WiFiConnector::disconnect()
     {
         _onConnectHandler = nullptr;
         WiFi.disconnect(true);
         WiFi.mode(WIFI_OFF);
     }
 
-    void WiFiConnect::callOnDoneHandler()
+    void WiFiConnector::callOnDoneHandler()
     {
         log_i("WiFi.status: %d", WiFi.status());
 
@@ -65,7 +65,7 @@ namespace meow
             _onConnectHandler(_onConnectHandlerArg, WiFi.status());
     }
 
-    void WiFiConnect::onEvent(WiFiEvent_t event)
+    void WiFiConnector::onEvent(WiFiEvent_t event)
     {
         WiFi.removeEvent(onEvent, ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
         WiFi.removeEvent(onEvent, ARDUINO_EVENT_WIFI_STA_GOT_IP);

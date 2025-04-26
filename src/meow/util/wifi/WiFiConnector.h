@@ -6,7 +6,7 @@ namespace meow
 {
     typedef std::function<void(void *arg, wl_status_t conn_status)> WiFiConnectHandler;
 
-    class WiFiConnect
+    class WiFiConnector
     {
     public:
         enum WiFiPowerLevel : uint8_t
@@ -16,7 +16,7 @@ namespace meow
             WIFI_POWER_MAX,
         };
 
-        WiFiConnect();
+        WiFiConnector();
 
         /**
          * @brief Запускає асинхронну спробу підключення до точки доступу із заданими параметрами.
@@ -61,7 +61,7 @@ namespace meow
 
         void callOnDoneHandler();
 
-        static WiFiConnect *_instance;
+        static WiFiConnector *_instance;
         static void onEvent(WiFiEvent_t event);
     };
 }
