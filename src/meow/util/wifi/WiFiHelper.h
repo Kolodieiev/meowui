@@ -19,8 +19,6 @@ namespace meow
             WIFI_POWER_MAX,
         };
 
-        WiFiHelper();
-
         /**
          * @brief Запускає асинхронну спробу підключення до точки доступу із заданими параметрами.
          *
@@ -169,7 +167,7 @@ namespace meow
         void callConnDoneHandler();
         void callScanDoneHandler();
 
-        static WiFiHelper *_instance;
         static void onEvent(WiFiEvent_t event);
     };
+    extern WiFiHelper _wifi;
 }

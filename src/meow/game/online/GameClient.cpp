@@ -9,9 +9,8 @@ namespace meow
     GameClient::GameClient()
     {
         // Виправлення помилки assert failed: tcpip_api_call (Invalid mbox)
-        WiFiHelper wifi;
-        if (!wifi.isEnabled())
-            wifi.enable();
+        if (!_wifi.isEnabled())
+            _wifi.enable();
     }
 
     GameClient::~GameClient()
@@ -39,8 +38,7 @@ namespace meow
             return false;
         }
 
-        WiFiHelper wifi;
-        if (!wifi.isConnected())
+        if (!_wifi.isConnected())
         {
             log_e("Не підключено до маршрутизатора");
             return false;

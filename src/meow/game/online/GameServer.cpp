@@ -9,9 +9,8 @@ namespace meow
     GameServer::GameServer()
     {
         // Виправлення помилки assert failed: tcpip_api_call (Invalid mbox)
-        WiFiHelper wifi;
-        if (!wifi.isEnabled())
-            wifi.enable();
+        if (!_wifi.isEnabled())
+            _wifi.enable();
     }
 
     GameServer::~GameServer()
@@ -37,19 +36,17 @@ namespace meow
 
         _max_connection = max_connection;
 
-        WiFiHelper wifi;
-
         if (is_local)
         {
             String name{server_name};
             String pwd{pwd};
-            if (!wifi.createAP(name, pwd, _max_connection, wifi_chan))
+            if (!_wifi.createAP(name, pwd, _max_connection, wifi_chan))
                 return false;
 
             _server_ip = "http://";
-            _server_ip += wifi.getAPIP();
+            _server_ip += _wifi.getAPIP();
         }
-        else if (wifi.isConnected())
+        else if (_wifi.isConnected())
         {
             log_e("Не підключено до маршрутизатора");
             return false;
@@ -57,7 +54,7 @@ namespace meow
         else
         {
             _server_ip = "http://";
-            _server_ip += wifi.getLocalIP();
+            _server_ip += _wifi.getLocalIP();
         }
 
         log_i("Game server address: %s", _server_ip.c_str());
@@ -160,8 +157,7 @@ namespace meow
             _packet_queue = nullptr;
         }
 
-        WiFiHelper wifi;
-        wifi.disable();
+        _wifi.disable();
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------

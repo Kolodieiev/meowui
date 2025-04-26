@@ -4,13 +4,6 @@ const char STR_WIFI_BUSY[] = "WiFi-модуль зайнятий";
 
 namespace meow
 {
-    WiFiHelper *WiFiHelper::_instance;
-
-    WiFiHelper::WiFiHelper()
-    {
-        _instance = this;
-    }
-
     bool WiFiHelper::tryConnectTo(String &ssid, String &pwd, uint8_t wifi_chan, bool autoreconnect)
     {
         if (_scan_working || _connect_working)
@@ -240,8 +233,8 @@ namespace meow
         {
         case ARDUINO_EVENT_WIFI_SCAN_DONE:
             WiFi.removeEvent(onEvent, ARDUINO_EVENT_WIFI_SCAN_DONE);
-            _instance->_scan_working = false;
-            _instance->callScanDoneHandler();
+            _wifi._scan_working = false;
+            _wifi.callScanDoneHandler();
             break;
         case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
         case ARDUINO_EVENT_WIFI_STA_GOT_IP:
@@ -254,12 +247,14 @@ namespace meow
                 while (millis() - got_ip_time < 2000 && WiFi.status() != WL_CONNECTED)
                     vTaskDelay(50 / portTICK_PERIOD_MS);
             }
-            _instance->_connect_working = false;
-            _instance->callConnDoneHandler();
+            _wifi._connect_working = false;
+            _wifi.callConnDoneHandler();
             break;
         default:
             log_e("Unknown wifi event: %u", event);
             break;
         }
     }
+
+    WiFiHelper _wifi;
 }
