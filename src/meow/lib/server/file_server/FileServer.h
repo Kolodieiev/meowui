@@ -17,6 +17,14 @@ namespace meow
             SERVER_MODE_SEND
         };
 
+        enum NetMode : uint8_t
+        {
+            NET_MODE_AP = 0,
+            NET_MODE_LOCAL
+        };
+
+        // TODO docs
+
         ~FileServer();
 
         bool begin(const char *server_dir, ServerMode mode);
@@ -25,21 +33,25 @@ namespace meow
 
         void setSSID(const char *ssid) { _ssid = ssid; }
         void setPWD(const char *pwd) { _pwd = pwd; }
+        void setNetMode(NetMode mode) { _net_mode = mode; }
+        NetMode getNetMode() const { return _net_mode; }
 
         String getAddress() const;
-        ServerMode getMode() const { return _mode; }
+        ServerMode getServerMode() const { return _server_mode; }
 
     private:
         bool _is_working{false};
 
         unsigned long _last_delay_time = 0;
 
-        String _server_addr;
+        String _server_ip;
         String _server_dir;
         String _ssid;
         String _pwd;
 
-        ServerMode _mode;
+        ServerMode _server_mode{SERVER_MODE_RECEIVE};
+        NetMode _net_mode{NET_MODE_AP};
+        //;
         WebServer *_server = nullptr;
         bool _must_work = false;
 

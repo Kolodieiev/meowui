@@ -1,6 +1,7 @@
 #pragma GCC optimize("O3")
 #include "FileServer.h"
 #include "./tmpl_html.cpp"
+#include "meow/util/wifi/WiFiHelper.h"
 
 namespace meow
 {
@@ -28,16 +29,42 @@ namespace meow
         if (!_f_mgr.dirExist(_server_dir.c_str()))
             return false;
 
-        WiFi.softAP(_ssid, _pwd, 1, 0, 1);
-        delay(10);
+        if (_net_mode == NET_MODE_AP)
+        {
+            if (!_wifi.createAP(_ssid, _pwd, 1))
+                return false;
 
-        IPAddress IP = WiFi.softAPIP();
-        _server_addr = "http://";
-        _server_addr += IP.toString();
+            _server_ip = "http://";
+            _server_ip += _wifi.getAPIP();
+        }
+        else
+        {
+            if (!_wifi.isConnected())
+            {
+                if (_ssid.isEmpty())
+                {
+                    log_e("%s", STR_ERR_ROUTER_NOT_CONNECTED);
+                    return false;
+                }
+                else if (!_wifi.tryConnectTo(_ssid, _pwd))
+                    return false;
+                else
+                    vTaskDelay(1000 / portTICK_PERIOD_MS);
+            }
 
-        log_i("AP addr: %s", _server_addr.c_str());
+            if (!_wifi.isConnected())
+            {
+                log_e("%s", STR_ERR_ROUTER_NOT_CONNECTED);
+                return false;
+            }
 
-        _mode = mode;
+            _server_ip = "http://";
+            _server_ip += _wifi.getLocalIP();
+        }
+
+        log_i("File server addr: %s", _server_ip.c_str());
+
+        _server_mode = mode;
 
         BaseType_t result = xTaskCreatePinnedToCore(startWebServer, "fileServerTask", (1024 / 2) * 20, this, 10, NULL, 1);
 
@@ -47,7 +74,7 @@ namespace meow
 
             log_i("File server is working now");
 
-            if (_mode == SERVER_MODE_RECEIVE)
+            if (_server_mode == SERVER_MODE_RECEIVE)
                 log_i("mode == SERVER_MODE_RECEIVE");
             else
                 log_i("mode == SERVER_MODE_SEND");
@@ -57,8 +84,10 @@ namespace meow
         else
         {
             log_e("fileServerTask was not running");
-            WiFi.disconnect(true);
-            WiFi.mode(WIFI_OFF);
+
+            if (_net_mode == NET_MODE_AP)
+                _wifi.disable();
+
             return false;
         }
     }
@@ -72,8 +101,8 @@ namespace meow
 
         _server->close();
 
-        WiFi.disconnect(true);
-        WiFi.mode(WIFI_OFF);
+        if (_net_mode == NET_MODE_AP)
+            _wifi.disable();
 
         delete _server;
     }
@@ -81,7 +110,7 @@ namespace meow
     String FileServer::getAddress() const
     {
         if (_is_working)
-            return _server_addr;
+            return _server_ip;
         else
             return emptyString;
     }
@@ -90,7 +119,7 @@ namespace meow
     {
         _server = new WebServer(80);
 
-        if (_mode == SERVER_MODE_RECEIVE)
+        if (_server_mode == SERVER_MODE_RECEIVE)
         {
             _server->on("/", HTTP_GET, [this]()
                         { this->handleReceive(); });
@@ -257,7 +286,7 @@ namespace meow
         html += NOT_FOUND_TITLE_STR;
         html += MID_HTML;
         html += NOT_FOUND_BODY_START;
-        html += _server_addr;
+        html += _server_ip;
         html += NOT_FOUND_BODY_END;
         html += FOOT_HTML;
         _server->send(404, "text/html", html);
