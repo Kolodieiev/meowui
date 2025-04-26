@@ -1,6 +1,6 @@
 #include "WiFiHelper.h"
 
-const char STR_WIFI_BUSY[] = "WiFi-модуль зайнятий";
+const char STR_ERR_WIFI_BUSY[] = "WiFi-модуль зайнятий";
 
 namespace meow
 {
@@ -8,7 +8,7 @@ namespace meow
     {
         if (_scan_working || _connect_working)
         {
-            log_e("%s", STR_WIFI_BUSY);
+            log_e("%s", STR_ERR_WIFI_BUSY);
             return false;
         }
 
@@ -40,7 +40,7 @@ namespace meow
     {
         if (_scan_working || _connect_working)
         {
-            log_e("%s", STR_WIFI_BUSY);
+            log_e("%s", STR_ERR_WIFI_BUSY);
             return false;
         }
 
@@ -81,7 +81,7 @@ namespace meow
     {
         if (_scan_working || _connect_working)
         {
-            log_e("%s", STR_WIFI_BUSY);
+            log_e("%s", STR_ERR_WIFI_BUSY);
             return false;
         }
 
@@ -120,7 +120,7 @@ namespace meow
 
         if (_scan_working || _connect_working)
         {
-            log_e("%s", STR_WIFI_BUSY);
+            log_e("%s", STR_ERR_WIFI_BUSY);
             return;
         }
 
