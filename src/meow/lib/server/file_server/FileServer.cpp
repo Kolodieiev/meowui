@@ -1,6 +1,5 @@
 #pragma GCC optimize("O3")
 #include "FileServer.h"
-#include <ESPmDNS.h>
 #include "./tmpl_html.cpp"
 
 namespace meow
@@ -32,19 +31,9 @@ namespace meow
         WiFi.softAP(_ssid, _pwd, 1, 0, 1);
         delay(10);
 
-        if (_domain_name.isEmpty() || !MDNS.begin(_domain_name))
-        {
-            log_e("Помилка запуску mDNS");
-            IPAddress IP = WiFi.softAPIP();
-            _server_addr = "http://";
-            _server_addr += IP.toString();
-        }
-        else
-        {
-            _server_addr = "http://";
-            _server_addr += _domain_name;
-            _server_addr += ".local";
-        }
+        IPAddress IP = WiFi.softAPIP();
+        _server_addr = "http://";
+        _server_addr += IP.toString();
 
         log_i("AP addr: %s", _server_addr.c_str());
 
@@ -87,23 +76,6 @@ namespace meow
         WiFi.mode(WIFI_OFF);
 
         delete _server;
-    }
-
-    void FileServer::setDomainName(const char *domain_name)
-    {
-        char ch = domain_name[0];
-        for (uint32_t i = 1; ch != '\0'; ++i)
-        {
-            if (ch == ' ' || ch == '/') // Очікується адекватне використання
-            {
-                log_e("Некоректний домен: [ %s ]", domain_name);
-                return;
-            }
-
-            ch = domain_name[i];
-        }
-
-        _domain_name = domain_name;
     }
 
     String FileServer::getAddress() const

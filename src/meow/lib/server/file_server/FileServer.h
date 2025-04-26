@@ -25,7 +25,6 @@ namespace meow
 
         void setSSID(const char *ssid) { _ssid = ssid; }
         void setPWD(const char *pwd) { _pwd = pwd; }
-        void setDomainName(const char *domain_name);
 
         String getAddress() const;
         ServerMode getMode() const { return _mode; }
@@ -37,7 +36,6 @@ namespace meow
 
         String _server_addr;
         String _server_dir;
-        String _domain_name;
         String _ssid;
         String _pwd;
 
