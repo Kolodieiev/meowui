@@ -162,12 +162,17 @@ namespace meow
         return WiFi.status() == WL_CONNECTED;
     }
 
+    bool WiFiHelper::isApEnabled() const
+    {
+        return WiFi.getMode() == WIFI_AP;
+    }
+
     String WiFiHelper::getSsidName() const
     {
         if (isConnected())
             return WiFi.SSID();
         else
-            return "";
+            return emptyString;
     }
 
     void WiFiHelper::disconnect()
@@ -177,7 +182,7 @@ namespace meow
         WiFi.disconnect();
     }
 
-    bool WiFiHelper::isEnabled()
+    bool WiFiHelper::isEnabled() const
     {
         return WiFi.getMode() != WIFI_MODE_NULL;
     }
@@ -195,6 +200,22 @@ namespace meow
     {
         disconnect();
         WiFi.mode(WIFI_OFF);
+    }
+
+    String WiFiHelper::getLocalIP() const
+    {
+        if (isConnected())
+            return WiFi.localIP().toString();
+        else
+            return emptyString;
+    }
+
+    String WiFiHelper::getAPIP() const
+    {
+        if (isApEnabled())
+            return WiFi.softAPIP().toString();
+        else
+            return emptyString;
     }
 
     void WiFiHelper::callConnDoneHandler()

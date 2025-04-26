@@ -42,7 +42,7 @@ namespace meow
          * @param max_connection Максимальна кількість підключень (більше 0, але менше 10).
          * Рекомендується встановлювати менше 5 одночасних підключень.
          * @param wifi_chan Канал WiFi (менше 11).
-         * @param is_hidden
+         * @param is_hidden Якщо true - точку доступу буде створено прихованою.
          * @return true - Якщо точка доступу створена успішно.
          * @return false - Інакше.
          */
@@ -90,12 +90,20 @@ namespace meow
         void setWiFiPower(WiFiPowerLevel power_lvl);
 
         /**
-         * @brief Повертає стан прапору, який вказує на те, чи встановлено з'єднання з WiFi.
+         * @brief Повертає логічне значення, яке вказує на те, чи встановлено з'єднання з WiFi.
          *
          * @return true - Якщо з'єднання встановлено.
          * @return false - Інакше.
          */
         bool isConnected() const;
+
+        /**
+         * @brief Повертає логічне значення, яке вказує на те, чи активовано точку доступу на пристрої.
+         *
+         * @return true - Якщо точка доступу активна.
+         * @return false - Інакше.
+         */
+        bool isApEnabled() const;
 
         /**
          * @brief Повертає назву WiFi-точки доступу, з якою встановлено з'єднання.
@@ -116,7 +124,7 @@ namespace meow
          * @return true - Якщо модуль WiFi увімкнено.
          * @return false - Інакше.
          */
-        bool isEnabled();
+        bool isEnabled() const;
 
         /**
          * @brief Подає сигнал увімкнення на модуль WiFi.
@@ -131,6 +139,22 @@ namespace meow
          *
          */
         void disable();
+
+        /**
+         * @brief Повертає IP-адресу пристрою в локальній мережі.
+         *
+         * @return String - IP-адреса пристрою в локальній мережі, якщо є підключення до маршрутизатора.
+         * Порожній рядок - інакше.
+         */
+        String getLocalIP() const;
+
+        /**
+         * @brief Повертає IP-адресу точки доступу. Зазвичай це "192.168.4.1".
+         *
+         * @return String - IP-адреса точки доступу, якщо вона активована.
+         * Порожній рядок - інакше.
+         */
+        String getAPIP() const;
 
     private:
         bool _scan_working{false};
