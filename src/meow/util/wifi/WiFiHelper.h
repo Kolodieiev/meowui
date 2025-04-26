@@ -6,6 +6,8 @@
 
 namespace meow
 {
+    const char STR_ERR_ROUTER_NOT_CONNECTED[] = "Не підключено до маршрутизатора";
+
     typedef std::function<void(void *arg, wl_status_t conn_status)> WiFiConnectDoneHandler;
     typedef std::function<void(void *arg)> WiFiScanDoneHandler;
 

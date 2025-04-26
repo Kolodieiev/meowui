@@ -40,7 +40,7 @@ namespace meow
 
         if (!_wifi.isConnected())
         {
-            log_e("Не підключено до маршрутизатора");
+            log_e("%s", STR_ERR_ROUTER_NOT_CONNECTED);
             return false;
         }
 
