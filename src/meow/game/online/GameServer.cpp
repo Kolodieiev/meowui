@@ -1,6 +1,6 @@
 #pragma GCC optimize("O3")
 #include "GameServer.h"
-#include <WiFi.h>
+#include "meow/util/wifi/WiFiHelper.h"
 
 namespace meow
 {
@@ -9,8 +9,9 @@ namespace meow
     GameServer::GameServer()
     {
         // Виправлення помилки assert failed: tcpip_api_call (Invalid mbox)
-        if (WiFi.getMode() == WIFI_MODE_NULL)
-            WiFi.mode(WIFI_MODE_STA);
+        WiFiHelper wifi;
+        if (!wifi.isEnabled())
+            wifi.enable();
     }
 
     GameServer::~GameServer()
@@ -36,17 +37,19 @@ namespace meow
 
         _max_connection = max_connection;
 
+        WiFiHelper wifi;
+
         if (is_local)
         {
-            if (!WiFi.softAP(server_name, pwd, wifi_chan, 0, _max_connection))
+            String name{server_name};
+            String pwd{pwd};
+            if (!wifi.createAP(name, pwd, _max_connection, wifi_chan))
                 return false;
 
-            delay(100);
-
             _server_ip = "http://";
-            _server_ip += WiFi.softAPIP().toString();
+            _server_ip += wifi.getAPIP();
         }
-        else if (WiFi.status() != WL_CONNECTED)
+        else if (wifi.isConnected())
         {
             log_e("Не підключено до маршрутизатора");
             return false;
@@ -54,7 +57,7 @@ namespace meow
         else
         {
             _server_ip = "http://";
-            _server_ip += WiFi.localIP().toString();
+            _server_ip += wifi.getLocalIP();
         }
 
         log_i("Game server address: %s", _server_ip.c_str());
@@ -157,8 +160,8 @@ namespace meow
             _packet_queue = nullptr;
         }
 
-        WiFi.disconnect(true);
-        WiFi.mode(WIFI_OFF);
+        WiFiHelper wifi;
+        wifi.disable();
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------

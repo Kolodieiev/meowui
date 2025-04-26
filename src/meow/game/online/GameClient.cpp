@@ -1,6 +1,6 @@
 #pragma GCC optimize("O3")
 #include "GameClient.h"
-#include <WiFi.h>
+#include "meow/util/wifi/WiFiHelper.h"
 
 namespace meow
 {
@@ -9,8 +9,9 @@ namespace meow
     GameClient::GameClient()
     {
         // Виправлення помилки assert failed: tcpip_api_call (Invalid mbox)
-        if (WiFi.getMode() == WIFI_MODE_NULL)
-            WiFi.mode(WIFI_MODE_STA);
+        WiFiHelper wifi;
+        if (!wifi.isEnabled())
+            wifi.enable();
     }
 
     GameClient::~GameClient()
@@ -38,7 +39,8 @@ namespace meow
             return false;
         }
 
-        if (WiFi.status() != WL_CONNECTED)
+        WiFiHelper wifi;
+        if (!wifi.isConnected())
         {
             log_e("Не підключено до маршрутизатора");
             return false;
