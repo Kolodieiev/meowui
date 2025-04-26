@@ -50,6 +50,19 @@ namespace meow
         }
     }
 
+    bool WiFiConnector::isConnected() const
+    {
+        return WiFi.status() == WL_CONNECTED;
+    }
+
+    String WiFiConnector::getSsidName() const
+    {
+        if (isConnected())
+            return WiFi.SSID();
+        else
+            return "";
+    }
+
     void WiFiConnector::disconnect()
     {
         _onConnectHandler = nullptr;

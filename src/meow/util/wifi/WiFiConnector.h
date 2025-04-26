@@ -50,6 +50,21 @@ namespace meow
         void setWiFiPower(WiFiPowerLevel power_lvl);
 
         /**
+         * @brief Повертає стан прапору, який вказує на те, чи встановлено з'єднання з WiFi.
+         *
+         * @return true - Якщо з'єднання встановлено.
+         * @return false - Інакше.
+         */
+        bool isConnected() const;
+
+        /**
+         * @brief Повертає назву WiFi-точки доступу, з якою встановлено з'єднання.
+         *
+         * @return String - SSID точки доступу, якщо з'єднання існує, або порожній рядок, якщо з'єднання відсутнє.
+         */
+        String getSsidName() const;
+
+        /**
          * @brief Відключається від точки доступу, якщо було встановлено з'єднання, та вимикає модуль WiFi.
          *
          */
