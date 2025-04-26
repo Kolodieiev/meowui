@@ -111,7 +111,7 @@ namespace meow
         if (_is_working)
             return _server_addr;
         else
-            return "";
+            return emptyString;
     }
 
     void FileServer::fileServerTask(void *params)

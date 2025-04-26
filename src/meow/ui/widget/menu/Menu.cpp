@@ -28,7 +28,7 @@ namespace meow
     String Menu::getCurrentItemText() const
     {
         if (_widgets.empty())
-            return "";
+            return emptyString;
 
         MenuItem *item = reinterpret_cast<MenuItem *>(_widgets[_cur_focus_pos]);
         return item->getText();

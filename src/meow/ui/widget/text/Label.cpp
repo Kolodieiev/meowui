@@ -439,7 +439,7 @@ namespace meow
     String Label::getSubStr(const String &str, uint16_t start, uint16_t length) const
     {
         if (!length)
-            return "";
+            return emptyString;
 
         unsigned int c, i, ix, q;
         unsigned int min = -1, max = -1; //
@@ -470,7 +470,7 @@ namespace meow
             max = i;
 
         if (min == -1 || max == -1)
-            return "";
+            return emptyString;
 
         return str.substring(min, max);
     }

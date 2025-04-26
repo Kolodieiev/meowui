@@ -27,25 +27,25 @@ namespace meow
         if (!pref_name)
         {
             log_e("Некоректний аргумент");
-            return "";
+            return emptyString;
         }
 
         String path = getSettingsFilePath(pref_name);
 
         if (path.isEmpty())
-            return "";
+            return emptyString;
 
         size_t file_size = getFileSize(path.c_str());
 
         if (file_size == 0)
-            return "";
+            return emptyString;
 
         char *buffer = (char *)malloc(file_size + 1);
 
         if (!buffer)
         {
             log_e("Bad memory alloc: %zu b", file_size);
-            return "";
+            return emptyString;
         }
 
         size_t bytes_read = readFile(path.c_str(), buffer, file_size);
@@ -64,21 +64,21 @@ namespace meow
         if (!pref_name)
         {
             log_e("Некоректний аргумент");
-            return "";
+            return emptyString;
         }
 
         if (!dirExist(DATA_ROOT))
             if (!createDir(DATA_ROOT))
             {
                 log_e("Помилка створення %s", DATA_ROOT);
-                return "";
+                return emptyString;
             }
 
         if (!dirExist(PREF_ROOT))
             if (!createDir(PREF_ROOT))
             {
                 log_e("Помилка створення %s", PREF_ROOT);
-                return "";
+                return emptyString;
             }
 
         String path = PREF_ROOT;
