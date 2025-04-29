@@ -79,6 +79,13 @@ namespace meow
          */
         String getText() const;
 
+        /**
+         * @brief Встановлює текст, що буде відображатися у віджеті.
+         *
+         * @param text
+         */
+        void setText(const String &text);
+
     protected:
         const uint8_t ITEM_PADDING{5};
         using IWidget::setVisibility;

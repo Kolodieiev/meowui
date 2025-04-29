@@ -1,6 +1,7 @@
 #pragma GCC optimize("O3")
 
 #include "./MenuItem.h"
+#include "MenuItem.h"
 
 namespace meow
 {
@@ -20,6 +21,17 @@ namespace meow
             esp_restart();
         }
         return _label->getText();
+    }
+
+    void MenuItem::setText(const String &text)
+    {
+        if (!_label)
+        {
+            log_e("Не встановлено Label");
+            esp_restart();
+        }
+
+        _label->setText(text);
     }
 
     void MenuItem::onDraw()
