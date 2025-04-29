@@ -5,11 +5,6 @@ namespace meow
 {
     Menu::Menu(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidgetContainer(widget_ID, type_ID) {}
 
-    MenuItem *Menu::findItemByID(uint16_t itemID) const
-    {
-        return static_cast<MenuItem *>(findWidgetByID(itemID));
-    }
-
     void Menu::deleteWidgets()
     {
         IWidgetContainer::deleteWidgets();
