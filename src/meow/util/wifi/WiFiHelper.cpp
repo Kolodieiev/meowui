@@ -195,6 +195,19 @@ namespace meow
         WiFi.mode(WIFI_OFF);
     }
 
+    bool WiFiHelper::toggle()
+    {
+        if (isEnabled())
+        {
+            disable();
+            return true;
+        }
+        else
+        {
+            return enable();
+        }
+    }
+
     String WiFiHelper::getLocalIP() const
     {
         if (isConnected())
