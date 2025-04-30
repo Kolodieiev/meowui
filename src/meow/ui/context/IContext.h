@@ -14,6 +14,8 @@ namespace meow
 {
 #define D_WIDTH _display.width()
 #define D_HEIGHT _display.height()
+#define TOAST_LENGTH_LONG 3500
+#define TOAST_LENGTH_SHORT 1500
 
     class IContext
     {
