@@ -160,7 +160,7 @@ namespace meow
         return WiFi.getMode() == WIFI_AP;
     }
 
-    String WiFiHelper::getSsidName() const
+    String WiFiHelper::getSSID() const
     {
         if (isConnected())
             return WiFi.SSID();

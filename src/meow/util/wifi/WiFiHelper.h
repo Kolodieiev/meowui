@@ -110,7 +110,7 @@ namespace meow
          *
          * @return String - SSID точки доступу, якщо з'єднання існує, або порожній рядок, якщо з'єднання відсутнє.
          */
-        String getSsidName() const;
+        String getSSID() const;
 
         /**
          * @brief Відключається від точки доступу, якщо було встановлено з'єднання.
