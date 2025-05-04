@@ -102,13 +102,13 @@ namespace meow
         uint16_t getSize() const { return _widgets.size(); }
 
         /**
-         * @brief Вмикає перерисовку контейнера та його вімісту.
+         * @brief Вмикає перерисовку контейнера та його вмісту.
          *
          */
         void enable() { _is_enabled = true; }
 
         /**
-         * @brief Вимикає перерисовку контейнера та його вімісту.
+         * @brief Вимикає перерисовку контейнера та його вмісту.
          *
          */
         void disable() { _is_enabled = false; }
