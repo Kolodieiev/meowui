@@ -1,12 +1,12 @@
-#include "WiFiHelper.h"
+#include "WiFiManager.h"
 
 const char STR_ERR_WIFI_BUSY[] = "WiFi-модуль зайнятий";
 
 namespace meow
 {
-    bool WiFiHelper::tryConnectTo(String &ssid, String &pwd, uint8_t wifi_chan, bool autoreconnect)
+    bool WiFiManager::tryConnectTo(const String &ssid, const String &pwd, uint8_t wifi_chan, bool autoreconnect)
     {
-        if (_scan_working || _connect_working)
+        if (_is_busy)
         {
             log_e("%s", STR_ERR_WIFI_BUSY);
             return false;
@@ -32,13 +32,13 @@ namespace meow
             return false;
         }
 
-        _connect_working = true;
+        _is_busy = true;
         return true;
     }
 
-    bool WiFiHelper::createAP(String &ssid, String &pwd, uint8_t max_connection, uint8_t wifi_chan, bool is_hidden)
+    bool WiFiManager::createAP(String &ssid, String &pwd, uint8_t max_connection, uint8_t wifi_chan, bool is_hidden)
     {
-        if (_scan_working || _connect_working)
+        if (_is_busy)
         {
             log_e("%s", STR_ERR_WIFI_BUSY);
             return false;
@@ -65,38 +65,30 @@ namespace meow
         return result;
     }
 
-    void WiFiHelper::setConnectDoneHandler(WiFiConnectDoneHandler handler, void *arg)
+    void WiFiManager::setConnectDoneHandler(WiFiConnectDoneHandler handler, void *arg)
     {
         _connDoneHandler = handler;
         _connDoneHandlerArg = arg;
     }
 
-    void WiFiHelper::setScanDoneHandler(WiFiScanDoneHandler handler, void *arg)
+    void WiFiManager::setScanDoneHandler(WiFiScanDoneHandler handler, void *arg)
     {
         _scanDoneHandler = handler;
         _scanDoneHandlerArg = arg;
     }
 
-    bool WiFiHelper::startScan()
+    bool WiFiManager::startScan()
     {
-        if (_scan_working || _connect_working)
+        if (_is_busy)
         {
             log_e("%s", STR_ERR_WIFI_BUSY);
             return false;
         }
 
         if (!isEnabled() && !enable())
-        {
             return false;
-        }
-        else
-        {
-            if (isConnected())
-                disconnect();
-
-            if (WiFi.getMode() != WIFI_MODE_STA)
-                enable();
-        }
+        else if (WiFi.getMode() != WIFI_MODE_STA)
+            enable();
 
         WiFi.onEvent(onEvent, ARDUINO_EVENT_WIFI_SCAN_DONE);
         int16_t result_code = WiFi.scanNetworks(true);
@@ -108,23 +100,34 @@ namespace meow
         }
         else
         {
-            _scan_working = true;
+            _is_busy = true;
         }
 
         return true;
     }
 
-    void WiFiHelper::getScanResult(std::vector<String> &out_vector) const
+    void WiFiManager::getScanResult(std::vector<String> &out_vector)
     {
         out_vector.clear();
 
-        if (_scan_working || _connect_working)
+        if (_is_busy)
         {
             log_e("%s", STR_ERR_WIFI_BUSY);
             return;
         }
 
         int16_t scan_result = WiFi.scanComplete();
+
+        if (scan_result == -1)
+        {
+            log_e("Scan not fin");
+            return;
+        }
+        else if (scan_result == -2)
+        {
+            log_e("Scan not triggered");
+            return;
+        }
 
         out_vector.reserve(scan_result);
 
@@ -134,7 +137,12 @@ namespace meow
         WiFi.scanDelete();
     }
 
-    void WiFiHelper::setWiFiPower(WiFiPowerLevel power_lvl)
+    void WiFiManager::clearScanResult()
+    {
+        WiFi.scanDelete();
+    }
+
+    void WiFiManager::setWiFiPower(WiFiPowerLevel power_lvl)
     {
         switch (power_lvl)
         {
@@ -150,17 +158,17 @@ namespace meow
         }
     }
 
-    bool WiFiHelper::isConnected() const
+    bool WiFiManager::isConnected() const
     {
         return WiFi.status() == WL_CONNECTED;
     }
 
-    bool WiFiHelper::isApEnabled() const
+    bool WiFiManager::isApEnabled() const
     {
-        return WiFi.getMode() == WIFI_AP;
+        return WiFi.getMode() & WIFI_AP;
     }
 
-    String WiFiHelper::getSSID() const
+    String WiFiManager::getSSID() const
     {
         if (isConnected())
             return WiFi.SSID();
@@ -168,19 +176,20 @@ namespace meow
             return emptyString;
     }
 
-    void WiFiHelper::disconnect()
+    void WiFiManager::disconnect()
     {
         _connDoneHandler = nullptr;
         _scanDoneHandler = nullptr;
         WiFi.disconnect();
+        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 
-    bool WiFiHelper::isEnabled() const
+    bool WiFiManager::isEnabled() const
     {
         return WiFi.getMode() != WIFI_MODE_NULL;
     }
 
-    bool WiFiHelper::enable()
+    bool WiFiManager::enable()
     {
         bool result = WiFi.mode(WIFI_MODE_STA);
         vTaskDelay(100 / portTICK_PERIOD_MS);
@@ -189,14 +198,20 @@ namespace meow
         return result;
     }
 
-    void WiFiHelper::disable()
+    void WiFiManager::disable()
     {
         disconnect();
         WiFi.mode(WIFI_OFF);
     }
 
-    bool WiFiHelper::toggle()
+    bool WiFiManager::toggle()
     {
+        if (_is_busy)
+        {
+            log_e("Модуль зайнятий");
+            return false;
+        }
+
         if (isEnabled())
         {
             disable();
@@ -208,7 +223,7 @@ namespace meow
         }
     }
 
-    String WiFiHelper::getLocalIP() const
+    String WiFiManager::getLocalIP() const
     {
         if (isConnected())
             return WiFi.localIP().toString();
@@ -216,7 +231,7 @@ namespace meow
             return emptyString;
     }
 
-    String WiFiHelper::getAPIP() const
+    String WiFiManager::getAPIP() const
     {
         if (isApEnabled())
             return WiFi.softAPIP().toString();
@@ -224,7 +239,7 @@ namespace meow
             return emptyString;
     }
 
-    void WiFiHelper::callConnDoneHandler()
+    void WiFiManager::callConnDoneHandler()
     {
         log_i("WiFi.status: %d", WiFi.status());
 
@@ -232,7 +247,7 @@ namespace meow
             _connDoneHandler(_connDoneHandlerArg, WiFi.status());
     }
 
-    void WiFiHelper::callScanDoneHandler()
+    void WiFiManager::callScanDoneHandler()
     {
         if (_scanDoneHandler)
             _scanDoneHandler(_scanDoneHandlerArg);
@@ -240,13 +255,13 @@ namespace meow
             WiFi.scanDelete();
     }
 
-    void WiFiHelper::onEvent(WiFiEvent_t event)
+    void WiFiManager::onEvent(WiFiEvent_t event)
     {
         switch (event)
         {
         case ARDUINO_EVENT_WIFI_SCAN_DONE:
             WiFi.removeEvent(onEvent, ARDUINO_EVENT_WIFI_SCAN_DONE);
-            _wifi._scan_working = false;
+            _wifi._is_busy = false;
             _wifi.callScanDoneHandler();
             break;
         case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
@@ -260,7 +275,7 @@ namespace meow
                 while (millis() - got_ip_time < 2000 && WiFi.status() != WL_CONNECTED)
                     vTaskDelay(50 / portTICK_PERIOD_MS);
             }
-            _wifi._connect_working = false;
+            _wifi._is_busy = false;
             _wifi.callConnDoneHandler();
             break;
         default:
@@ -269,5 +284,5 @@ namespace meow
         }
     }
 
-    WiFiHelper _wifi;
+    WiFiManager _wifi;
 }

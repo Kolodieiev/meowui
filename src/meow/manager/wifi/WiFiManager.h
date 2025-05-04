@@ -11,7 +11,7 @@ namespace meow
     typedef std::function<void(void *arg, wl_status_t conn_status)> WiFiConnectDoneHandler;
     typedef std::function<void(void *arg)> WiFiScanDoneHandler;
 
-    class WiFiHelper
+    class WiFiManager
     {
     public:
         enum WiFiPowerLevel : uint8_t
@@ -32,7 +32,7 @@ namespace meow
          * @return true - Якщо запуск спроби підключення виконано успішно.
          * @return false - Якщо не вдалося розпочати підключення.
          */
-        bool tryConnectTo(String &ssid, String &pwd, uint8_t wifi_chan = 1, bool autoreconnect = false);
+        bool tryConnectTo(const String &ssid, const String &pwd, uint8_t wifi_chan = 1, bool autoreconnect = false);
 
         /**
          * @brief Створює точку доступу WiFi, до якої можуть приєднуватися WiFi-клієнти.
@@ -77,7 +77,13 @@ namespace meow
          * Після формування вектора, результат сканування очищується.
          *
          */
-        void getScanResult(std::vector<String> &out_vector) const;
+        void getScanResult(std::vector<String> &out_vector);
+
+        /**
+         * @brief Очищує результат попереднього сканування точок доступу.
+         *
+         */
+        void clearScanResult();
 
         /**
          * @brief Встановлює потужність модуля WiFi.
@@ -142,7 +148,7 @@ namespace meow
 
         /**
          * @brief Перемикає поточний стан модуля WiFi на протилежний.
-         * 
+         *
          * @return true - Якщо операцію виконано успішно.
          * @return false - Інакше.
          */
@@ -164,9 +170,16 @@ namespace meow
          */
         String getAPIP() const;
 
+        /**
+         * @brief Повертає стан прапору, який вказує на те, чи зайнятий зараз модуль WiFi асинхронною роботою на кшталт скануваня чи підключення.
+         *
+         * @return true - Якщо модуль зайнятий.
+         * @return false - Інакше.
+         */
+        bool isBusy() const { return _is_busy; }
+
     private:
-        bool _scan_working{false};
-        bool _connect_working{false};
+        bool _is_busy{false};
 
         void *_scanDoneHandlerArg{nullptr};
         WiFiScanDoneHandler _scanDoneHandler{nullptr};
@@ -179,5 +192,5 @@ namespace meow
 
         static void onEvent(WiFiEvent_t event);
     };
-    extern WiFiHelper _wifi;
+    extern WiFiManager _wifi;
 }
