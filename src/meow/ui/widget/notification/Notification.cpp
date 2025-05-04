@@ -2,7 +2,11 @@
 
 namespace meow
 {
-    Notification::Notification(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_NOTIFICATION) {}
+    Notification::Notification(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_NOTIFICATION)
+    {
+        setBorderColor(TFT_ORANGE);
+        setBorder(true);
+    }
 
     Notification::~Notification()
     {
@@ -51,19 +55,26 @@ namespace meow
         _right_lbl->setHeight(_left_lbl->getHeight());
         _msg_lbl->setHeight(_display.height() - _h_margin * 2 - _title_lbl->getHeight() - _left_lbl->getHeight());
         //
-        _title_lbl->setWidth(_display.width() - _w_margin * 2);
+        _width = _display.width() - _w_margin * 2;
+        _title_lbl->setWidth(_width - 4);
         _msg_lbl->setWidth(_title_lbl->getWidth());
         _left_lbl->setWidth((float)(_title_lbl->getWidth()) * 0.5);
         _right_lbl->setWidth(_left_lbl->getWidth());
         //
-        _title_lbl->setPos(_w_margin, _h_margin);
-        _msg_lbl->setPos(_w_margin, _title_lbl->getYPos() + _title_lbl->getHeight());
-        _left_lbl->setPos(_w_margin, _msg_lbl->getYPos() + _msg_lbl->getHeight());
+        _x_pos = _w_margin;
+        _y_pos = _h_margin;
+        _title_lbl->setPos(_w_margin + 2, _h_margin + 2);
+        _msg_lbl->setPos(_title_lbl->getXPos(), _title_lbl->getYPos() + _title_lbl->getHeight());
+        _left_lbl->setPos(_title_lbl->getXPos(), _msg_lbl->getYPos() + _msg_lbl->getHeight());
         _right_lbl->setPos(_left_lbl->getXPos() + _left_lbl->getWidth(), _left_lbl->getYPos());
+
+        _height = _title_lbl->getHeight() + _msg_lbl->getHeight() + _right_lbl->getHeight() + 4;
     }
 
     void Notification::onDraw()
     {
+        clear();
+
         _title_lbl->forcedDraw();
         _msg_lbl->forcedDraw();
         _left_lbl->forcedDraw();
