@@ -17,26 +17,62 @@ namespace meow
             SERVER_MODE_SEND
         };
 
-        enum NetMode : uint8_t
-        {
-            NET_MODE_AP = 0,
-            NET_MODE_LOCAL
-        };
-
-        // TODO docs
-
         ~FileServer();
 
+        /**
+         * @brief Запускає файловий сервер з раніше налаштованими параметрами.
+         * Якщо встановлено з'єднання з маршрутизатором, сервер буде запущено на виділеному IP.
+         * Якщо з'єднання не встановлено раніше і його не вдалося встановити, буде створено точку доступу із заданими налаштуваннями.
+         *
+         * @param server_dir І'мя каталогу, для якого буде запущено файловий сервер.
+         * @param mode Режим, в якому буде запущено файловий сервер. Може мати значення SERVER_MODE_SEND/SERVER_MODE_RECEIVE.
+         * @return true - Якщо файловий сервер успішно запущено.
+         * @return false - Інакше.
+         */
         bool begin(const char *server_dir, ServerMode mode);
+
+        /**
+         * @brief Зупиняє файловий сервер. Та, якщо було запущено точку доступу, відключає WiFi-модуль.
+         *
+         */
         void stop();
+
+        /**
+         * @brief Повертає стан прапору, який вказує на те, чи працює зараз файловий сервер.
+         *
+         * @return true - Якщо сервер працює.
+         * @return false - Інакше.
+         */
         bool isWorking() const { return _is_working; }
 
+        /**
+         * @brief Встановлює SSID до якого буде виконано спробу підключення,
+         * або з яким буде створено точку доступу, якщо підключення не вдалося.
+         *
+         * @param ssid
+         */
         void setSSID(const char *ssid) { _ssid = ssid; }
-        void setPWD(const char *pwd) { _pwd = pwd; }
-        void setNetMode(NetMode mode) { _net_mode = mode; }
-        NetMode getNetMode() const { return _net_mode; }
 
+        /**
+         * @brief Встановлює пароль, який буде використано при підключенні до маршрутизатора,
+         * або який буде використано для точки доступу, якщо підключення не вдалося.
+         *
+         * @param pwd
+         */
+        void setPWD(const char *pwd) { _pwd = pwd; }
+
+        /**
+         * @brief Повертає виділену IP-адресу сервера на маршрутизаторі або IP-адресу сервера на точці доступу.
+         *
+         * @return String - IP-адреса сервера, якщо сервер працює. Порожній рядок - інакше.
+         */
         String getAddress() const;
+
+        /**
+         * @brief Повертає значення режиму роботи, яке налаштовано для сервера.
+         *
+         * @return ServerMode
+         */
         ServerMode getServerMode() const { return _server_mode; }
 
     private:
@@ -50,8 +86,7 @@ namespace meow
         String _pwd;
 
         ServerMode _server_mode{SERVER_MODE_RECEIVE};
-        NetMode _net_mode{NET_MODE_AP};
-        //;
+        //
         WebServer *_server = nullptr;
         bool _must_work = false;
 

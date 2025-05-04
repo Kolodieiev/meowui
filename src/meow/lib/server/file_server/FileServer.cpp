@@ -1,7 +1,7 @@
 #pragma GCC optimize("O3")
 #include "FileServer.h"
 #include "./tmpl_html.cpp"
-#include "meow/util/wifi/WiFiHelper.h"
+#include "meow/manager/wifi/WiFiManager.h"
 
 namespace meow
 {
@@ -29,36 +29,36 @@ namespace meow
         if (!_f_mgr.dirExist(_server_dir.c_str()))
             return false;
 
-        if (_net_mode == NET_MODE_AP)
-        {
-            if (!_wifi.createAP(_ssid, _pwd, 1))
-                return false;
+        _server_ip = "http://";
 
-            _server_ip = "http://";
-            _server_ip += _wifi.getAPIP();
-        }
-        else
+        if (!_wifi.isConnected())
         {
-            if (!_wifi.isConnected())
-            {
-                if (_ssid.isEmpty())
-                {
-                    log_e("%s", STR_ERR_ROUTER_NOT_CONNECTED);
-                    return false;
-                }
-                else if (!_wifi.tryConnectTo(_ssid, _pwd))
-                    return false;
-                else
-                    vTaskDelay(1000 / portTICK_PERIOD_MS);
-            }
-
-            if (!_wifi.isConnected())
+            if (_ssid.isEmpty())
             {
                 log_e("%s", STR_ERR_ROUTER_NOT_CONNECTED);
                 return false;
             }
+            else
+            {
+                _wifi.tryConnectTo(_ssid, _pwd);
+                vTaskDelay(3000 / portTICK_PERIOD_MS);
+            }
 
-            _server_ip = "http://";
+            if (!_wifi.isConnected())
+            {
+                log_e("Помилка підключення. Створюю власну AP");
+                if (!_wifi.createAP(_ssid, _pwd, 1))
+                    return false;
+
+                _server_ip += _wifi.getAPIP();
+            }
+            else
+            {
+                _server_ip += _wifi.getLocalIP();
+            }
+        }
+        else
+        {
             _server_ip += _wifi.getLocalIP();
         }
 
@@ -85,7 +85,7 @@ namespace meow
         {
             log_e("fileServerTask was not running");
 
-            if (_net_mode == NET_MODE_AP)
+            if (_wifi.isApEnabled())
                 _wifi.disable();
 
             return false;
@@ -101,7 +101,7 @@ namespace meow
 
         _server->close();
 
-        if (_net_mode == NET_MODE_AP)
+        if (_wifi.isApEnabled())
             _wifi.disable();
 
         delete _server;
