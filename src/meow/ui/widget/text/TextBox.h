@@ -8,6 +8,7 @@
 namespace meow
 {
     // TODO add multiline
+    // TODO add hint
 
     class TextBox : public Label
     {
