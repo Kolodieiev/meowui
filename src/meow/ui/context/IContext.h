@@ -105,7 +105,7 @@ namespace meow
          * @param msg_txt Текст повідомлення.
          * @param duration Тривалість відображення повідомлення.
          */
-        void showToast(const char *msg_txt, unsigned long duration = 500);
+        void showToast(const char *msg_txt, unsigned long duration = TOAST_LENGTH_SHORT);
 
         /**
          * @brief Повертає х-координату, на якій віджет буде встановлено по центру відносно екрану.
@@ -136,6 +136,20 @@ namespace meow
          *
          */
         void hideNotification();
+
+        /**
+         * @brief Віддає м'ютекс шаблону тій задачі, яка викликає цей метод.
+         *
+         * @return true - Якщо мютекс отримано.
+         * @return false - Інакше.
+         */
+        bool takeLayoutMutex();
+
+        /**
+         * @brief Отримує назад м'ютекс шаблону з тієї задачі, яка викликає цей метод.
+         *
+         */
+        void giveLayoutMutex();
 
     private:
         SemaphoreHandle_t _layout_mutex;

@@ -151,6 +151,16 @@ namespace meow
             _layout->forcedDraw();
     }
 
+    bool IContext::takeLayoutMutex()
+    {
+        return xSemaphoreTake(_layout_mutex, portMAX_DELAY);
+    }
+
+    void IContext::giveLayoutMutex()
+    {
+        xSemaphoreGive(_layout_mutex);
+    }
+
     void IContext::removeToast()
     {
         delete _toast_label;
