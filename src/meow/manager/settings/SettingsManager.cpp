@@ -6,7 +6,7 @@ namespace meow
     const char DATA_ROOT[] = "/.data";
     const char PREF_ROOT[] = "/.data/preferences";
 
-    bool SettingsManager::set(const char *pref_name, const char *value)
+    bool SettingsManager::set(const char *pref_name, const char *value, const char *subdir)
     {
         if (!pref_name || !value)
         {
@@ -14,7 +14,7 @@ namespace meow
             return false;
         }
 
-        String path = getSettingsFilePath(pref_name);
+        String path = getSettingsFilePath(pref_name, subdir);
 
         if (path.isEmpty())
             return false;
@@ -22,7 +22,7 @@ namespace meow
         return writeFile(path.c_str(), value, strlen(value));
     }
 
-    String SettingsManager::get(const char *pref_name)
+    String SettingsManager::get(const char *pref_name, const char *subdir)
     {
         if (!pref_name)
         {
@@ -30,7 +30,7 @@ namespace meow
             return emptyString;
         }
 
-        String path = getSettingsFilePath(pref_name);
+        String path = getSettingsFilePath(pref_name, subdir);
 
         if (path.isEmpty())
             return emptyString;
@@ -59,9 +59,9 @@ namespace meow
         return ret;
     }
 
-    String SettingsManager::getSettingsFilePath(const char *pref_name)
+    String SettingsManager::getSettingsFilePath(const char *pref_name, const char *subdir)
     {
-        if (!pref_name)
+        if (!pref_name || !std::strcmp(pref_name, "") || !subdir)
         {
             log_e("Некоректний аргумент");
             return emptyString;
@@ -83,6 +83,21 @@ namespace meow
 
         String path = PREF_ROOT;
         path += "/";
+
+        if (std::strcmp(subdir, ""))
+        {
+            path += subdir;
+
+            if (!dirExist(path.c_str()))
+                if (!createDir(path.c_str()))
+                {
+                    log_e("Помилка створення %s", PREF_ROOT);
+                    return emptyString;
+                }
+
+            path += "/";
+        }
+
         path += pref_name;
 
         return path;
