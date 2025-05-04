@@ -9,9 +9,8 @@
 const char STR_NOT_ENOUGH_RAM[] = "Недостатньо RAM для роботи LuaVM";
 const char STR_LUA_ERR[] = "Помилка в скрипті Lua: ";
 const char STR_LUAVM_CREATE_ERR[] = "Помилка створення LuaVM";
-const char STR_ERR_SCRIPT_STRUCT[] = "Скрипт повинен містити визначення функцій setup та update";
+const char STR_ERR_SCRIPT_STRUCT[] = "Скрипт повинен містити визначення функції update";
 //
-const char STR_SETUP_NAME[] = "setup";
 const char STR_UPDATE_NAME[] = "update";
 //
 const char STR_LIB_NAME_CONTEXT[] = "context";
@@ -102,14 +101,9 @@ namespace meow
             luaErrToMsg();
             return false;
         }
-        else if (!hasLuaFunction(STR_SETUP_NAME) || !hasLuaFunction(STR_UPDATE_NAME))
+        else if (!hasLuaFunction(STR_UPDATE_NAME))
         {
             _msg = STR_ERR_SCRIPT_STRUCT;
-            return false;
-        }
-        else if (callLuaFunction(STR_SETUP_NAME) != LUA_OK)
-        {
-            luaErrToMsg();
             return false;
         }
         else
