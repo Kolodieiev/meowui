@@ -37,18 +37,11 @@ namespace meow
             clone->_old_back_color = _old_back_color;
             clone->_parent = _parent;
 
-            clone->_is_multiline = _is_multiline;
             clone->setText(_text);
             clone->_text_size = _text_size;
             clone->_text_color = _text_color;
             clone->_font_ID = _font_ID;
             clone->_text_offset = _text_offset;
-            clone->_text_gravity = _text_gravity;
-            clone->_text_alignment = _text_alignment;
-            clone->_is_ticker = _is_ticker;
-            clone->_temp_is_ticker = _temp_is_ticker;
-            clone->_is_ticker_in_focus = _is_ticker_in_focus;
-            clone->_temp_is_ticker_in_focus = _temp_is_ticker_in_focus;
             clone->_temp_width = _temp_width;
 
             if (_back_img)
