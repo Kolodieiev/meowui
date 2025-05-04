@@ -64,7 +64,7 @@ namespace meow
     String KeyboardRow::getCurrentBtnTxt() const
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
-        Label *lbl = reinterpret_cast<Label *>(getFocusBtn());
+        Label *lbl = getFocusBtn()->castTo<Label>();
         xSemaphoreGive(_widg_mutex);
         return lbl->getText();
     }
@@ -111,6 +111,9 @@ namespace meow
 
     void KeyboardRow::setFocus(uint16_t pos)
     {
+        if (_widgets.empty())
+            return;
+
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
         IWidget *btn = getFocusBtn();

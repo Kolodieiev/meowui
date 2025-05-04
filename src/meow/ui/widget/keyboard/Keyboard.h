@@ -78,10 +78,33 @@ namespace meow
          */
         void focusRight();
 
+        /**
+         * @brief Повертає позицію кнопки, на якій встановлено фокус, в рядку.
+         * 
+         * @return uint16_t 
+         */
+        uint16_t getFocusXPos() const;
+
+        /**
+         * @brief Повертає номер рядка, на якому встановлено фокус.
+         * 
+         * @return uint16_t 
+         */
+        uint16_t getFocusYPos() const { return _cur_focus_row_pos; }
+
+        /**
+         * @brief Встановлює фокус на кнопці.
+         * 
+         * @param x Номер кнопки в рядку.
+         * @param y Номер рядка.
+         */
+        void setFocusPos(uint16_t x, uint16_t y);
+
     private:
         uint16_t _cur_focus_row_pos{0};
 
         bool _first_drawing{true};
+        bool _has_manual_settings{false};
 
         KeyboardRow *getFocusRow() const;
     };

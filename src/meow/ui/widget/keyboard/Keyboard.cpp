@@ -61,7 +61,7 @@ namespace meow
     String Keyboard::getCurrentBtnTxt() const
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
-        KeyboardRow *row = reinterpret_cast<KeyboardRow *>(getFocusRow());
+        KeyboardRow *row = getFocusRow();
         xSemaphoreGive(_widg_mutex);
         return row->getCurrentBtnTxt();
     }
@@ -81,7 +81,7 @@ namespace meow
         else
             _cur_focus_row_pos = _widgets.size() - 1;
 
-        row = reinterpret_cast<KeyboardRow *>(_widgets[_cur_focus_row_pos]);
+        row = getFocusRow();
         row->setFocus(focusPos);
 
         xSemaphoreGive(_widg_mutex);
@@ -92,17 +92,15 @@ namespace meow
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
         KeyboardRow *row = getFocusRow();
-
         uint16_t focusPos = row->getCurFocusPos();
-
         row->removeFocus();
 
         if (_cur_focus_row_pos < _widgets.size() - 1)
-            _cur_focus_row_pos++;
+            ++_cur_focus_row_pos;
         else
             _cur_focus_row_pos = 0;
 
-        row = reinterpret_cast<KeyboardRow *>(_widgets[_cur_focus_row_pos]);
+        row = getFocusRow();
         row->setFocus(focusPos);
 
         xSemaphoreGive(_widg_mutex);
@@ -138,6 +136,34 @@ namespace meow
         xSemaphoreGive(_widg_mutex);
     }
 
+    uint16_t Keyboard::getFocusXPos() const
+    {
+        return getFocusRow()->getCurFocusPos();
+    }
+
+    void Keyboard::setFocusPos(uint16_t x, uint16_t y)
+    {
+        if (_widgets.empty())
+            return;
+
+        xSemaphoreTake(_widg_mutex, portMAX_DELAY);
+
+        _has_manual_settings = true;
+        
+        KeyboardRow *row = getFocusRow();
+        row->removeFocus();
+
+        if (y > _widgets.size() - 1)
+            _cur_focus_row_pos = _widgets.size() - 1;
+        else
+            _cur_focus_row_pos = y;
+
+        row = getFocusRow();
+        row->setFocus(x);
+
+        xSemaphoreGive(_widg_mutex);
+    }
+
     KeyboardRow *Keyboard::getFocusRow() const
     {
         if (_widgets.empty())
@@ -146,7 +172,7 @@ namespace meow
             esp_restart();
         }
 
-        KeyboardRow *row = reinterpret_cast<KeyboardRow *>(_widgets[_cur_focus_row_pos]);
+        KeyboardRow *row = _widgets[_cur_focus_row_pos]->castTo<KeyboardRow>();
 
         if (!row)
         {
@@ -182,7 +208,7 @@ namespace meow
             if (!_is_transparent)
                 clear();
 
-            if (_first_drawing)
+            if (_first_drawing && !_has_manual_settings)
             {
                 _first_drawing = false;
 
