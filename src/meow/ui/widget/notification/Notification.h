@@ -94,10 +94,11 @@ namespace meow
 
     private:
         using IWidget::getFocusBackColor;
-        using IWidget::getFocusBorderColor;
+        using IWidget::removeFocus;
+        using IWidget::setBorder;
+        using IWidget::setCornerRadius;
         using IWidget::setFocus;
         using IWidget::setFocusBackColor;
-        using IWidget::setFocusBorderColor;
         using IWidget::setHeight;
         using IWidget::setVisibility;
 
