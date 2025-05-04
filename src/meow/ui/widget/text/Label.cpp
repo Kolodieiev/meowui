@@ -84,6 +84,8 @@ namespace meow
         {
             _text = text;
             _text_len = calcRealStrLen(_text);
+            _is_ticker = _temp_is_ticker;
+            _is_ticker_in_focus = _temp_is_ticker_in_focus;
         }
         catch (const std::bad_alloc &e)
         {
@@ -538,8 +540,6 @@ namespace meow
                 return;
             else if ((millis() - _last_time_ticker_update) < _ticker_update_delay)
                 return;
-            else
-                _last_time_ticker_update = millis();
         }
 
         _is_changed = false;
@@ -551,7 +551,7 @@ namespace meow
             return;
         }
 
-        if (_temp_is_ticker_in_focus && !_has_focus)
+        if (_is_ticker_in_focus && !_has_focus)
             _first_draw_char_pos = 0;
 
         if (!_is_transparent)
@@ -587,12 +587,9 @@ namespace meow
 
         if (str_pix_num + _text_offset < _width)
         {
-            // Якщо текст не потребує прокрутки, вимикаємо її для зменшення навантаження на МК.
             _is_ticker = false;
             _is_ticker_in_focus = false;
-
             uint16_t txt_x_pos = calcXStrOffset(str_pix_num);
-
             _display.drawString(_text, _x_pos + x_offset + txt_x_pos, _y_pos + y_offset + txtYPos);
         }
         else
@@ -607,7 +604,7 @@ namespace meow
 
                 txt_x_pos = calcXStrOffset(sub_str_pix_num);
 
-                if (_temp_is_ticker || (_temp_is_ticker_in_focus && _has_focus))
+                if (_is_ticker || (_is_ticker_in_focus && _has_focus))
                 {
                     if ((millis() - _last_time_ticker_update) > _ticker_update_delay)
                     {
