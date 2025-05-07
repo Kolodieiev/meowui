@@ -2,14 +2,12 @@
 //
 #include "./register/lua_mcu.h"
 #include "./register/lua_pin.h"
-#include "./register/lua_pwm.h"
 // #include "./register/lua_.h"
 
 // Додай сюди функції для глобальної реєстрації бібліотек
 const LuaRegisterFunc LIB_REGISTER_FUNCS[] = {
     lua_register_mcu,
     lua_register_pin,
-    lua_register_pwm,
     // lua_register_,
 };
 

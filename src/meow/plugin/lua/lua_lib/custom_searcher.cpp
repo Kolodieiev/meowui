@@ -6,6 +6,8 @@
 #include "./require/lua_sd.h"
 #include "./require/lua_uart.h"
 #include "./require/lua_wifi.h"
+#include "./require/lua_pwm.h"
+
 // #include "./require/lua_.h"
 
 const char STR_ERR_NO_LOADER[] = "Відсутній завантажувач для бібліотеки: %s";
@@ -24,6 +26,8 @@ int custom_searcher(lua_State *L)
         lua_pushcfunction(L, lua_open_uart);
     else if (!strcmp(lib_name, STR_LIB_NAME_I2C))
         lua_pushcfunction(L, lua_open_i2c);
+    else if (!strcmp(lib_name, STR_LIB_NAME_PWM))
+        lua_pushcfunction(L, lua_open_pwm);
     else
         lua_pushfstring(L, STR_ERR_NO_LOADER, lib_name);
 
