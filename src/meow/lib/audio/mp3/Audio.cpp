@@ -12,6 +12,7 @@
 
 #include "Audio.h"
 #include "mp3_decoder/mp3_decoder.h"
+#include "meow/manager/files/FileManager.h"
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 AudioBuffer::AudioBuffer(size_t maxBlockSize)
@@ -324,7 +325,7 @@ void Audio::UTF8toASCII(char* str) {
 }
 // clang-format on
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool Audio::connecttoFS(meow::FileManager &f_mngr, const char *path, int32_t fileStartPos)
+bool Audio::connecttoFS(const char *path, int32_t fileStartPos)
 {
     if (fileStartPos < 10)
         fileStartPos = 0;
@@ -358,11 +359,11 @@ bool Audio::connecttoFS(meow::FileManager &f_mngr, const char *path, int32_t fil
         strcpy(audioPath + 1, path);
     }
 
-    if (!f_mngr.fileExist(audioPath))
+    if (!meow::_fs.fileExist(audioPath))
     {
         UTF8toASCII(audioPath);
 
-        if (!f_mngr.fileExist(audioPath))
+        if (!meow::_fs.fileExist(audioPath))
         {
             log_e("File doesn't exist");
             xSemaphoreGiveRecursive(mutex_audio);
@@ -371,7 +372,7 @@ bool Audio::connecttoFS(meow::FileManager &f_mngr, const char *path, int32_t fil
         }
     }
 
-    audiofile = f_mngr.getFileDescriptor(audioPath, "r");
+    audiofile = meow::_fs.openFile(audioPath, "r");
 
     if (!audiofile)
     {
@@ -381,18 +382,16 @@ bool Audio::connecttoFS(meow::FileManager &f_mngr, const char *path, int32_t fil
         return false;
     }
 
-    m_fileSize = f_mngr.getFileSize(audioPath);
+    m_fileSize = meow::_fs.getFileSize(audioPath);
     _audio_size = m_fileSize;
 
     free(audioPath);
-
-    _f_mgr = &f_mngr;
 
     bool ret = initializeDecoder();
     if (ret)
         m_f_running = true;
     else
-        f_mngr.closeFile(audiofile);
+        meow::_fs.closeFile(audiofile);
     xSemaphoreGiveRecursive(mutex_audio);
     return ret;
 }
@@ -660,7 +659,7 @@ uint32_t Audio::stopSong()
     }
 
     // added this before putting 'm_f_localfile = false' in stopSong(); shoulf never occur....
-    _f_mgr->closeFile(audiofile);
+    meow::_fs.closeFile(audiofile);
 
     memset(m_outBuff, 0, m_outbuffSize);           // Clear OutputBuffer
     memset(m_filterBuff, 0, sizeof(m_filterBuff)); // Clear FilterBuffer
@@ -816,7 +815,7 @@ void Audio::processLocalFile()
     availableBytes = min(availableBytes, _audio_size - byteCounter);
     if (m_contentlength)
     {
-        size_t file_pos = _f_mgr->getPos(audiofile);
+        size_t file_pos = meow::_fs.getPos(audiofile);
         if (m_contentlength > file_pos)
             availableBytes = min(availableBytes, m_contentlength - file_pos);
     }
@@ -825,7 +824,7 @@ void Audio::processLocalFile()
         availableBytes = min(availableBytes, m_audioDataSize + m_audioDataStart - byteCounter);
     }
 
-    if (_f_mgr->readFromFile(audiofile, InBuff.getWritePtr(), availableBytes))
+    if (meow::_fs.readFromFile(audiofile, InBuff.getWritePtr(), availableBytes))
     {
         byteCounter += availableBytes; // Pull request #42
         InBuff.bytesWritten(availableBytes);
@@ -879,7 +878,7 @@ void Audio::processLocalFile()
         if (m_resumeFilePos == -1)
             goto exit;
 
-        _f_mgr->seekPos(audiofile, m_resumeFilePos);
+        meow::_fs.seekPos(audiofile, m_resumeFilePos);
         InBuff.resetBuffer();
         byteCounter = m_resumeFilePos;
         f_fileDataComplete = false; // #570
@@ -924,7 +923,7 @@ void Audio::processLocalFile()
         } // loop
     exit:
         m_f_running = false;
-        _f_mgr->closeFile(audiofile);
+        meow::_fs.closeFile(audiofile);
 
         MP3Decoder_FreeBuffers();
 
@@ -1204,7 +1203,7 @@ uint32_t Audio::getFilePos()
 {
     if (!audiofile)
         return 0;
-    return _f_mgr->getPos(audiofile);
+    return meow::_fs.getPos(audiofile);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 uint32_t Audio::getAudioDataStartPos()
@@ -1888,27 +1887,27 @@ int32_t Audio::mp3_correctResumeFilePos(uint32_t resumeFilePos)
     if (pos < m_audioDataStart)
         pos = m_audioDataStart;
 
-    _f_mgr->seekPos(audiofile, pos);
+    meow::_fs.seekPos(audiofile, pos);
 
     while (!found)
     {
         if (pos + 3 >= maxPos)
             goto exit;
-        _f_mgr->readFromFile(audiofile, &byte1a);
+        meow::_fs.readFromFile(audiofile, &byte1a);
         ++pos;
-        _f_mgr->readFromFile(audiofile, &byte2a);
+        meow::_fs.readFromFile(audiofile, &byte2a);
         ++pos;
         while (true)
         {
             if (byte1a == 0xFF && (byte2a & 0x0E0) == 0xE0)
             {
-                _f_mgr->readFromFile(audiofile, &byte3a);
+                meow::_fs.readFromFile(audiofile, &byte3a);
                 ++pos;
                 pos1 = pos - 3;
                 break;
             }
             byte1a = byte2a;
-            _f_mgr->readFromFile(audiofile, &byte2a);
+            meow::_fs.readFromFile(audiofile, &byte2a);
             ++pos;
             if (pos >= maxPos)
                 goto exit;
@@ -1917,21 +1916,21 @@ int32_t Audio::mp3_correctResumeFilePos(uint32_t resumeFilePos)
 
         if (pos + 3 >= maxPos)
             goto exit;
-        _f_mgr->readFromFile(audiofile, &byte1b);
+        meow::_fs.readFromFile(audiofile, &byte1b);
         ++pos;
-        _f_mgr->readFromFile(audiofile, &byte2b);
+        meow::_fs.readFromFile(audiofile, &byte2b);
         ++pos;
         while (true)
         {
             if (byte1b == 0xFF && (byte2b & 0x0E0) == 0xE0)
             {
-                _f_mgr->readFromFile(audiofile, &byte3b);
+                meow::_fs.readFromFile(audiofile, &byte3b);
                 ++pos;
                 pos2 = pos - 3;
                 break;
             }
             byte1b = byte2b;
-            _f_mgr->readFromFile(audiofile, &byte2b);
+            meow::_fs.readFromFile(audiofile, &byte2b);
             ++pos;
             if (pos >= maxPos)
                 goto exit;

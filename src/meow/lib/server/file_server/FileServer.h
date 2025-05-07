@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <WebServer.h>
-#include "../../../manager/files/FileManager.h"
 
 namespace meow
 {
@@ -90,7 +89,6 @@ namespace meow
         WebServer *_server = nullptr;
         bool _must_work = false;
 
-        FileManager _f_mgr;
         FILE *in_file{nullptr};
 
         static void startWebServer(void *params);

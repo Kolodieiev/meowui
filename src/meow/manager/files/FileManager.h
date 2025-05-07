@@ -110,7 +110,7 @@ namespace meow
          * @return true - якщо карта примонтована.
          * @return false - якщо карта не примонтована.
          */
-        bool isSdMounted();
+        bool isMounted();
 
         /**
          * @brief Записує в out_path повний шлях до path, з урахуванням точки монтування.
@@ -319,7 +319,7 @@ namespace meow
          * @param mode Режим відкриття бінарного файла.
          * @return FILE* - вказівник на відкритий бінарний файл. NULL - якщо операція завершилася невдачею.
          */
-        FILE *getFileDescriptor(const char *path, const char *mode);
+        FILE *openFile(const char *path, const char *mode);
 
         /**
          * @brief Закриває відкритий бінарний файл.
@@ -379,6 +379,14 @@ namespace meow
          */
         bool isWorking() const { return _is_working; }
 
+        /**
+         * @brief Повертає значення прапору, який вказує чи була успішно завершена остання запущена задача.
+         *
+         * @return true - Якщо задача завершена успішно.
+         * @return false - Інакше.
+         */
+        bool lastTaskResult() const { return _last_task_result; }
+
     private:
         enum IndexMode : uint8_t
         {
@@ -403,6 +411,8 @@ namespace meow
         TaskDoneHandler _doneHandler{nullptr};
         void *_doneArg{nullptr};
         //
+        bool _last_task_result = true;
+        //
         uint8_t getEntryType(const char *path, dirent *entry = nullptr);
         //
         void startIndex(std::vector<FileInfo> &out_vec, const char *dir_path, IndexMode mode, const char *file_ext = "");
@@ -417,4 +427,10 @@ namespace meow
         //
         size_t writeOptimal(FILE *file, const void *buffer, size_t len);
     };
+
+    /**
+     * @brief Глобальний об'єкт-обгортка для роботи з картою пам'яті.
+     *
+     */
+    extern FileManager _fs;
 }

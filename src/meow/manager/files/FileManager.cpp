@@ -8,7 +8,7 @@
 
 namespace meow
 {
-    bool FileManager::isSdMounted()
+    bool FileManager::isMounted()
     {
         bool result = true;
 
@@ -249,7 +249,7 @@ namespace meow
         return total_written;
     }
 
-    FILE *FileManager::getFileDescriptor(const char *path, const char *mode)
+    FILE *FileManager::openFile(const char *path, const char *mode)
     {
         String full_path;
         makeFullPath(full_path, path);
@@ -740,6 +740,8 @@ namespace meow
     {
         _is_working = false;
 
+        _last_task_result = result;
+
         if (_doneHandler)
             _doneHandler(result, _doneArg);
 
@@ -897,4 +899,6 @@ namespace meow
             ungetc(c, _file);
         return c;
     }
+
+    FileManager _fs;
 }

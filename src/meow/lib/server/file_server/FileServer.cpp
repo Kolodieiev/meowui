@@ -2,6 +2,8 @@
 #include "FileServer.h"
 #include "./tmpl_html.cpp"
 #include "meow/manager/wifi/WiFiManager.h"
+#include "meow/manager/files/FileManager.h"
+
 
 namespace meow
 {
@@ -23,10 +25,10 @@ namespace meow
         if (_server_dir.isEmpty())
             _server_dir = "/";
 
-        if (!_f_mgr.isSdMounted())
+        if (!_fs.isMounted())
             return false;
 
-        if (!_f_mgr.dirExist(_server_dir.c_str()))
+        if (!_fs.dirExist(_server_dir.c_str()))
             return false;
 
         _server_ip = "http://";
@@ -165,13 +167,13 @@ namespace meow
             path += "/";
             path += _server->arg(0);
 
-            FILE *file = _f_mgr.getFileDescriptor(path.c_str(), "rb");
+            FILE *file = _fs.openFile(path.c_str(), "rb");
 
-            if (!file || !_f_mgr.fileExist(path.c_str()))
+            if (!file || !_fs.fileExist(path.c_str()))
                 handle404();
             else
             {
-                size_t f_size = _f_mgr.getFileSize(path.c_str());
+                size_t f_size = _fs.getFileSize(path.c_str());
                 FileStream f_stream(file, _server->arg(0).c_str(), f_size);
 
                 _server->sendHeader("Content-Type", "application/force-download");
@@ -184,7 +186,7 @@ namespace meow
         // Якщо відсутні параметри, відобразити список файлів в директорії
         else
         {
-            if (!_f_mgr.dirExist(_server_dir.c_str()))
+            if (!_fs.dirExist(_server_dir.c_str()))
             {
                 log_e("Помилка відкриття директорії %s", _server_dir.c_str());
                 _server->send(500, "text/html", "");
@@ -196,7 +198,7 @@ namespace meow
             html += MID_HTML;
 
             std::vector<FileInfo> f_infos;
-            _f_mgr.indexFiles(f_infos, _server_dir.c_str());
+            _fs.indexFiles(f_infos, _server_dir.c_str());
 
             for (auto &info : f_infos)
             {
@@ -226,20 +228,20 @@ namespace meow
 
             log_i("Запит на створення файлу %s", file_name.c_str());
 
-            _f_mgr.closeFile(in_file);
+            _fs.closeFile(in_file);
 
-            if (_f_mgr.exists(file_name.c_str(), true))
+            if (_fs.exists(file_name.c_str(), true))
             {
                 String temp_name = file_name;
                 temp_name += "_copy";
 
-                while (_f_mgr.fileExist(temp_name.c_str(), true))
+                while (_fs.fileExist(temp_name.c_str(), true))
                     temp_name += "_copy";
 
                 file_name = temp_name;
             }
 
-            in_file = _f_mgr.getFileDescriptor(file_name.c_str(), "ab");
+            in_file = _fs.openFile(file_name.c_str(), "ab");
 
             if (!in_file)
             {
@@ -252,7 +254,7 @@ namespace meow
         }
         else if (uploadfile.status == UPLOAD_FILE_WRITE)
         {
-            _f_mgr.writeToFile(in_file, (const char *)uploadfile.buf, uploadfile.currentSize);
+            _fs.writeToFile(in_file, (const char *)uploadfile.buf, uploadfile.currentSize);
             if (millis() - _last_delay_time > 1000)
             {
                 vTaskDelay(1 / portTICK_PERIOD_MS);
@@ -263,7 +265,7 @@ namespace meow
         {
             if (in_file)
             {
-                _f_mgr.closeFile(in_file);
+                _fs.closeFile(in_file);
 
                 handleReceive();
 

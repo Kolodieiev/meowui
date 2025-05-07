@@ -1,35 +1,33 @@
 #pragma GCC optimize("O3")
 #include "BmpUtil.h"
-#include "../../manager/files/FileManager.h"
+#include "meow/manager/files/FileManager.h"
 
 namespace meow
 {
     BmpData BmpUtil::loadBmp(const char *path_to_bmp)
     {
-        FileManager f_mgr;
-
-        if (!f_mgr.fileExist(path_to_bmp))
+        if (!_fs.fileExist(path_to_bmp))
             return srcNotFound();
 
-        FILE *f = f_mgr.getFileDescriptor(path_to_bmp, "r");
+        FILE *f = _fs.openFile(path_to_bmp, "r");
 
         if (!f)
             return srcNotFound();
 
         BmpHeader bmp_header;
 
-        f_mgr.readFromFile(f, &bmp_header, BMP_HEADER_SIZE);
+        _fs.readFromFile(f, &bmp_header, BMP_HEADER_SIZE);
 
         if (!validateHeader(bmp_header))
         {
-            f_mgr.closeFile(f);
+            _fs.closeFile(f);
             log_e("Помилка валідації файлу: %s", path_to_bmp);
             return srcNotFound();
         }
 
         if (!psramInit())
         {
-            f_mgr.closeFile(f);
+            _fs.closeFile(f);
             log_e("Помилка ініціалізації PSRAM");
             return srcNotFound();
         }
@@ -45,20 +43,20 @@ namespace meow
         uint8_t *data = (uint8_t *)ps_malloc(data_size);
         if (!data)
         {
-            f_mgr.closeFile(f);
+            _fs.closeFile(f);
             log_e("Помилка виділення %zu байтів PSRAM", data_size);
             return srcNotFound();
         }
 
-        if (!f_mgr.readFromFile(f, data, data_size, bmp_header.data_offset))
+        if (!_fs.readFromFile(f, data, data_size, bmp_header.data_offset))
         {
             log_e("Помилка читання файлу: %s", path_to_bmp);
             free(data);
-            f_mgr.closeFile(f);
+            _fs.closeFile(f);
             return srcNotFound();
         }
 
-        f_mgr.closeFile(f);
+        _fs.closeFile(f);
 
         uint16_t *data_temp = (uint16_t *)data;
 
@@ -150,8 +148,7 @@ namespace meow
         for (int i = 0; i < buf_size; ++i)
             data_p16[i] = __bswap16(buff[i]);
         //
-        FileManager f_mgr;
-        size_t written_bytes = f_mgr.writeFile(path_to_bmp, data, header.file_size);
+        size_t written_bytes = _fs.writeFile(path_to_bmp, data, header.file_size);
 
         free(data);
 
