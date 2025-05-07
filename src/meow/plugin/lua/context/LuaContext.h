@@ -43,10 +43,12 @@ namespace meow
         int callLuaFunction(const char *func_name);
 
         //---------------------------------------------------------------------------------- reg
+        
         static int lua_register_context(lua_State *L);
         static int lua_register_input(lua_State *L);
 
         //---------------------------------------------------------------------------------- context
+
         static int lua_context_exit(lua_State *L);
         // static int lua_context_get_layout(lua_State *L);
         // static int lua_context_add_widget(lua_State *L);
@@ -61,5 +63,9 @@ namespace meow
         static int lua_input_is_pressed(lua_State *L);
         static int lua_input_is_released(lua_State *L);
         static int lua_input_lock(lua_State *L);
+
+        //---------------------------------------------------------------------------------- helper
+
+        static int lua_unrequire(lua_State *L);
     };
 }

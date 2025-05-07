@@ -11,6 +11,8 @@ const char STR_LUA_ERR[] = "Помилка в скрипті Lua: ";
 const char STR_LUAVM_CREATE_ERR[] = "Помилка створення LuaVM";
 const char STR_ERR_SCRIPT_STRUCT[] = "Скрипт повинен містити визначення функції update";
 //
+const char STR_UNREQUIRE_NAME[] = "unrequire";
+//
 const char STR_UPDATE_NAME[] = "update";
 //
 const char STR_LIB_NAME_CONTEXT[] = "context";
@@ -86,6 +88,7 @@ namespace meow
 
         register_custom_modules(_lua);
         register_custom_searcher(_lua);
+        lua_register(_lua, STR_UNREQUIRE_NAME, lua_unrequire);
 
         _msg = "";
         return true;
@@ -271,6 +274,46 @@ namespace meow
         int btn = luaL_checkinteger(L, 1);
         int lock_time = luaL_checkinteger(L, 2);
         _input.lock((BtnID)btn, lock_time);
+        return 0;
+    }
+
+    int LuaContext::lua_unrequire(lua_State *L)
+    {
+        const char *libname = luaL_checkstring(L, 1);
+
+        lua_getglobal(L, "package");
+        lua_getfield(L, -1, "loaded");
+        lua_getfield(L, -1, libname); // stack: package, loaded, module
+
+        if (!lua_isnil(L, -1))
+        {
+            lua_getfield(L, -1, "__unload");
+            if (!lua_isfunction(L, -1))
+            {
+                lua_pop(L, 1);
+            }
+            else
+            {
+                lua_pushvalue(L, -2);
+                if (lua_pcall(L, 1, 0, 0) != LUA_OK)
+                {
+                    const char *err = lua_tostring(L, -1);
+                    log_e("Error in __unload: %s\n", err);
+                    lua_pop(L, 1);
+                }
+            }
+        }
+
+        lua_pop(L, 1);
+
+        lua_pushnil(L);
+        lua_setfield(L, -2, libname);
+
+        lua_pop(L, 2);
+
+        lua_pushnil(L);
+        lua_setglobal(L, libname);
+
         return 0;
     }
 }
