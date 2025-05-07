@@ -192,5 +192,10 @@ namespace meow
 
         static void onEvent(WiFiEvent_t event);
     };
+
+    /**
+     * @brief Глобальний об'єкт-обгортка для роботи з модулем WiFi.
+     * 
+     */
     extern WiFiManager _wifi;
 }
