@@ -9,7 +9,7 @@ const char STR_PIN_PULLUP[] = "pullup";
 const char STR_PIN_TOGGLE[] = "toggle";
 const char STR_PIN_WRITE[] = "write";
 const char STR_PIN_READ[] = "read";
-const char STR_PIN_AREAD[] = "a_read";
+const char STR_PIN_AREAD[] = "analogRead";
 
 int lua_pin_input(lua_State *L)
 {
