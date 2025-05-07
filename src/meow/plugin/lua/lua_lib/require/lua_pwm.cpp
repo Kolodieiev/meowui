@@ -1,5 +1,6 @@
 #include "lua_pwm.h"
 #include <Arduino.h>
+#include "meow/plugin/lua/res/lua_err_msg.h"
 
 //
 const char STR_PMW_SETUP[] = "setup";
