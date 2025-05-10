@@ -125,7 +125,7 @@ namespace meow
          *
          * @return uint16_t
          */
-        uint16_t getTextLength() const { return _text_len; }
+        uint16_t getLen() const { return _text_len; }
 
         /**
          * @brief Встановлює прапор, який керує механізмом прокручування тексту,
