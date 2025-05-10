@@ -108,7 +108,7 @@ namespace meow
         {
             _widgets[i]->setPos(itemXPos, itemYPos);
 
-            if (_orientation == ORIENTATION_VERTICAL)
+            if (_orientation == VERTICAL)
             {
                 _widgets[i]->setHeight(_item_height);
                 _widgets[i]->setWidth(_width - 4);
@@ -129,7 +129,7 @@ namespace meow
     {
         uint16_t cyclesCount;
 
-        if (_orientation == ORIENTATION_VERTICAL)
+        if (_orientation == VERTICAL)
             cyclesCount = (float)_height / (_item_height + _items_spacing);
         else
             cyclesCount = (float)_width / (_item_width + _items_spacing);

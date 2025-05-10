@@ -46,7 +46,7 @@ namespace meow
          *
          * @return uint16_t
          */
-        uint16_t getItemHeight() const { return _orientation == ORIENTATION_VERTICAL ? _item_height : _height - 4; }
+        uint16_t getItemHeight() const { return _orientation == VERTICAL ? _item_height : _height - 4; }
 
         /**
          * @brief Встановлює ширину кожного із елементів списку для горизонтальної орієнтації меню.
@@ -64,14 +64,14 @@ namespace meow
          *
          * @return uint16_t
          */
-        uint16_t getItemsWidth() const { return _orientation == ORIENTATION_HORIZONTAL ? _item_width : _width - 4; }
+        uint16_t getItemsWidth() const { return _orientation == HORIZONTAL ? _item_width : _width - 4; }
 
         /**
          * @brief Встановлює орієнтацію меню.
          * При вертикальній орієнтації елементи меню розташовуються зверху вниз.
          * При горизонтальній - зліва на право.
          *
-         * @param orientation Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
+         * @param orientation Може мати значення: VERTICAL / HORIZONTAL.
          */
         void setOrientation(const Orientation orientation)
         {
@@ -147,7 +147,7 @@ namespace meow
 
         uint16_t _items_spacing{0};
 
-        Orientation _orientation{ORIENTATION_VERTICAL};
+        Orientation _orientation{VERTICAL};
 
         void drawItems(uint16_t start, uint16_t count);
         uint16_t getCyclesCount() const;

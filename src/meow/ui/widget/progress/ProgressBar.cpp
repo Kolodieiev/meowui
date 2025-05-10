@@ -93,7 +93,7 @@ namespace meow
             y_offset = _parent->getYPos();
         }
 
-        if (_orientation == ORIENTATION_HORIZONTAL)
+        if (_orientation == HORIZONTAL)
         {
             uint16_t progressW = ((float)_width / _max) * _progress;
             if (progressW < 3)

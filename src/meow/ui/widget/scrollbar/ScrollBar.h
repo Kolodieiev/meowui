@@ -68,9 +68,9 @@ namespace meow
 
         /**
          * @brief Встановлює орієнтацію смуги прокрутки.
-         * По замовченню встановлено ORIENTATION_VERTICAL.
+         * По замовченню встановлено VERTICAL.
          *
-         * @param orientation Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
+         * @param orientation Може мати значення: VERTICAL / HORIZONTAL.
          */
         void setOrientation(Orientation orientation)
         {
@@ -119,7 +119,7 @@ namespace meow
 
         uint16_t _slider_color{0xFFFF};
 
-        Orientation _orientation{ORIENTATION_VERTICAL};
+        Orientation _orientation{VERTICAL};
 
         uint16_t _slider_last_x_pos{0};
         uint16_t _slider_last_y_pos{0};

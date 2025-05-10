@@ -89,7 +89,7 @@ namespace meow
 
         uint16_t step_value = _smart_scroll_enabled ? _smart_value : _cur_value;
 
-        if (_orientation == ORIENTATION_VERTICAL)
+        if (_orientation == VERTICAL)
             slider_y_pos = _y_pos + y_offset + _slider_step_size * step_value;
         else
             slider_x_pos = _x_pos + x_offset + _slider_step_size * step_value;
@@ -127,7 +127,7 @@ namespace meow
         if (_cur_value > _max_value)
             _cur_value = _max_value;
 
-        if (_orientation == ORIENTATION_VERTICAL)
+        if (_orientation == VERTICAL)
         {
             _slider_width = _width;
 

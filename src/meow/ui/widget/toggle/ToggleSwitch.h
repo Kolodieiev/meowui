@@ -118,7 +118,7 @@ namespace meow
         /**
          * @brief Встановлює орієнтацію відображення перемикача.
          *
-         * @param orientation Може мати значення: ORIENTATION_HORIZONTAL / ORIENTATION_VERTICAL.
+         * @param orientation Може мати значення: HORIZONTAL / VERTICAL.
          */
         void setOrientation(Orientation orientation)
         {
@@ -139,7 +139,7 @@ namespace meow
         using IWidget::setBackColor;
         using IWidget::setTransparency;
 
-        Orientation _orientation{ORIENTATION_HORIZONTAL};
+        Orientation _orientation{HORIZONTAL};
         bool _is_on{false};
         uint16_t _lever_color{0xFFFF};
         uint16_t _on_color{TFT_GREEN};

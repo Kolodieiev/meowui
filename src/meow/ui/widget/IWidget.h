@@ -47,8 +47,8 @@ namespace meow
 
         enum Orientation : uint8_t
         {
-            ORIENTATION_HORIZONTAL = 0,
-            ORIENTATION_VERTICAL,
+            HORIZONTAL = 0,
+            VERTICAL,
         };
 
         enum Visibility : uint8_t

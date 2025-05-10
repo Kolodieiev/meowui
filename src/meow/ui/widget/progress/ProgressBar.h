@@ -63,9 +63,9 @@ namespace meow
 
         /**
          * @brief Встановлює орієнтацію віджета.
-         * По замовчуванню вастановлено ORIENTATION_HORIZONTAL.
+         * По замовчуванню вастановлено HORIZONTAL.
          *
-         * @param orientation Може мати значення: ORIENTATION_VERTICAL / ORIENTATION_HORIZONTAL.
+         * @param orientation Може мати значення: VERTICAL / HORIZONTAL.
          */
         void setOrientation(Orientation orientation)
         {
@@ -108,7 +108,7 @@ namespace meow
         uint16_t _max{1};
         uint16_t _progress_color{0xFFFF};
         //
-        Orientation _orientation{ORIENTATION_HORIZONTAL};
+        Orientation _orientation{HORIZONTAL};
         // opt
         bool _is_first_draw{true};
         uint16_t _prev_progress{1};

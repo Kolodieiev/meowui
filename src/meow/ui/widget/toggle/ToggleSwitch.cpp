@@ -39,7 +39,7 @@ namespace meow
             uint16_t lever_x;
             uint16_t lever_y;
 
-            if (_orientation == ORIENTATION_HORIZONTAL)
+            if (_orientation == HORIZONTAL)
             {
                 lever_x = _is_on ? _x_pos + _width - lever_w - 3 : _x_pos + 3;
                 lever_y = _y_pos + 3;
