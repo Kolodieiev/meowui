@@ -1,31 +1,18 @@
-#pragma GCC optimize("O3")
 #include "LuaContext.h"
 #include "esp_heap_caps.h"
 #include "meow/ui/widget/layout/EmptyLayout.h"
 
 #include "../lua_lib/custom_register.h"
 #include "../lua_lib/custom_searcher.h"
+#include "../lua_lib/custom_type_initializer.h"
+
+#include "../lua_lib/type/widget/lua_iwidget.h"
+#include "../lua_lib/type/widget/lua_iwidget_cont.h"
 
 const char STR_NOT_ENOUGH_RAM[] = "Недостатньо RAM для роботи LuaVM";
-const char STR_LUA_ERR[] = "Помилка в скрипті Lua: ";
-const char STR_LUAVM_CREATE_ERR[] = "Помилка створення LuaVM";
-const char STR_ERR_SCRIPT_STRUCT[] = "Скрипт повинен містити визначення функції update";
-//
-const char STR_UNREQUIRE_NAME[] = "unrequire";
 //
 const char STR_UPDATE_NAME[] = "update";
 //
-const char STR_LIB_NAME_CONTEXT[] = "context";
-const char STR_FUNC_CONTEXT_EXIT[] = "exit";
-//
-const char STR_LIB_NAME_INPUT[] = "input";
-const char STR_FUNC_INPUT_ENABLE[] = "enable_btn";
-const char STR_FUNC_INPUT_DISABLE[] = "disable_btn";
-const char STR_FUNC_INPUT_IS_HOLDED[] = "is_holded";
-const char STR_FUNC_INPUT_IS_PRESSED[] = "is_pressed";
-const char STR_FUNC_INPUT_IS_RELEASED[] = "is_released";
-const char STR_FUNC_INPUT_LOCK[] = "lock";
-
 namespace meow
 {
     const LuaRegisterFunc LuaContext::LIB_REGISTER_FUNCS[] = {
@@ -34,17 +21,18 @@ namespace meow
     };
 
     const struct luaL_Reg LuaContext::LIB_CONTEXT[] = {
-        {STR_FUNC_CONTEXT_EXIT, LuaContext::lua_context_exit},
+        {"exit", LuaContext::lua_context_exit},
+        {"getLayout", LuaContext::lua_context_get_layout},
         {nullptr, nullptr},
     };
 
     const struct luaL_Reg LuaContext::LIB_INPUT[] = {
-        {STR_FUNC_INPUT_ENABLE, lua_input_enable_btn},
-        {STR_FUNC_INPUT_DISABLE, lua_input_disable_btn},
-        {STR_FUNC_INPUT_IS_HOLDED, lua_input_is_holded},
-        {STR_FUNC_INPUT_IS_PRESSED, lua_input_is_pressed},
-        {STR_FUNC_INPUT_IS_RELEASED, lua_input_is_released},
-        {STR_FUNC_INPUT_LOCK, lua_input_lock},
+        {"enable_btn", lua_input_enable_btn},
+        {"disable_btn", lua_input_disable_btn},
+        {"is_holded", lua_input_is_holded},
+        {"is_pressed", lua_input_is_pressed},
+        {"is_released", lua_input_is_released},
+        {"lock", lua_input_lock},
         {nullptr, nullptr},
     };
 
@@ -52,11 +40,13 @@ namespace meow
 
     LuaContext::LuaContext()
     {
+#ifdef GRAPHICS_ENABLED
         EmptyLayout *layout = new EmptyLayout(1);
         layout->setBackColor(TFT_BLUE);
         layout->setWidth(_display.width());
         layout->setHeight(_display.height());
         setLayout(layout);
+#endif
 
         _this_ptr = this;
     }
@@ -64,6 +54,8 @@ namespace meow
     LuaContext::~LuaContext()
     {
         lua_close(_lua);
+        lua_clear_iwidget();
+        lua_clear_iwidget_cont();
     }
 
     bool LuaContext::initLua()
@@ -88,7 +80,14 @@ namespace meow
 
         register_custom_modules(_lua);
         register_custom_searcher(_lua);
-        lua_register(_lua, STR_UNREQUIRE_NAME, lua_unrequire);
+
+        lua_register(_lua, "initType", lua_init_type);
+        lua_register(_lua, "deinitType", lua_deinit_type);
+        lua_register(_lua, "unrequire", lua_unrequire);
+
+        lua_register(_lua, "showToast", lua_show_toast);
+        lua_register(_lua, "showNotification", lua_show_notification);
+        lua_register(_lua, "hideNotification", lua_hide_notification);
 
         _msg = "";
         return true;
@@ -106,7 +105,7 @@ namespace meow
         }
         else if (!hasLuaFunction(STR_UPDATE_NAME))
         {
-            _msg = STR_ERR_SCRIPT_STRUCT;
+            _msg = "Скрипт повинен містити визначення функції update";
             return false;
         }
         else
@@ -172,7 +171,7 @@ namespace meow
         const char *err_msg = lua_tostring(_lua, -1);
         if (err_msg)
         {
-            _msg = STR_LUA_ERR;
+            _msg = "Помилка в скрипті Lua: ";
             _msg += err_msg;
         }
     }
@@ -213,14 +212,14 @@ namespace meow
     int LuaContext::lua_register_context(lua_State *L)
     {
         luaL_newlib(L, LIB_CONTEXT);
-        lua_setglobal(L, STR_LIB_NAME_CONTEXT);
+        lua_setglobal(L, "context");
         return 0;
     }
 
     int LuaContext::lua_register_input(lua_State *L)
     {
         luaL_newlib(L, LIB_INPUT);
-        lua_setglobal(L, STR_LIB_NAME_INPUT);
+        lua_setglobal(L, "input");
         return 0;
     }
 
@@ -230,6 +229,25 @@ namespace meow
     {
         _this_ptr->release();
         return 0;
+    }
+
+    int LuaContext::lua_context_get_layout(lua_State *L)
+    {
+        IWidgetContainer *layout = _this_ptr->getLayout();
+        if (!layout)
+        {
+            lua_pushnil(L);
+        }
+        else
+        {
+            IWidgetContainer **udata = (IWidgetContainer **)lua_newuserdata(L, sizeof(IWidgetContainer *));
+            *udata = layout;
+
+            luaL_getmetatable(L, STR_TYPE_NAME_IWIDGET_CONT);
+            lua_setmetatable(L, -2);
+        }
+
+        return 1;
     }
 
     //---------------------------------------------------------------------------------------------------- input
@@ -277,13 +295,25 @@ namespace meow
         return 0;
     }
 
+    int LuaContext::lua_init_type(lua_State *L)
+    {
+        init_custom_type(L);
+        return 0;
+    }
+
+    int LuaContext::lua_deinit_type(lua_State *L)
+    {
+        deinit_custom_type(L);
+        return 0;
+    }
+
     int LuaContext::lua_unrequire(lua_State *L)
     {
-        const char *libname = luaL_checkstring(L, 1);
+        const char *module_name = luaL_checkstring(L, 1);
 
         lua_getglobal(L, "package");
         lua_getfield(L, -1, "loaded");
-        lua_getfield(L, -1, libname); // stack: package, loaded, module
+        lua_getfield(L, -1, module_name); // stack: package, loaded, module
 
         if (!lua_isnil(L, -1))
         {
@@ -307,13 +337,37 @@ namespace meow
         lua_pop(L, 1);
 
         lua_pushnil(L);
-        lua_setfield(L, -2, libname);
+        lua_setfield(L, -2, module_name);
 
         lua_pop(L, 2);
 
         lua_pushnil(L);
-        lua_setglobal(L, libname);
+        lua_setglobal(L, module_name);
 
+        return 0;
+    }
+
+    int LuaContext::lua_show_toast(lua_State *L)
+    {
+        uint8_t params_num = lua_gettop(L);
+
+        const char *toast_str = luaL_checkstring(L, 1);
+        float time = TOAST_LENGTH_SHORT;
+
+        if (params_num > 1)
+            time = luaL_checknumber(L, 2);
+
+        _this_ptr->showToast(toast_str, time);
+        return 0;
+    }
+
+    int LuaContext::lua_show_notification(lua_State *L) // TODO
+    {
+        return 0;
+    }
+
+    int LuaContext::lua_hide_notification(lua_State *L)
+    {
         return 0;
     }
 }

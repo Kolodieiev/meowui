@@ -1,5 +1,4 @@
 #pragma once
-#pragma GCC optimize("O3")
 #include <Arduino.h>
 #include "meow/ui/context/IContext.h"
 
@@ -43,17 +42,14 @@ namespace meow
         int callLuaFunction(const char *func_name);
 
         //---------------------------------------------------------------------------------- reg
-        
+
         static int lua_register_context(lua_State *L);
         static int lua_register_input(lua_State *L);
 
         //---------------------------------------------------------------------------------- context
 
         static int lua_context_exit(lua_State *L);
-        // static int lua_context_get_layout(lua_State *L);
-        // static int lua_context_add_widget(lua_State *L);
-        // static int lua_context_delete_widget(lua_State *L);
-        // static int lua_context_find_widget(lua_State *L);
+        static int lua_context_get_layout(lua_State *L);
 
         //---------------------------------------------------------------------------------- input
 
@@ -66,6 +62,11 @@ namespace meow
 
         //---------------------------------------------------------------------------------- helper
 
+        static int lua_init_type(lua_State *L);
+        static int lua_deinit_type(lua_State *L);
         static int lua_unrequire(lua_State *L);
+        static int lua_show_toast(lua_State *L);
+        static int lua_show_notification(lua_State *L);
+        static int lua_hide_notification(lua_State *L);
     };
 }
