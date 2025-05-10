@@ -82,8 +82,8 @@ namespace meow
         /**
          * @brief Шукає рекурсивно найглибше вкладений віджет за вказаними координатами відносно дисплею.
          *
-         * @param x - Координата.
-         * @param y - Координата.
+         * @param x Координата.
+         * @param y Координата.
          * @return IWidget* - Вказівник на вкладений віджет або this.
          */
         IWidget *getWidgetByCoords(uint16_t x, uint16_t y) const;
