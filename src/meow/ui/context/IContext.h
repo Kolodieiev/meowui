@@ -153,7 +153,7 @@ namespace meow
 
     private:
         SemaphoreHandle_t _layout_mutex;
-        IWidgetContainer *_layout;
+        IWidgetContainer *_layout{nullptr};
         //
         bool _is_released{false};
         ContextID _next_context_ID;
