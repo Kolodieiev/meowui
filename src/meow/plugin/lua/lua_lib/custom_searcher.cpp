@@ -8,28 +8,26 @@
 #include "./require/lua_wifi.h"
 #include "./require/lua_pwm.h"
 
-// #include "./require/lua_.h"
-
-const char STR_ERR_NO_LOADER[] = "Відсутній завантажувач для бібліотеки: %s";
+const char STR_ERR_NO_LOADER[] = "Відсутній завантажувач для модуля: %s";
 
 // Додай сюди функції для підключення бібліотек з допомогою require
 int custom_searcher(lua_State *L)
 {
     const char *lib_name = luaL_checkstring(L, 1);
-    if (!strcmp(lib_name, STR_LIB_NAME_SD))
+    if (strcmp(lib_name, STR_LIB_NAME_SD) == 0)
         lua_pushcfunction(L, lua_open_sd);
-    else if (!strcmp(lib_name, STR_LIB_NAME_WIFI))
+    else if (strcmp(lib_name, STR_LIB_NAME_WIFI) == 0)
         lua_pushcfunction(L, lua_open_wifi);
-    else if (!strcmp(lib_name, STR_LIB_NAME_NET))
+    else if (strcmp(lib_name, STR_LIB_NAME_NET) == 0)
         lua_pushcfunction(L, lua_open_net);
-    else if (!strcmp(lib_name, STR_LIB_NAME_UART))
+    else if (strcmp(lib_name, STR_LIB_NAME_UART) == 0)
         lua_pushcfunction(L, lua_open_uart);
-    else if (!strcmp(lib_name, STR_LIB_NAME_I2C))
+    else if (strcmp(lib_name, STR_LIB_NAME_I2C) == 0)
         lua_pushcfunction(L, lua_open_i2c);
-    else if (!strcmp(lib_name, STR_LIB_NAME_PWM))
+    else if (strcmp(lib_name, STR_LIB_NAME_PWM) == 0)
         lua_pushcfunction(L, lua_open_pwm);
     else
-        lua_pushfstring(L, STR_ERR_NO_LOADER, lib_name);
+        luaL_error(L, STR_ERR_NO_LOADER, lib_name);
 
     return 1;
 }
