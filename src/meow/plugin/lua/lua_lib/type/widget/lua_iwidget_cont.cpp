@@ -126,8 +126,10 @@ void lua_init_iwidget_cont(lua_State *L, const char *type_caller_name)
         lua_init_iwidget(L, STR_TYPE_NAME_IWIDGET_CONT);
 
         luaL_newmetatable(L, STR_TYPE_NAME_IWIDGET_CONT);
+        lua_newtable(L);
         luaL_setfuncs(L, TYPE_METH_IWIDGET_CONT, 0);
         luaL_getmetatable(L, STR_TYPE_NAME_IWIDGET);
+        lua_setmetatable(L, -2);
         lua_setfield(L, -2, STR_LUA_INDEX);
         lua_pop(L, 1);
     }

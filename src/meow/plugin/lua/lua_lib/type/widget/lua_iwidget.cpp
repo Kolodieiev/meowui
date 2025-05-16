@@ -148,8 +148,8 @@ int lua_iwgt_forced_draw(lua_State *L)
 int lua_iwgt_set_pos(lua_State *L)
 {
     IWidget *widget = *(IWidget **)lua_touserdata(L, 1);
-    uint16_t x = luaL_checkinteger(L, 2);
-    uint16_t y = luaL_checkinteger(L, 3);
+    uint16_t x = luaL_checknumber(L, 2);
+    uint16_t y = luaL_checknumber(L, 3);
     widget->setPos(x, y);
     return 0;
 }
@@ -157,7 +157,7 @@ int lua_iwgt_set_pos(lua_State *L)
 int lua_iwgt_set_height(lua_State *L)
 {
     IWidget *widget = *(IWidget **)lua_touserdata(L, 1);
-    uint16_t h = luaL_checkinteger(L, 2);
+    uint16_t h = luaL_checknumber(L, 2);
     widget->setHeight(h);
     return 0;
 }
@@ -173,7 +173,7 @@ int lua_iwgt_get_hight(lua_State *L)
 int lua_iwgt_set_width(lua_State *L)
 {
     IWidget *widget = *(IWidget **)lua_touserdata(L, 1);
-    uint16_t w = luaL_checkinteger(L, 2);
+    uint16_t w = luaL_checknumber(L, 2);
     widget->setWidth(w);
     return 0;
 }
@@ -309,13 +309,6 @@ int lua_iwgt_set_back_color(lua_State *L)
 
 // -------------------------------------------------------------------------------------------------------------
 
-int lua_iwidget_unload(lua_State *L)
-{
-    lua_pushnil(L);
-    lua_setfield(L, LUA_REGISTRYINDEX, STR_TYPE_NAME_IWIDGET);
-    return 0;
-}
-
 const struct luaL_Reg TYPE_METH_IWIDGET[] = {
     {"forcedDraw", lua_iwgt_forced_draw},
     {"setPos", lua_iwgt_set_pos},
@@ -338,7 +331,6 @@ const struct luaL_Reg TYPE_METH_IWIDGET[] = {
     {"removeFocus", lua_iwgt_remove_focus},
     {"setVisibility", lua_iwgt_set_visibility},
     {"setTransparency", lua_iwgt_set_transparency},
-    {STR_LUA_UNLOAD, lua_iwidget_unload},
     {nullptr, nullptr},
 };
 
@@ -353,10 +345,11 @@ void lua_init_iwidget(lua_State *L, const char *type_caller_name)
     if (_iwidget_type_name_list.empty())
     {
         luaL_newmetatable(L, STR_TYPE_NAME_IWIDGET);
+        lua_newtable(L);
         luaL_setfuncs(L, TYPE_METH_IWIDGET, 0);
-        lua_pushvalue(L, -1);
         lua_setfield(L, -2, STR_LUA_INDEX);
         lua_pop(L, 1);
+
         init_iwidget_constants(L);
         init_color_constants(L);
     }
