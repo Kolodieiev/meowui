@@ -24,7 +24,12 @@ namespace meow
         lua_State *_lua{nullptr};
         String _msg;
         uint16_t _hook_counter{0};
-
+        //----------------------------------------------------------------------------------
+        Notification *_notification{nullptr};
+        //----------------------------------------------------------------------------------
+        std::vector<uint16_t> _loaded_img_id;
+        //----------------------------------------------------------------------------------
+        std::vector<IWidget *> _managed_widgets;
         //----------------------------------------------------------------------------------
         static const LuaRegisterFunc LIB_REGISTER_FUNCS[];
         static const struct luaL_Reg LIB_CONTEXT[];
@@ -50,6 +55,7 @@ namespace meow
 
         static int lua_context_exit(lua_State *L);
         static int lua_context_get_layout(lua_State *L);
+        static int lua_context_manage_widget(lua_State *L);
 
         //---------------------------------------------------------------------------------- input
 
@@ -68,5 +74,7 @@ namespace meow
         static int lua_show_toast(lua_State *L);
         static int lua_show_notification(lua_State *L);
         static int lua_hide_notification(lua_State *L);
+        static int lua_load_img(lua_State *L);
+        static int lua_delete_img(lua_State *L);
     };
 }

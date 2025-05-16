@@ -9,6 +9,11 @@
 #include "../lua_lib/type/widget/lua_iwidget.h"
 #include "../lua_lib/type/widget/lua_iwidget_cont.h"
 
+#include "meow/manager/resources/ResManager.h"
+#include "meow/plugin/lua/lua_lib/helper/lua_helper.h"
+
+const char STR_NOTIFICATION[] = "Повідомлення";
+const char STR_OK[] = "OK";
 const char STR_NOT_ENOUGH_RAM[] = "Недостатньо RAM для роботи LuaVM";
 //
 const char STR_UPDATE_NAME[] = "update";
@@ -21,6 +26,7 @@ namespace meow
     };
 
     const struct luaL_Reg LuaContext::LIB_CONTEXT[] = {
+        {"manageWidget", LuaContext::lua_context_manage_widget},
         {"exit", LuaContext::lua_context_exit},
         {"getLayout", LuaContext::lua_context_get_layout},
         {nullptr, nullptr},
@@ -46,6 +52,8 @@ namespace meow
         layout->setWidth(_display.width());
         layout->setHeight(_display.height());
         setLayout(layout);
+
+        _notification = new Notification(1);
 #endif
 
         _this_ptr = this;
@@ -56,6 +64,13 @@ namespace meow
         lua_close(_lua);
         lua_clear_iwidget();
         lua_clear_iwidget_cont();
+        delete _notification;
+
+        for (size_t i = 0; i < _loaded_img_id.size(); ++i)
+            _res.deleteBmpRes(_loaded_img_id[i]);
+
+        for (size_t i = 0; i < _managed_widgets.size(); ++i)
+            delete _managed_widgets[i];
     }
 
     bool LuaContext::initLua()
@@ -88,6 +103,9 @@ namespace meow
         lua_register(_lua, "showToast", lua_show_toast);
         lua_register(_lua, "showNotification", lua_show_notification);
         lua_register(_lua, "hideNotification", lua_hide_notification);
+
+        lua_register(_lua, "loadImg", lua_load_img);
+        lua_register(_lua, "deleteImg", lua_delete_img);
 
         _msg = "";
         return true;
@@ -250,6 +268,13 @@ namespace meow
         return 1;
     }
 
+    int LuaContext::lua_context_manage_widget(lua_State *L)
+    {
+        Label **label = (Label **)lua_touserdata(L, 1);
+        _this_ptr->_managed_widgets.push_back(*label);
+        return 0;
+    }
+
     //---------------------------------------------------------------------------------------------------- input
 
     int LuaContext::lua_input_enable_btn(lua_State *L)
@@ -349,25 +374,81 @@ namespace meow
 
     int LuaContext::lua_show_toast(lua_State *L)
     {
-        uint8_t params_num = lua_gettop(L);
+        uint8_t arg_num = lua_gettop(L);
 
         const char *toast_str = luaL_checkstring(L, 1);
         float time = TOAST_LENGTH_SHORT;
 
-        if (params_num > 1)
+        if (arg_num > 1)
             time = luaL_checknumber(L, 2);
 
         _this_ptr->showToast(toast_str, time);
         return 0;
     }
 
-    int LuaContext::lua_show_notification(lua_State *L) // TODO
+    int LuaContext::lua_show_notification(lua_State *L)
     {
+        uint8_t arg_num = lua_check_top(L, {1, 4});
+        if (arg_num == 0)
+            return 0;
+
+        if (arg_num == 1)
+        {
+            const char *notification_msg = luaL_checkstring(L, 1);
+            _this_ptr->_notification->setTitleText(STR_NOTIFICATION);
+            _this_ptr->_notification->setMsgText(notification_msg);
+            _this_ptr->_notification->setLeftText(emptyString);
+            _this_ptr->_notification->setRightText(STR_OK);
+        }
+        else if (arg_num == 4)
+        {
+            const char *n_title = luaL_checkstring(L, 1);
+            const char *n_msg = luaL_checkstring(L, 2);
+            const char *n_left = luaL_checkstring(L, 3);
+            const char *n_rigt = luaL_checkstring(L, 4);
+
+            _this_ptr->_notification->setTitleText(n_title);
+            _this_ptr->_notification->setMsgText(n_msg);
+            _this_ptr->_notification->setLeftText(n_left);
+            _this_ptr->_notification->setRightText(n_rigt);
+        }
+
+        _this_ptr->showNotification(_this_ptr->_notification);
         return 0;
     }
 
     int LuaContext::lua_hide_notification(lua_State *L)
     {
+        _this_ptr->hideNotification();
+        return 0;
+    }
+
+    int LuaContext::lua_load_img(lua_State *L)
+    {
+        const char *path = luaL_checkstring(L, 1);
+        uint16_t id = _res.loadBmpRes(path);
+
+        if (id > 0)
+            _this_ptr->_loaded_img_id.push_back(id);
+
+        lua_pushinteger(L, id);
+        return 1;
+    }
+
+    int LuaContext::lua_delete_img(lua_State *L)
+    {
+        uint16_t id = luaL_checkinteger(L, 1);
+
+        for (auto it_b = _this_ptr->_loaded_img_id.begin(), it_e = _this_ptr->_loaded_img_id.end(); it_b != it_e; ++it_b)
+        {
+            if (*it_b == id)
+            {
+                _this_ptr->_loaded_img_id.erase(it_b);
+                _res.deleteBmpRes(id);
+                break;
+            }
+        }
+
         return 0;
     }
 }
