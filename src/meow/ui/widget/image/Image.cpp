@@ -1,11 +1,23 @@
 #pragma GCC optimize("O3")
 
 #include "Image.h"
-#include "../../../util/bmp/BmpUtil.h"
 
 namespace meow
 {
     Image::Image(uint16_t wiget_ID) : IWidget(wiget_ID, TYPE_ID_IMAGE) {}
+
+    void Image::setTransparentColor(uint16_t color)
+    {
+        _has_transp_color = true;
+        _transparent_color = color;
+        _is_changed = true;
+    }
+
+    void Image::clearTransparency()
+    {
+        _has_transp_color = false;
+        _is_changed = true;
+    }
 
 #ifdef DOUBLE_BUFFERRING
 

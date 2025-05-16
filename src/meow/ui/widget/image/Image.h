@@ -42,23 +42,13 @@ namespace meow
          *
          * @param color
          */
-        void setTransparentColor(uint16_t color)
-        {
-            _has_transp_color = true;
-            _transparent_color = color;
-            _is_changed = true;
-        }
+        void setTransparentColor(uint16_t color);
 
         /**
          * @brief Видаляє прозорість у зображення.
          *
          */
-        void clearTransparency()
-        {
-            _has_transp_color = false;
-            _is_changed = true;
-        }
-
+        void clearTransparency();
         /**
          * @brief Встановлює вказівник на буффер із зображенням.
          * Буфер не буде видалено разом із віджетом.
@@ -78,7 +68,7 @@ namespace meow
 #endif
 
     private:
-        bool _has_transp_color{false};
+        bool _has_transp_color{true};
         uint16_t _transparent_color{TFT_TRANSPARENT};
 
         const uint16_t *_img_ptr{nullptr};
