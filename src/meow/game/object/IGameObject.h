@@ -5,7 +5,7 @@
 //
 #include "../../driver/graphics/GraphicsDriver.h"
 #include "../../lib/audio/wav/WavManager.h"
-#include "../../game/ResManager.h"
+#include "meow/manager/resources/ResManager.h"
 //
 #include "../DataStream.h"
 //

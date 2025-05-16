@@ -5,10 +5,11 @@
 #include <unordered_map>
 #include <vector>
 //
-#include "../driver/graphics/GraphicsDriver.h"
-#include "../driver/input/Input.h"
-#include "./ResManager.h"
-#include "../lib/audio/wav/WavManager.h"
+#include "meow/driver/graphics/GraphicsDriver.h"
+#include "meow/driver/input/Input.h"
+#include "meow/lib/audio/wav/WavManager.h"
+#include "meow/manager/resources/ResManager.h"
+
 //
 #include "./IGameUI.h"
 #include "./IGameMenu.h"

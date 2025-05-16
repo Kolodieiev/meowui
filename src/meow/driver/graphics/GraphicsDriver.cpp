@@ -1,7 +1,7 @@
 #pragma GCC optimize("O3")
 
 #include "GraphicsDriver.h"
-#include "../../util/bmp/BmpUtil.h"
+#include "meow/util/img/BmpUtil.h"
 
 namespace meow
 {
