@@ -3,6 +3,7 @@
 #include "./type/widget/lua_iwidget_cont.h"
 #include "./type/widget/lua_empty_layout.h"
 #include "./type/widget/lua_label.h"
+#include "./type/widget/lua_image.h"
 
 const char STR_ERR_NO_INITIALIZER[] = "Відсутній ініціалізатор для типу: %s";
 
@@ -15,6 +16,8 @@ void init_custom_type(lua_State *L)
         lua_init_iwidget_cont(L);
     else if (strcmp(type_name, STR_TYPE_NAME_LABEL) == 0)
         lua_init_label(L);
+    else if (strcmp(type_name, STR_TYPE_NAME_IMAGE) == 0)
+        lua_init_image(L);
     else if (strcmp(type_name, STR_TYPE_NAME_EMPTY_LAYOUT) == 0)
         lua_init_empty_layout(L);
     else
@@ -30,6 +33,8 @@ void deinit_custom_type(lua_State *L)
         lua_deinit_iwidget_cont(L);
     else if (strcmp(type_name, STR_TYPE_NAME_LABEL) == 0)
         lua_deinit_label(L);
+    else if (strcmp(type_name, STR_TYPE_NAME_IMAGE) == 0)
+        lua_deinit_image(L);
     else if (strcmp(type_name, STR_TYPE_NAME_EMPTY_LAYOUT) == 0)
         lua_deinit_empty_layout(L);
     else
