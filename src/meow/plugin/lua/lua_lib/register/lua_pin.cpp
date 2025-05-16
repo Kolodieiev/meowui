@@ -3,13 +3,6 @@
 
 const char STR_LIB_NAME_PIN[] = "pin";
 //
-const char STR_PIN_INPUT[] = "input";
-const char STR_PIN_OUTPUT[] = "output";
-const char STR_PIN_PULLUP[] = "pullup";
-const char STR_PIN_TOGGLE[] = "toggle";
-const char STR_PIN_WRITE[] = "write";
-const char STR_PIN_READ[] = "read";
-const char STR_PIN_AREAD[] = "analogRead";
 
 int lua_pin_input(lua_State *L)
 {
@@ -64,13 +57,12 @@ int lua_pin_aread(lua_State *L)
 //----------------------------------------------------------------------------------------------------
 
 const struct luaL_Reg LIB_PIN[] = {
-    {STR_PIN_INPUT, lua_pin_input},
-    {STR_PIN_OUTPUT, lua_pin_output},
-    {STR_PIN_PULLUP, lua_pin_pullup},
-    {STR_PIN_TOGGLE, lua_pin_toggle},
-    {STR_PIN_WRITE, lua_pin_write},
-    {STR_PIN_READ, lua_pin_read},
-    {STR_PIN_AREAD, lua_pin_aread},
+    {"input", lua_pin_input},
+    {"output", lua_pin_output},
+    {"pullup", lua_pin_pullup},
+    {"toggle", lua_pin_toggle},
+    {"read", lua_pin_read},
+    {"analogRead", lua_pin_aread},
     {nullptr, nullptr},
 };
 
