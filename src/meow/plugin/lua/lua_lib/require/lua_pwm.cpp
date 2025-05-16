@@ -1,6 +1,6 @@
 #include "lua_pwm.h"
 #include <Arduino.h>
-#include "meow/plugin/lua/res/lua_err_msg.h"
+#include "meow/plugin/lua/lua_lib/helper/lua_helper.h"
 
 //
 const char STR_PMW_SETUP[] = "setup";
@@ -11,9 +11,8 @@ const char STR_PWM_SET[] = "set";
 
 int lua_pwm_setup(lua_State *L)
 {
-    int arg_num = lua_gettop(L);
-    if (arg_num != 3)
-        return luaL_error(L, STR_INCORRECT_ARGS_NUMBER, 3, arg_num);
+    if (lua_check_top(L, {3}) == 0)
+        return 0;
 
     int channel = luaL_checkinteger(L, 1);
     int frequency = luaL_checkinteger(L, 2);
