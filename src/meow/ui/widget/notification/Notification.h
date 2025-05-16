@@ -3,6 +3,8 @@
 #include "../IWidget.h"
 #include "../text/Label.h"
 
+// TODO замінити завантаження label на прості виклики, типу set text
+
 namespace meow
 {
     class Notification final : public IWidget
@@ -38,57 +40,130 @@ namespace meow
         static constexpr TypeID staticType() { return TypeID::TYPE_ID_NOTIFICATION; }
 
         /**
-         * @brief Встановлює вказівники на віджети текстових міток, які будуть використовуватися у повідомленні.
-         * Пам'ять, зайнята віджетами, буде автоматично очищена в деструкторі Notification.
+         * @brief Встановлює ідентифікатор шрифту заголовка та кнопок.
          *
-         * @param title Вказівник на віджет, що буде використовуватися для заголовка повідомлення.
-         * @param msg Вказівник на віджет, що буде містити текст повідомлення.
-         * @param left_btn Вказівник на віджет, що буде містити текст для лівої кнопки.
-         * @param right_btn Вказівник на віджет, що буде містити текст для правої кнопки.
+         * @param font_id
          */
-        void setLabels(Label *title, Label *msg, Label *left_btn, Label *right_btn);
+        void setInfoFontID(uint16_t font_id);
 
         /**
-         * @brief Повертає вказівник на текстову мітку заголовка повідомлення.
+         * @brief Встановлює розмір шрифту заголовка та кнопок.
          *
-         * @return Label*
+         * @param size
          */
-        Label *getTitleLbl() const { return _title_lbl; }
+        void setInfoTextSize(uint16_t size);
 
         /**
-         * @brief Повертає вказівник на текстову мітку тіла повідомлення.
+         * @brief Встановлює текст заголовка повідомлення.
          *
-         * @return Label*
+         * @param str
          */
-        Label *getMsgLbl() const { return _msg_lbl; }
+        void setTitleText(const String &str);
 
         /**
-         * @brief Повертає вказівник на текстову мітку лівої кнопки повідомлення.
+         * @brief Встановлює колір фону заголовка.
          *
-         * @return Label*
+         * @param color
          */
-        Label *getLeftBtnLbl() const { return _left_lbl; }
+        void setTitleBackColor(uint16_t color);
 
         /**
-         * @brief Повертає вказівник на текстову мітку правої кнопки повідомлення.
+         * @brief Встановлює колір тексту заголовка.
          *
-         * @return Label*
+         * @param color
          */
-        Label *getRightBtnLbl() const { return _right_lbl; }
+        void setTitleTextColor(uint16_t color);
+
+        /**
+         * @brief Встановлює текст лівої кнопки повідомлення.
+         *
+         * @param str
+         */
+        void setLeftText(const String &str);
+
+        /**
+         * @brief Встановлює колір фону лівої кнопки повідомлення.
+         *
+         * @param color
+         */
+        void setLeftBackColor(uint16_t color);
+
+        /**
+         * @brief Встановлює колір тексту лівої кнопки повідомлення.
+         *
+         * @param color
+         */
+        void setLeftTextColor(uint16_t color);
+
+        /**
+         * @brief Встановлює текст правої кнопки повідомлення.
+         *
+         * @param str
+         */
+        void setRightText(const String &str);
+
+        /**
+         * @brief Встановлює колір фону правої кнопки повідомлення.
+         *
+         * @param color
+         */
+        void setRightBackColor(uint16_t color);
+
+        /**
+         * @brief Встановлює колір тексту правої кнопки повідомлення.
+         *
+         * @param color
+         */
+        void setRightTextColor(uint16_t color);
+
+        /**
+         * @brief Встановлює текст тіла повідомлення.
+         *
+         * @param str
+         */
+        void setMsgText(const String &str);
+
+        /**
+         * @brief Встановлює колір фону тіла повідомлення.
+         *
+         * @param color
+         */
+        void setMsgBackColor(uint16_t color);
+
+        /**
+         * @brief Встановлює колір тексту тіла повідомлення.
+         *
+         * @param color
+         */
+        void setMsgTextColor(uint16_t color);
+
+        /**
+         * @brief Встановлює ідентифікатор шрифту тіла повідомлення.
+         *
+         * @param font_id
+         */
+        void setMsgFontID(uint16_t font_id);
+
+        /**
+         * @brief Встановлює розмір шрифту тіла повідомлення.
+         *
+         * @param size
+         */
+        void setMsgTextSize(uint16_t size);
 
         /**
          * @brief Встановлює відступ для віджета від країв дисплею по горизонталі.
-         * Значення не коригується, якщо відступ перевищує ширину дисплею.
+         * Значення не коригується автоматично, якщо відступ перевищує ширину дисплею.
          *
-         * @param margin Значення відступу.
+         * @param margin
          */
         void setWMargin(uint16_t margin) { _w_margin = margin; }
 
         /**
          * @brief Встановлює відступ для віджета від країв дисплею по вертикалі.
-         * Значення не коригується, якщо відступ перевищує висоту дисплею.
+         * Значення не коригується автоматично, якщо відступ перевищує висоту дисплею.
          *
-         * @param margin Значення відступу.
+         * @param margin
          */
         void setHMargin(uint16_t margin) { _h_margin = margin; }
 
