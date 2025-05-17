@@ -56,7 +56,7 @@ namespace meow
          *
          * @param focus_pos Порядковий номер віджета в контейнері.
          */
-        void setCurrentFocusPos(uint16_t focus_pos);
+        void setCurrFocusPos(uint16_t focus_pos);
 
     protected:
         bool _is_loop_enbl = false;

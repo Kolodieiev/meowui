@@ -6,7 +6,10 @@
 namespace meow
 {
     MenuItem::MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID,
-                                                                              type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : type_ID) {}
+                                                                              type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : type_ID)
+    {
+        _label = new Label(1);
+    }
 
     MenuItem::~MenuItem()
     {
@@ -15,22 +18,11 @@ namespace meow
 
     String MenuItem::getText() const
     {
-        if (!_label)
-        {
-            log_e("Не встановлено Label");
-            esp_restart();
-        }
         return _label->getText();
     }
 
     void MenuItem::setText(const String &text)
     {
-        if (!_label)
-        {
-            log_e("Не встановлено Label");
-            esp_restart();
-        }
-
         _label->setText(text);
     }
 
@@ -38,8 +30,8 @@ namespace meow
     {
         if (!_is_changed)
         {
-            if (_ico)
-                _ico->onDraw();
+            if (_img)
+                _img->onDraw();
             if (_label)
                 _label->onDraw();
             return;
@@ -52,20 +44,20 @@ namespace meow
 
         uint8_t img_width{0};
 
-        if (_ico)
+        if (_img)
         {
-            _ico->setParent(this);
-            img_width = _ico->getWidth() + ITEM_PADDING;
-            _ico->setPos(ITEM_PADDING, (_height - _ico->getHeight()) * 0.5);
+            _img->setParent(this);
+            img_width = _img->getWidth() + ITEM_PADDING;
+            _img->setPos(ITEM_PADDING, (_height - _img->getHeight()) * 0.5);
 
             uint16_t bk_color = _back_color;
 
             if (_has_focus && _need_change_back)
-                _ico->setBackColor(_focus_back_color);
+                _img->setBackColor(_focus_back_color);
 
-            _ico->setBackColor(bk_color);
+            _img->setBackColor(bk_color);
 
-            _ico->onDraw();
+            _img->onDraw();
         }
 
         if (_label)
@@ -109,8 +101,8 @@ namespace meow
             clone->_old_back_color = _old_back_color;
             clone->_parent = _parent;
 
-            if (_ico)
-                clone->setIco(_ico->clone(_ico->getID()));
+            if (_img)
+                clone->setImg(_img->clone(_img->getID()));
 
             if (_label)
                 clone->setLbl(_label->clone(_label->getID()));
@@ -125,11 +117,11 @@ namespace meow
         }
     }
 
-    void MenuItem::setIco(Image *img_ptr)
+    void MenuItem::setImg(Image *img_ptr)
     {
-        delete _ico;
+        delete _img;
 
-        _ico = img_ptr;
+        _img = img_ptr;
         _is_changed = true;
     }
 

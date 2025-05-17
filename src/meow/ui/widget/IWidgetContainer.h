@@ -30,7 +30,7 @@ namespace meow
          * @return true - у разі успіху операції.
          * @return false - інакше.
          */
-        bool deleteWidgetByID(uint16_t widget_ID);
+        bool delWidgetByID(uint16_t widget_ID);
 
         /*!
          * @brief
@@ -92,7 +92,7 @@ namespace meow
          * @brief Видаляє усі віджети з контейнера та очищує пам'ять, яку вони займали.
          *
          */
-        void deleteWidgets();
+        void delWidgets();
 
         /**
          * @brief Повертає кількість віджетів у контейнері.

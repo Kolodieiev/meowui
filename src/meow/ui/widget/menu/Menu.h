@@ -28,7 +28,16 @@ namespace meow
          * @brief Видаляє всі елементи списку меню.
          *
          */
-        void deleteWidgets();
+        void delWidgets();
+
+        /**
+         * @brief Видаляє елемент списку з меню і пам'яті за його ідентифікатором.
+         *
+         * @param widget_ID Ідентифікатор елемента списку.
+         * @return true - у разі успіху операції.
+         * @return false - інакше.
+         */
+        bool delWidgetByID(uint16_t widget_ID);
 
         /**
          * @brief Встановлює висоту кожного із елементів списку для вертикальної орієнтації меню.
@@ -64,7 +73,7 @@ namespace meow
          *
          * @return uint16_t
          */
-        uint16_t getItemsWidth() const { return _orientation == HORIZONTAL ? _item_width : _width - 4; }
+        uint16_t getItemWidth() const { return _orientation == HORIZONTAL ? _item_width : _width - 4; }
 
         /**
          * @brief Встановлює орієнтацію меню.
@@ -91,29 +100,29 @@ namespace meow
          *
          * @return uint16_t - Ідентифікатор віджета. 0 - Якщо контейнер порожній.
          */
-        uint16_t getCurrentItemID() const;
+        uint16_t getCurrItemID() const;
 
         /**
          * @brief Повертає порядковий номер віжета, на якому встановлено фокус, в контейнері.
          *
          * @return uint16_t - Позиція віджета в контейнері. 0 - Якщо контейнер порожній.
          */
-        uint16_t getCurrentFocusPos() const { return _cur_focus_pos; };
+        uint16_t getCurrFocusPos() const { return _cur_focus_pos; };
 
         /**
          * @brief Повертає копію тексту, що міститься у віджеті елемента списку, на якому встановлено фокус.
          *
          * @return String
          */
-        String getCurrentItemText() const;
+        String getCurrItemText() const;
 
         /**
          * @brief Повертає вказівник на віджет елемента списку, на якому встановлено фокус.
          *
-         * @return MenuItem* - Вказівник на віджет елемента списку.
+         * @return IWidget* - Вказівник на віджет елемента списку.
          * @return nullptr - Якщо контейнер порожній.
          */
-        MenuItem *getCurrentItem();
+        IWidget *getCurrItem();
 
         /**
          * @brief Встановлює відступи між елементами меню.
@@ -138,6 +147,13 @@ namespace meow
          */
         void addItem(MenuItem *item_ptr);
 
+        /**
+         * @brief Розраховує та повертає кількість елементів, що може відобразити меню одночасно за поточних розмір.
+         *
+         * @return uint16_t
+         */
+        uint16_t getItemsNumOnScreen() const;
+
     protected:
         uint16_t _first_item_index{0};
         uint16_t _cur_focus_pos{0};
@@ -153,6 +169,9 @@ namespace meow
         uint16_t getCyclesCount() const;
 
         using IWidgetContainer::addWidget;
-        using IWidgetContainer::deleteWidgets;
+
+    private:
+        using IWidgetContainer::delWidgetByID;
+        using IWidgetContainer::delWidgets;
     };
 }

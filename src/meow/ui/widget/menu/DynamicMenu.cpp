@@ -42,7 +42,7 @@ namespace meow
             if (!temp_vec.empty())
             {
                 xSemaphoreGive(_widg_mutex);
-                deleteWidgets();
+                delWidgets();
                 xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
                 _widgets.reserve(temp_vec.size());
@@ -103,7 +103,7 @@ namespace meow
             if (!temp_vec.empty())
             {
                 xSemaphoreGive(_widg_mutex);
-                deleteWidgets();
+                delWidgets();
                 xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
                 _widgets.reserve(temp_vec.size());
@@ -125,11 +125,6 @@ namespace meow
 
         xSemaphoreGive(_widg_mutex);
         return false;
-    }
-
-    uint16_t DynamicMenu::getItemsNumOnScreen() const
-    {
-        return (float)_height / _item_height;
     }
 
     DynamicMenu *DynamicMenu::clone(uint16_t id) const

@@ -42,7 +42,7 @@ namespace meow
          *
          * @param color
          */
-        void setTransparentColor(uint16_t color);
+        void setTranspColor(uint16_t color);
 
         /**
          * @brief Видаляє прозорість у зображення.

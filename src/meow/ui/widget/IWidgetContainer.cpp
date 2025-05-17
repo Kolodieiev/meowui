@@ -11,7 +11,7 @@ namespace meow
 
     IWidgetContainer::~IWidgetContainer()
     {
-        deleteWidgets();
+        delWidgets();
         vSemaphoreDelete(_widg_mutex);
     }
 
@@ -47,7 +47,7 @@ namespace meow
         xSemaphoreGive(_widg_mutex);
     }
 
-    bool IWidgetContainer::deleteWidgetByID(uint16_t widget_ID)
+    bool IWidgetContainer::delWidgetByID(uint16_t widget_ID)
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
@@ -121,7 +121,7 @@ namespace meow
         return (IWidget *)this;
     }
 
-    void IWidgetContainer::deleteWidgets()
+    void IWidgetContainer::delWidgets()
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 

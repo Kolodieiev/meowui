@@ -45,8 +45,8 @@ MenuContext::MenuContext()
     _menu->addItem(mp3_item);
 
     Image *mp3_img = new Image(1);
-    mp3_item->setIco(mp3_img);
-    mp3_img->setTransparentColor(TFT_TRANSPARENT);
+    mp3_item->setImg(mp3_img);
+    mp3_img->setTranspColor(TFT_TRANSPARENT);
     mp3_img->init(ICO_WH, ICO_WH);
     mp3_img->setSrc(HEADPHONES_IMG);
 
@@ -58,8 +58,8 @@ MenuContext::MenuContext()
     _menu->addItem(read_item);
 
     Image *read_img = new Image(1);
-    read_item->setIco(read_img);
-    read_img->setTransparentColor(TFT_TRANSPARENT);
+    read_item->setImg(read_img);
+    read_img->setTranspColor(TFT_TRANSPARENT);
     read_img->init(ICO_WH, ICO_WH);
     read_img->setSrc(BOOK_IMG);
 
@@ -71,8 +71,8 @@ MenuContext::MenuContext()
     _menu->addItem(game_item);
 
     Image *game_img = new Image(1);
-    game_item->setIco(game_img);
-    game_img->setTransparentColor(TFT_TRANSPARENT);
+    game_item->setImg(game_img);
+    game_img->setTranspColor(TFT_TRANSPARENT);
     game_img->init(ICO_WH, ICO_WH);
     game_img->setSrc(JOYSTICK_IMG);
 
@@ -84,8 +84,8 @@ MenuContext::MenuContext()
     _menu->addItem(files_item);
 
     Image *files_img = new Image(1);
-    files_item->setIco(files_img);
-    files_img->setTransparentColor(TFT_TRANSPARENT);
+    files_item->setImg(files_img);
+    files_img->setTranspColor(TFT_TRANSPARENT);
     files_img->init(ICO_WH, ICO_WH);
     files_img->setSrc(SD_IMG);
 
@@ -97,8 +97,8 @@ MenuContext::MenuContext()
     _menu->addItem(pref_item);
 
     Image *pref_img = new Image(1);
-    pref_item->setIco(pref_img);
-    pref_img->setTransparentColor(TFT_TRANSPARENT);
+    pref_item->setImg(pref_img);
+    pref_img->setTranspColor(TFT_TRANSPARENT);
     pref_img->init(ICO_WH, ICO_WH);
     pref_img->setSrc(SETTINGS_IMG);
 
@@ -110,8 +110,8 @@ MenuContext::MenuContext()
     _menu->addItem(firm_item);
 
     Image *firm_img = new Image(1);
-    firm_item->setIco(firm_img);
-    firm_img->setTransparentColor(TFT_TRANSPARENT);
+    firm_item->setImg(firm_img);
+    firm_img->setTranspColor(TFT_TRANSPARENT);
     firm_img->init(ICO_WH, ICO_WH);
     firm_img->setSrc(CHIP_IMG);
 
@@ -129,7 +129,7 @@ MenuContext::MenuContext()
 
     _scrollbar->setMax(_menu->getSize());
 
-    _menu->setCurrentFocusPos(_last_sel_item_pos);
+    _menu->setCurrFocusPos(_last_sel_item_pos);
     _scrollbar->setValue(_last_sel_item_pos);
 }
 

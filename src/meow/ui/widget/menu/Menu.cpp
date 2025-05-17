@@ -5,14 +5,44 @@ namespace meow
 {
     Menu::Menu(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidgetContainer(widget_ID, type_ID) {}
 
-    void Menu::deleteWidgets()
+    void Menu::delWidgets()
     {
-        IWidgetContainer::deleteWidgets();
+        IWidgetContainer::delWidgets();
         _first_item_index = 0;
         _cur_focus_pos = 0;
     }
 
-    uint16_t Menu::getCurrentItemID() const
+    bool Menu::delWidgetByID(uint16_t widget_ID)
+    {
+        if (IWidgetContainer::delWidgetByID(widget_ID))
+            return false;
+
+        if (_widgets.empty())
+        {
+            _first_item_index = 0;
+            _cur_focus_pos = 0;
+        }
+        else
+        {
+            if (_first_item_index >= _widgets.size())
+            {
+                if (getItemsNumOnScreen() <= _widgets.size())
+                    _first_item_index = 0;
+                else
+                    _first_item_index = _widgets.size() - getItemsNumOnScreen();
+            }
+
+            if (_cur_focus_pos >= _widgets.size())
+            {
+                _cur_focus_pos = _widgets.size() - 1;
+                _widgets[_cur_focus_pos]->setFocus();
+            }
+        }
+
+        return true;
+    }
+
+    uint16_t Menu::getCurrItemID() const
     {
         if (_widgets.empty())
             return 0;
@@ -20,7 +50,7 @@ namespace meow
         return _widgets[_cur_focus_pos]->getID();
     }
 
-    String Menu::getCurrentItemText() const
+    String Menu::getCurrItemText() const
     {
         if (_widgets.empty())
             return emptyString;
@@ -29,17 +59,22 @@ namespace meow
         return item->getText();
     }
 
-    MenuItem *Menu::getCurrentItem()
+    IWidget *Menu::getCurrItem()
     {
         if (_widgets.empty())
             return nullptr;
 
-        return static_cast<MenuItem *>(_widgets[_cur_focus_pos]);
+        return _widgets[_cur_focus_pos];
     }
 
     void Menu::addItem(MenuItem *item_ptr)
     {
         addWidget(item_ptr);
+    }
+
+    uint16_t Menu::getItemsNumOnScreen() const
+    {
+        return (float)_height / _item_height;
     }
 
     void Menu::onDraw()

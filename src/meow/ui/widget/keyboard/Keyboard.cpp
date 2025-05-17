@@ -50,20 +50,20 @@ namespace meow
         }
     }
 
-    uint16_t Keyboard::getCurrentBtnID() const
+    uint16_t Keyboard::getCurrBtnID() const
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
-        uint16_t id = getFocusRow()->getCurrentBtnID();
+        uint16_t id = getFocusRow()->getCurrBtnID();
         xSemaphoreGive(_widg_mutex);
         return id;
     }
 
-    String Keyboard::getCurrentBtnTxt() const
+    String Keyboard::getCurrBtnTxt() const
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
         KeyboardRow *row = getFocusRow();
         xSemaphoreGive(_widg_mutex);
-        return row->getCurrentBtnTxt();
+        return row->getCurrBtnTxt();
     }
 
     void Keyboard::focusUp()

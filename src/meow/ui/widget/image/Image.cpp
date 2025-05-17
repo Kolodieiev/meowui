@@ -6,7 +6,7 @@ namespace meow
 {
     Image::Image(uint16_t wiget_ID) : IWidget(wiget_ID, TYPE_ID_IMAGE) {}
 
-    void Image::setTransparentColor(uint16_t color)
+    void Image::setTranspColor(uint16_t color)
     {
         _has_transp_color = true;
         _transparent_color = color;

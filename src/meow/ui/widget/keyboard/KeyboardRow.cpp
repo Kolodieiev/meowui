@@ -53,7 +53,7 @@ namespace meow
         }
     }
 
-    uint16_t KeyboardRow::getCurrentBtnID() const
+    uint16_t KeyboardRow::getCurrBtnID() const
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
         uint16_t id = getFocusBtn()->getID();
@@ -61,7 +61,7 @@ namespace meow
         return id;
     }
 
-    String KeyboardRow::getCurrentBtnTxt() const
+    String KeyboardRow::getCurrBtnTxt() const
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
         Label *lbl = getFocusBtn()->castTo<Label>();

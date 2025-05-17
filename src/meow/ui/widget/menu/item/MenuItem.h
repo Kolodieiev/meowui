@@ -3,8 +3,8 @@
 
 #include <Arduino.h>
 
-#include "../../../widget/image/Image.h"
-#include "../../../widget/text/Label.h"
+#include "meow/ui/widget/image/Image.h"
+#include "meow/ui/widget/text/Label.h"
 
 namespace meow
 {
@@ -44,7 +44,15 @@ namespace meow
          *
          * @param img Вказівник на Image.
          */
-        void setIco(Image *img_ptr);
+        void setImg(Image *img_ptr);
+
+        /**
+         * @brief Повертає вказівник на Image, який присвоєно цьому елементу списку.
+         *
+         * @return Image* - Вказівник на віджет.
+         * @return nullptr - Якщо вказівник не було встановлено раніше.
+         */
+        Image *getImg() const { return _img; }
 
         /**
          * @brief Встановлює вказівник на віджет Label, що буде використаний для відображення тексту елемента списку.
@@ -64,33 +72,25 @@ namespace meow
         Label *getLabel() const { return _label; }
 
         /**
-         * @brief Повертає вказівник на Image, який присвоєно цьому елементу списку.
-         *
-         * @return Image* - Вказівник на віджет.
-         * @return nullptr - Якщо вказівник не було встановлено раніше.
-         */
-        Image *getIco() const { return _ico; }
-
-        /**
-         * @brief Повертає копію тексту, що міститься у цьому елементі списку.
-         * Викликає перезавантаження МК, якщо цьому елементу раніше не було присвоєно текстову мітку.
-         *
-         * @return String
-         */
-        String getText() const;
-
-        /**
          * @brief Встановлює текст, що буде відображатися у віджеті.
          *
          * @param text
          */
         void setText(const String &text);
 
+        /**
+         * @brief Повертає копію тексту, що міститься в цьому елементі списку.
+         * Викликає перезавантаження МК, якщо цьому елементу раніше не було присвоєно текстову мітку.
+         *
+         * @return String
+         */
+        String getText() const;
+
     protected:
         const uint8_t ITEM_PADDING{5};
         using IWidget::setVisibility;
 
-        Image *_ico{nullptr};
+        Image *_img{nullptr};
         Label *_label{nullptr};
     };
 }

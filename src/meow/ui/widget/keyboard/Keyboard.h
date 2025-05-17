@@ -41,14 +41,14 @@ namespace meow
          *
          * @return uint16_t
          */
-        uint16_t getCurrentBtnID() const;
+        uint16_t getCurrBtnID() const;
 
         /**
          * @brief Повертає копію тексту, що міститься у віджеті кнопки, на якому встановлено фокус.
          *
          * @return String
          */
-        String getCurrentBtnTxt() const;
+        String getCurrBtnTxt() const;
 
         /**
          * @brief Переміщує фокус, якщо можливо, на віджет навпроти, що знаходиться на один рядок вище.

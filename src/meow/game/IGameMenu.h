@@ -35,7 +35,7 @@ namespace meow
         virtual void focusUp() = 0;
         virtual void focusDown() = 0;
 
-        uint16_t getCurrentItemID() const { return _menu->getCurrentItemID(); }
+        uint16_t getCurrItemID() const { return _menu->getCurrItemID(); }
 
     protected:
         FixedMenu *_menu;

@@ -92,7 +92,7 @@ namespace meow
         return true;
     }
 
-    void FixedMenu::setCurrentFocusPos(uint16_t focus_pos)
+    void FixedMenu::setCurrFocusPos(uint16_t focus_pos)
     {
         if (_widgets.size() < 2 || _cur_focus_pos == focus_pos || focus_pos >= _widgets.size())
             return;
