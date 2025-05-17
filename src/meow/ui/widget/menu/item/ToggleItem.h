@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #include "./MenuItem.h"
-#include "../../../widget/toggle/ToggleSwitch.h"
+#include "meow/ui/widget/toggle/ToggleSwitch.h"
 
 namespace meow
 {
