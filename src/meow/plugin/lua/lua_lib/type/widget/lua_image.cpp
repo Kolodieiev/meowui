@@ -61,8 +61,6 @@ const struct luaL_Reg TYPE_METH_IMAGE[] = {
 
 void lua_init_image(lua_State *L)
 {
-    lua_init_iwidget(L, STR_TYPE_NAME_IMAGE);
-
     luaL_newmetatable(L, STR_TYPE_NAME_IMAGE);
     lua_newtable(L);
     luaL_setfuncs(L, TYPE_METH_IMAGE, 0);
@@ -74,14 +72,5 @@ void lua_init_image(lua_State *L)
     lua_newtable(L);
     lua_pushcfunction(L, lua_image_new);
     lua_setfield(L, -2, STR_LUA_NEW);
-    lua_setglobal(L, STR_TYPE_NAME_IMAGE);
-}
-
-void lua_deinit_image(lua_State *L)
-{
-    lua_pushnil(L);
-    lua_setfield(L, LUA_REGISTRYINDEX, STR_TYPE_NAME_IMAGE);
-    lua_deinit_iwidget(L, STR_TYPE_NAME_IMAGE);
-    lua_pushnil(L);
     lua_setglobal(L, STR_TYPE_NAME_IMAGE);
 }

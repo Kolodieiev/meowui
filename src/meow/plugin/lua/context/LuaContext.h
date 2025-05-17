@@ -69,7 +69,6 @@ namespace meow
         //---------------------------------------------------------------------------------- helper
 
         static int lua_init_type(lua_State *L);
-        static int lua_deinit_type(lua_State *L);
         static int lua_unrequire(lua_State *L);
         static int lua_show_toast(lua_State *L);
         static int lua_show_notification(lua_State *L);

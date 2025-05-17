@@ -1,8 +1,6 @@
 #include "lua_iwidget.h"
 #include "meow/ui/widget/IWidget.h"
 #include "meow/plugin/lua/res/lua_strs.h"
-#include "meow/plugin/lua/res/lua_err_msg.h"
-#include "vector"
 
 using namespace meow;
 //
@@ -19,8 +17,6 @@ const char STR_ORIENTATION_VERTICAL[] = "VERTICAL";
 //
 const char STR_VISIBILITY_VISIBLE[] = "VISIBLE";
 const char STR_VISIBILITY_INVISIBLE[] = "INVISIBLE";
-
-std::vector<const char *> _iwidget_type_name_list;
 
 void init_iwidget_constants(lua_State *L)
 {
@@ -283,8 +279,8 @@ int lua_iwgt_remove_focus(lua_State *L)
 int lua_iwgt_set_visibility(lua_State *L)
 {
     IWidget *widget = *(IWidget **)lua_touserdata(L, 1);
-    int raw_value = luaL_checkinteger(L, 2);
-    if (raw_value < IWidget::VISIBLE || raw_value > IWidget::INVISIBLE)
+    uint16_t raw_value = luaL_checkinteger(L, 2);
+    if (raw_value > IWidget::INVISIBLE)
         return luaL_error(L, "Invalid visibility value: %d", raw_value);
 
     IWidget::Visibility visibility = static_cast<IWidget::Visibility>(raw_value);
@@ -334,56 +330,14 @@ const struct luaL_Reg TYPE_METH_IWIDGET[] = {
     {nullptr, nullptr},
 };
 
-void lua_init_iwidget(lua_State *L, const char *type_caller_name)
+void lua_init_iwidget(lua_State *L)
 {
-    if (!type_caller_name)
-    {
-        log_e("%s", STR_EMPTY_MODULE_NAME);
-        esp_restart();
-    }
+    luaL_newmetatable(L, STR_TYPE_NAME_IWIDGET);
+    lua_newtable(L);
+    luaL_setfuncs(L, TYPE_METH_IWIDGET, 0);
+    lua_setfield(L, -2, STR_LUA_INDEX);
+    lua_pop(L, 1);
 
-    if (_iwidget_type_name_list.empty())
-    {
-        luaL_newmetatable(L, STR_TYPE_NAME_IWIDGET);
-        lua_newtable(L);
-        luaL_setfuncs(L, TYPE_METH_IWIDGET, 0);
-        lua_setfield(L, -2, STR_LUA_INDEX);
-        lua_pop(L, 1);
-
-        init_iwidget_constants(L);
-        init_color_constants(L);
-    }
-
-    _iwidget_type_name_list.push_back(type_caller_name);
-}
-
-void lua_deinit_iwidget(lua_State *L, const char *type_caller_name)
-{
-    if (!type_caller_name)
-    {
-        log_e("%s", STR_EMPTY_MODULE_NAME);
-        esp_restart();
-    }
-
-    for (auto it_b = _iwidget_type_name_list.begin(), it_e = _iwidget_type_name_list.end(); it_b != it_e; ++it_b)
-    {
-        if (strcmp(*it_b, type_caller_name) == 0)
-        {
-            _iwidget_type_name_list.erase(it_b);
-            break;
-        }
-    }
-
-    if (_iwidget_type_name_list.empty())
-    {
-        lua_pushnil(L);
-        lua_setfield(L, LUA_REGISTRYINDEX, STR_TYPE_NAME_IWIDGET);
-        deinit_iwidget_constants(L);
-        deinit_color_constants(L);
-    }
-}
-
-void lua_clear_iwidget()
-{
-    _iwidget_type_name_list.clear();
+    init_iwidget_constants(L);
+    init_color_constants(L);
 }

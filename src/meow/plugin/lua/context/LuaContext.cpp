@@ -6,7 +6,6 @@
 #include "../lua_lib/custom_searcher.h"
 #include "../lua_lib/custom_type_initializer.h"
 
-#include "../lua_lib/type/widget/lua_iwidget.h"
 #include "../lua_lib/type/widget/lua_iwidget_cont.h"
 
 #include "meow/manager/resources/ResManager.h"
@@ -62,8 +61,7 @@ namespace meow
     LuaContext::~LuaContext()
     {
         lua_close(_lua);
-        lua_clear_iwidget();
-        lua_clear_iwidget_cont();
+        reset_custom_initializer();
         delete _notification;
 
         for (size_t i = 0; i < _loaded_img_id.size(); ++i)
@@ -97,7 +95,6 @@ namespace meow
         register_custom_searcher(_lua);
 
         lua_register(_lua, "initType", lua_init_type);
-        lua_register(_lua, "deinitType", lua_deinit_type);
         lua_register(_lua, "unrequire", lua_unrequire);
 
         lua_register(_lua, "showToast", lua_show_toast);
@@ -323,12 +320,6 @@ namespace meow
     int LuaContext::lua_init_type(lua_State *L)
     {
         init_custom_type(L);
-        return 0;
-    }
-
-    int LuaContext::lua_deinit_type(lua_State *L)
-    {
-        deinit_custom_type(L);
         return 0;
     }
 

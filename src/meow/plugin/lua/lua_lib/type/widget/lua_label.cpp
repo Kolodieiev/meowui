@@ -3,7 +3,6 @@
 #include "meow/ui/widget/image/Image.h"
 #include "./lua_iwidget.h"
 #include "meow/plugin/lua/res/lua_strs.h"
-#include "meow/plugin/lua/res/lua_err_msg.h"
 
 using namespace meow;
 
@@ -91,7 +90,11 @@ int lua_label_set_font_id(lua_State *L)
 int lua_label_set_gravity(lua_State *L)
 {
     Label *label = *(Label **)lua_touserdata(L, 1);
-    IWidget::Gravity gravity = static_cast<IWidget::Gravity>(luaL_checkinteger(L, 2));
+    uint16_t raw_value = luaL_checkinteger(L, 2);
+    if (raw_value > IWidget::GRAVITY_BOTTOM)
+        return luaL_error(L, "Invalid gravity value: %d", raw_value);
+
+    IWidget::Gravity gravity = static_cast<IWidget::Gravity>(raw_value);
     label->setGravity(gravity);
     return 0;
 }
@@ -99,7 +102,11 @@ int lua_label_set_gravity(lua_State *L)
 int lua_label_set_align(lua_State *L)
 {
     Label *label = *(Label **)lua_touserdata(L, 1);
-    IWidget::Alignment align = static_cast<IWidget::Alignment>(luaL_checkinteger(L, 2));
+    uint16_t raw_value = luaL_checkinteger(L, 2);
+    if (raw_value > IWidget::ALIGN_END)
+        return luaL_error(L, "Invalid alignment value: %d", raw_value);
+
+    IWidget::Alignment align = static_cast<IWidget::Alignment>(raw_value);
     label->setAlign(align);
     return 0;
 }
@@ -183,8 +190,6 @@ const struct luaL_Reg TYPE_METH_LABEL[] = {
 
 void lua_init_label(lua_State *L)
 {
-    lua_init_iwidget(L, STR_TYPE_NAME_LABEL);
-
     luaL_newmetatable(L, STR_TYPE_NAME_LABEL);
     lua_newtable(L);
     luaL_setfuncs(L, TYPE_METH_LABEL, 0);
@@ -196,14 +201,5 @@ void lua_init_label(lua_State *L)
     lua_newtable(L);
     lua_pushcfunction(L, lua_label_new);
     lua_setfield(L, -2, STR_LUA_NEW);
-    lua_setglobal(L, STR_TYPE_NAME_LABEL);
-}
-
-void lua_deinit_label(lua_State *L)
-{
-    lua_pushnil(L);
-    lua_setfield(L, LUA_REGISTRYINDEX, STR_TYPE_NAME_LABEL);
-    lua_deinit_iwidget(L, STR_TYPE_NAME_LABEL);
-    lua_pushnil(L);
     lua_setglobal(L, STR_TYPE_NAME_LABEL);
 }
