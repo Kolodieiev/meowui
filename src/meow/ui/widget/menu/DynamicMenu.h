@@ -48,13 +48,6 @@ namespace meow
         virtual bool focusDown() override;
 
         /**
-         * @brief Розраховує та повертає кількість елементів, що може відобразити меню одночасно за поточних розмір.
-         *
-         * @return uint16_t
-         */
-        uint16_t getItemsNumOnScreen() const;
-
-        /**
          * @brief Встановлює обробник, який буде викликано для завантаження наступної частини віджетів для меню.
          *
          * @param handler Обробник.
