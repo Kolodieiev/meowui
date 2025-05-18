@@ -47,6 +47,13 @@ namespace meow
         void setToggle(ToggleSwitch *togg_switch_ptr);
 
         /**
+         * @brief Повертає вказівник на ToggleSwitch, який присвоєно цьому елементу списку.
+         *
+         * @return ToggleSwitch* - Вказівник на віджет.
+         */
+        ToggleSwitch *getToggle() const { return _toggle; }
+
+        /**
          * @brief Встановлює стан ToggleSwitch у "Ввімкнений".
          *
          */
