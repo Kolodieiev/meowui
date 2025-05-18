@@ -69,7 +69,7 @@ namespace meow
          * @return Label* - Вказівник на віджет.
          * @return nullptr - Якщо вказівник не було встановлено раніше.
          */
-        Label *getLabel() const { return _label; }
+        Label *getLbl() const { return _label; }
 
         /**
          * @brief Встановлює текст, що буде відображатися у віджеті.
