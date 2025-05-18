@@ -3,7 +3,10 @@
 #include "ToggleItem.h"
 namespace meow
 {
-    ToggleItem::ToggleItem(uint16_t widget_ID) : MenuItem(widget_ID, TYPE_ID_TOGGLE_ITEM) {}
+    ToggleItem::ToggleItem(uint16_t widget_ID) : MenuItem(widget_ID, TYPE_ID_TOGGLE_ITEM)
+    {
+        _toggle = new ToggleSwitch(1);
+    }
 
     ToggleItem::~ToggleItem()
     {
