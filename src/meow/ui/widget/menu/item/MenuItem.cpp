@@ -8,7 +8,7 @@ namespace meow
     MenuItem::MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID,
                                                                               type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : type_ID)
     {
-        _label = new Label(1);
+        setLbl(new Label(1));
     }
 
     MenuItem::~MenuItem()
@@ -43,7 +43,6 @@ namespace meow
             clear();
 
         uint8_t img_width{0};
-
         if (_img)
         {
             _img->setParent(this);
@@ -60,19 +59,16 @@ namespace meow
             _img->onDraw();
         }
 
-        if (_label)
-        {
-            _label->setHeight(_height - 2);
-            _label->setPos(img_width + ITEM_PADDING, 1);
-            _label->setWidth(_width - ITEM_PADDING * 2 - img_width);
+        _label->setHeight(_height - 2);
+        _label->setPos(img_width + ITEM_PADDING, 1);
+        _label->setWidth(_width - ITEM_PADDING * 2 - img_width);
 
-            if (_has_focus)
-                _label->setFocus();
-            else
-                _label->removeFocus();
+        if (_has_focus)
+            _label->setFocus();
+        else
+            _label->removeFocus();
 
-            _label->onDraw();
-        }
+        _label->onDraw();
     }
 
     MenuItem *MenuItem::clone(uint16_t id) const
@@ -119,9 +115,12 @@ namespace meow
 
     void MenuItem::setImg(Image *img_ptr)
     {
-        delete _img;
+        if (img_ptr != _img)
+        {
+            delete _img;
+            _img = img_ptr;
+        }
 
-        _img = img_ptr;
         _is_changed = true;
     }
 
@@ -133,18 +132,22 @@ namespace meow
             esp_restart();
         }
 
-        delete _label;
+        if (lbl_ptr != _label)
+        {
+            delete _label;
+            _label = lbl_ptr;
+        }
 
-        _label = lbl_ptr;
         _is_changed = true;
 
         _label->setParent(this);
         _label->setBorder(false);
+        _label->setChangingBorder(false);
+        _label->setGravity(GRAVITY_CENTER);
+
         _label->setBackColor(_back_color);
         _label->setFocusBackColor(_focus_back_color);
         _label->setChangingBack(_need_change_back);
-        _label->setChangingBorder(false);
-        _label->setGravity(GRAVITY_CENTER);
         _label->setTransparency(_is_transparent);
     }
 }

@@ -5,7 +5,7 @@ namespace meow
 {
     ToggleItem::ToggleItem(uint16_t widget_ID) : MenuItem(widget_ID, TYPE_ID_TOGGLE_ITEM)
     {
-        _toggle = new ToggleSwitch(1);
+        setToggle(new ToggleSwitch(1));
     }
 
     ToggleItem::~ToggleItem()
@@ -31,15 +31,6 @@ namespace meow
         if (!_is_transparent)
             clear();
 
-        uint8_t toggle_width{0};
-        if (_toggle)
-        {
-            toggle_width = _toggle->getWidth() + ITEM_PADDING;
-            _toggle->setPos(_width - ITEM_PADDING - _toggle->getWidth(), (_height - _toggle->getHeight()) * 0.5);
-
-            _toggle->onDraw();
-        }
-
         uint8_t img_width{0};
         if (_img)
         {
@@ -57,19 +48,19 @@ namespace meow
             _img->onDraw();
         }
 
-        if (_label)
-        {
-            _label->setHeight(_height - 2);
-            _label->setPos(img_width + ITEM_PADDING, 1);
-            _label->setWidth(_width - ITEM_PADDING * 2 - img_width - toggle_width);
+        _toggle->setPos(_width - ITEM_PADDING - _toggle->getWidth(), (_height - _toggle->getHeight()) * 0.5);
+        _toggle->onDraw();
 
-            if (_has_focus)
-                _label->setFocus();
-            else
-                _label->removeFocus();
+        _label->setHeight(_height - 2);
+        _label->setPos(img_width + ITEM_PADDING, 1);
+        _label->setWidth(_width - ITEM_PADDING * 2 - img_width - (_toggle->getWidth() + ITEM_PADDING));
 
-            _label->onDraw();
-        }
+        if (_has_focus)
+            _label->setFocus();
+        else
+            _label->removeFocus();
+
+        _label->onDraw();
     }
 
     ToggleItem *ToggleItem::clone(uint16_t id) const
@@ -125,9 +116,12 @@ namespace meow
             esp_restart();
         }
 
-        delete _toggle;
+        if (togg_switch_ptr != _toggle)
+        {
+            delete _toggle;
+            _toggle = togg_switch_ptr;
+        }
 
-        _toggle = togg_switch_ptr;
         _is_changed = true;
 
         _toggle->setParent(this);
