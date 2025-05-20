@@ -19,7 +19,7 @@ namespace meow
             return 0;
         }
 
-        _bmp_res.insert(std::pair<uint16_t, ImgData>(_audio_res_id_i, data));
+        _bmp_res.insert(std::pair<uint16_t, ImgData>(_img_res_id_i, data));
         return _img_res_id_i++;
     }
 
