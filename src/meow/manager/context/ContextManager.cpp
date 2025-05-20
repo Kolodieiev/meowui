@@ -24,12 +24,15 @@ namespace meow
                 context->tick();
             else
             {
+                ContextID next_context_id = context->getNextContextID();
+
                 delete context;
-                switch (context->getNextContextID())
+
+                switch (next_context_id)
                 {
                     SCREEN_CASES
                 default:
-                    log_e("Некоректний context_id: %i", context->getNextContextID());
+                    log_e("Некоректний context_id: %u", next_context_id);
                     esp_restart();
                 }
             }
