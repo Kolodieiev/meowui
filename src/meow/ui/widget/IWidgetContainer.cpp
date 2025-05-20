@@ -125,7 +125,7 @@ namespace meow
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
-        for (const auto &widget_ptr : _widgets)
+        for (auto *widget_ptr : _widgets)
             delete widget_ptr;
 
         _widgets.clear();
