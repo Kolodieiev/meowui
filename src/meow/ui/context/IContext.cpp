@@ -62,10 +62,9 @@ namespace meow
     IContext::~IContext()
     {
         delete _layout;
-        _layout = nullptr;
-
         delete _toast_label;
-        _toast_label = nullptr;
+
+        vSemaphoreDelete(_layout_mutex);
     }
 
     void IContext::setLayout(IWidgetContainer *layout)
