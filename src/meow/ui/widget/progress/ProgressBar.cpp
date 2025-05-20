@@ -117,13 +117,14 @@ namespace meow
                                       _height - 2,
                                       _progress_color);
                 }
-
                 else if (_progress < _prev_progress) // Заливка тільки фону
+                {
                     _display.fillRect(_x_pos + x_offset + progressW - 1,
                                       _y_pos + y_offset + 1,
                                       next_prgrs_pos - progressW,
                                       _height - 2,
                                       _back_color);
+                }
             }
             else
             {
@@ -172,13 +173,14 @@ namespace meow
                                       progressH - next_prgrs_pos + 1,
                                       _progress_color);
                 }
-
                 else if (_progress < _prev_progress) // Заливка тільки фону
+                {
                     _display.fillRect(_x_pos + x_offset + 1,
                                       _y_pos + y_offset + progressH - 1,
                                       _width - 2,
                                       next_prgrs_pos - progressH,
                                       _back_color);
+                }
             }
             else
             {
@@ -219,11 +221,22 @@ namespace meow
         }
 
         _progress = 1;
-        _display.fillRect(_x_pos + x_offset + 1,
-                          _y_pos + y_offset + 1,
-                          _width - 2,
-                          _height - 2,
-                          _back_color);
-    }
 
+        if (_orientation == HORIZONTAL)
+        {
+            _display.fillRect(_x_pos + x_offset + 3,
+                              _y_pos + y_offset + 1,
+                              _width - 4,
+                              _height - 2,
+                              _back_color);
+        }
+        else
+        {
+            _display.fillRect(_x_pos + x_offset + 1,
+                              _y_pos + y_offset + 3,
+                              _width - 2,
+                              _height - 4,
+                              _back_color);
+        }
+    }
 }
