@@ -11,6 +11,7 @@
 #include "./type/widget/lua_menu_item.h"
 #include "./type/widget/lua_toggle_item.h"
 #include "./type/widget/lua_toggle_switch.h"
+#include "./type/widget/lua_progress.h"
 
 typedef std::function<void(lua_State *L)> InitLuaTypeFunc;
 
@@ -119,6 +120,12 @@ void init_toggle_switch(lua_State *L)
     lua_init_toggle_switch(L);
 }
 
+void init_progress(lua_State *L)
+{
+    init_type(L, STR_TYPE_NAME_IWIDGET);
+    lua_init_progress(L);
+}
+
 void warm_up()
 {
     _available_types.emplace_back(STR_TYPE_NAME_IWIDGET, init_iwidget);
@@ -130,6 +137,7 @@ void warm_up()
     _available_types.emplace_back(STR_TYPE_NAME_MENU_ITEM, init_menu_item);
     _available_types.emplace_back(STR_TYPE_NAME_TOGGLE_ITEM, init_toggle_item);
     _available_types.emplace_back(STR_TYPE_NAME_TOGGLE_SWITCH, init_toggle_switch);
+    _available_types.emplace_back(STR_TYPE_NAME_PROGRESS, init_progress);
 
     _warmed_up = true;
 }
