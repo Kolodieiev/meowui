@@ -6,7 +6,7 @@ BTN_LEFT = 39
 BTN_RIGHT = 40
 BTN_EXIT = 0
 
-function update()
+function update() -- Функція викликається автоматично контекстом кожен кадр.
 	if input.is_pressed(BTN_EXIT) then 
         input.lock(BTN_EXIT, 1000) -- Заблокувати спрацьовування кнопки на n мс.
         print("EXIT");
