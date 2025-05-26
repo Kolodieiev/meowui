@@ -1,6 +1,7 @@
 #pragma GCC optimize("O3")
 #include "meowui_setup/sd_setup.h"
 #include "FileManager.h"
+#include <cctype>
 #include "../sd/SD_Manager.h"
 #include "esp_task_wdt.h"
 #include <errno.h>
