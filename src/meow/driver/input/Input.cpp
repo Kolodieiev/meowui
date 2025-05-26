@@ -1,6 +1,7 @@
 #pragma GCC optimize("O3")
 
 #include "Input.h"
+#include <stdexcept>
 
 #include "soc/io_mux_reg.h"
 #include "soc/gpio_sig_map.h"
