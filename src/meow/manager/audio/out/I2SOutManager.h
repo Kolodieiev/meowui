@@ -64,10 +64,12 @@ namespace meow
          *
          * @param buffer Зовнішній буфер з даними.
          * @param buff_len Розмір зовнішнього буфера.
-         * @param mono Прапор, який вказує на тип аудіоданих у буфері.
+         * @param only_left_chan Прапор, який вказує на тип аудіоданих у буфері.
+         * Якщо true - дані перед відтворенням будуть розширені по схемі left_chann -> stereo.
+         * Якщо false - дані будуть відтворені в стерео режимі як є.
          * @return size_t - Кількість успішно скопійованих байтів.
          */
-        size_t write(const int16_t *buffer, size_t buff_len, bool mono = false);
+        size_t write(const int16_t *buffer, size_t buff_len, bool only_left_chan = false);
 
         /**
          * @brief Повертає значення прапору, який вказує на стан ініціалізації I2S-каналу аудіовиходу.
