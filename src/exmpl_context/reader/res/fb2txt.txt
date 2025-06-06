@@ -1,0 +1,73 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <filesystem>
+#include "tinyxml2.h"
+
+using namespace tinyxml2;
+using namespace std;
+namespace fs = std::filesystem;
+
+void extractTextFromElement(XMLElement* element, string& extractedText) {
+    for (XMLElement* child = element->FirstChildElement(); child != nullptr; child = child->NextSiblingElement()) {
+        if (string(child->Value()) == "binary") {
+            continue;
+        }
+        extractTextFromElement(child, extractedText);
+    }
+
+    const char* text = element->GetText();
+    if (text != nullptr) {
+        extractedText += text;
+        extractedText += "\n";
+    }
+}
+
+void convertFB2ToTXT(const string& fb2FilePath, const string& txtFilePath) {
+    XMLDocument doc;
+    if (doc.LoadFile(fb2FilePath.c_str()) != XML_SUCCESS) {
+        cerr << "Load fb2 fail" << endl;
+        return;
+    }
+
+    XMLElement* root = doc.RootElement();
+    if (root == nullptr) {
+        cerr << "Root elem not found" << endl;
+        return;
+    }
+
+    string extractedText;
+    extractTextFromElement(root, extractedText);
+
+    ofstream txtFile(txtFilePath);
+    if (!txtFile.is_open()) {
+        cerr << "Open txt fail" << endl;
+        return;
+    }
+
+    txtFile << extractedText;
+    txtFile.close();
+
+    cout << "Success" << endl;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cerr << "USE: " << argv[0] << " <path to FB2>" << endl;
+        return 1;
+    }
+
+    string fb2FilePath = argv[1];
+    fs::path inputPath(fb2FilePath);
+
+    if (!fs::exists(inputPath)) {
+        cerr << "FB2 file not found. Path: " << inputPath << endl;
+        return 1;
+    }
+
+    fs::path outputPath = inputPath.parent_path() / (inputPath.stem().string() + ".txt");
+
+    convertFB2ToTXT(fb2FilePath, outputPath.string());
+
+    return 0;
+}

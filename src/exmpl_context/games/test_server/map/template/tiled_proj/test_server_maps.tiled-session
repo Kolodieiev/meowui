@@ -1,0 +1,44 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "main.tmx",
+    "expandedProjectPaths": [
+        "png",
+        "."
+    ],
+    "fileStates": {
+        "ground.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "main.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 168.33333333333331,
+                "y": 187.66666666666666
+            }
+        }
+    },
+    "last.exportedFilePath": "D:/Project/GitHub/meowui/src/context/games/test_server/map/template/tiled_proj",
+    "last.imagePath": "D:/Project/GitHub/MeowUI/src/context/games/test_server/map/template/tiled_proj/png",
+    "map.height": 11,
+    "map.lastUsedExportFilter": "CSV файли (*.csv)",
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": null,
+    "map.width": 11,
+    "openFiles": [
+        "main.tmx",
+        "ground.tsx"
+    ],
+    "project": "test_server_maps.tiled-project",
+    "recentFiles": [
+        "ground.tsx",
+        "main.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}

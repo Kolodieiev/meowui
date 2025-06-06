@@ -1,0 +1,126 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "cave.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "D:/Project/tiled/2D Assets/GROUND/Roguelike pack/Map/sample_indoor.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 293,
+                "y": 203.66666666666666
+            }
+        },
+        "D:/Project/tiled/2D Assets/GROUND/Roguelike pack/Map/sample_indoor.tmx#roguelikeSheet_transparent": {
+            "scaleInDock": 5.5
+        },
+        "D:/Project/tiled/2D Assets/GROUND/Roguelike pack/Map/sample_map.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 544.3333333333333,
+                "y": 355.66666666666663
+            }
+        },
+        "D:/Project/tiled/2D Assets/GROUND/Roguelike pack/Map/sample_map.tmx#Roguelike": {
+            "scaleInDock": 1
+        },
+        "D:/Project/tiled/project/lilka_game/dungeon.tmx": {
+            "scale": 1.8524999999999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160.05398110661272,
+                "y": 160.05398110661272
+            }
+        },
+        "D:/Project/tiled/project/lilka_game/ground.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/Project/tiled/project/lilka_game/lilka_map.tmx": {
+            "scale": 1.8524999999999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160.0539811066127,
+                "y": 160.05398110661272
+            }
+        },
+        "cave.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 155,
+                "y": 159.5
+            }
+        },
+        "cave.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "cave1.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "main_map.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 248,
+                "y": 140.5
+            }
+        },
+        "main_map.tmx#ter": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "open_world.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 3,
+            "scaleInEditor": 2
+        },
+        "terrain.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 2,
+            "scaleInEditor": 3
+        }
+    },
+    "last.exportedFilePath": "D:/Project/GitHub/meowui/src/context/games/simple_rpg/map/tiled_proj",
+    "last.externalTilesetPath": "D:/Project/GitHub/meowui/src/context/games/simple_rpg/map/tiled_proj",
+    "last.imagePath": "D:/Project/GitHub/meowui/src/context/games/simple_rpg/map/tiled_proj/tiles/open_world",
+    "map.height": 10,
+    "map.lastUsedExportFilter": "CSV файли (*.csv)",
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": "3",
+    "map.tileHeight": 32,
+    "map.tileWidth": 32,
+    "map.width": 10,
+    "openFiles": [
+        "cave.tmx"
+    ],
+    "project": "simple_rpg.tiled-project",
+    "recentFiles": [
+        "cave.tmx",
+        "main_map.tmx",
+        "D:/Project/tiled/project/lilka_game/dungeon.tmx",
+        "D:/Project/tiled/project/lilka_game/lilka_map.tmx",
+        "cave.tsx",
+        "open_world.tsx",
+        "terrain.tsx",
+        "cave1.tsx",
+        "D:/Project/tiled/2D Assets/GROUND/Roguelike pack/Map/sample_indoor.tmx",
+        "D:/Project/tiled/2D Assets/GROUND/Roguelike pack/Map/sample_map.tmx"
+    ],
+    "tileset.embedInMap": false,
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}
