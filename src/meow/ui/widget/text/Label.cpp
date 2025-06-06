@@ -255,12 +255,12 @@ namespace meow
         return 0;
     }
 
-    uint16_t Label::calcRealStrLen(const String &str) const
+    uint32_t Label::calcRealStrLen(const String &str) const
     {
         if (str.isEmpty())
             return 0;
 
-        uint16_t length{0};
+        uint32_t length{0};
 
         for (char c : str)
         {

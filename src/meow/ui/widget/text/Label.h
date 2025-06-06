@@ -241,7 +241,7 @@ namespace meow
         //
         uint16_t calcXStrOffset(uint16_t str_pix_num) const;
         uint16_t calcYStrOffset() const;
-        uint16_t calcRealStrLen(const String &str) const;
+        uint32_t calcRealStrLen(const String &str) const;
         uint16_t getFitStr(String &ret_str, uint16_t start_pos = 0) const;
         String getSubStr(const String &str, uint16_t from, uint16_t length) const;
         uint16_t calcTextPixels(uint16_t char_pos = 0) const;
