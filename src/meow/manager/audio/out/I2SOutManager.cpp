@@ -81,7 +81,7 @@ namespace meow
         }
     }
 
-    size_t I2SOutManager::write(const int16_t *buffer, size_t buff_len, bool mono)
+    size_t I2SOutManager::write(const int16_t *buffer, size_t buff_len, bool only_left_chan)
     {
         if (!_is_inited)
         {
@@ -94,16 +94,17 @@ namespace meow
 
         size_t bytes_written{0};
 
-        if (mono)
+        if (only_left_chan)
         {
             int16_t buffer_copy[buff_len];
             int16_t *dst = buffer_copy;
             buffer;
 
             size_t num_real_mono_samples = buff_len / 2;
+            int16_t mono_sample;
             for (size_t i = 0; i < num_real_mono_samples; ++i)
             {
-                int16_t mono_sample = *buffer;
+                mono_sample = *buffer;
                 *dst++ = mono_sample;
                 *dst++ = mono_sample;
                 buffer += 2;
