@@ -441,6 +441,7 @@ static unsigned char *QRspec_createFrame(int version)
 	putFinderPattern(frame, width, width - 7, 0);
 	putFinderPattern(frame, width, 0, width - 7);
 	/* Separator */
+	if (width < 8) return NULL; 
 	p = frame;
 	q = frame + width * (width - 7);
 	for(y = 0; y < 7; y++) {

@@ -1,6 +1,7 @@
 #pragma GCC optimize("O3")
 #include "HashUtil.h"
 
+#include "spi_flash_mmap.h"
 #include "esp_system.h"
 #include "esp_ota_ops.h"
 #include "mbedtls/md5.h"
@@ -22,7 +23,7 @@ namespace meow
 
         mbedtls_md5_context ctx;
         mbedtls_md5_init(&ctx);
-        mbedtls_md5_starts_ret(&ctx);
+        mbedtls_md5_starts(&ctx);
         mbedtls_md5_update(&ctx, (const unsigned char *)mapped_region, running_partition->size);
         mbedtls_md5_finish(&ctx, out_buff);
         mbedtls_md5_free(&ctx);

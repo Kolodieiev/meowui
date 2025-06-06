@@ -34,7 +34,7 @@ namespace meow
         ImgData getBmpRes(uint16_t res_id);
 
         /**
-         * @brief Повертає структуру, що містить інформацію про завантажене зображення.
+         * @brief Повертає структуру, що містить інформацію про завантажену wav-доріжку.
          *
          * @param res_id
          * @return AudioData

@@ -12,8 +12,6 @@ namespace meow
     public:
         ~WavManager();
 
-        bool init(uint8_t I2S_BCLK_PIN, uint8_t I2S_LRC_PIN, uint8_t I2S_DOUT_PIN);
-
         /*!
          * @brief
          *      Додати звукову доріжку до списку міксування. Ресурси зі списку міксування звільняються автоматично.
@@ -45,7 +43,6 @@ namespace meow
         void pauseResume();
 
     private:
-        bool _is_inited{false};
         bool _is_playing{false};
 
         static uint64_t _track_id;

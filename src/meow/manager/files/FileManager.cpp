@@ -6,6 +6,7 @@
 #include "esp_task_wdt.h"
 #include <errno.h>
 #include <sys/stat.h>
+#include "meow/util/memory/mem_util.h"
 
 namespace meow
 {
@@ -160,9 +161,12 @@ namespace meow
 
     bool FileManager::readFromFile(FILE *file, void *out_buffer, size_t len, int32_t seek_pos)
     {
-        if (len == 0 || !file)
+        if (len == 0)
+            return false;
+
+        if (!file)
         {
-            log_e("Bad arguments");
+            log_e("FILE* не повинен бути null");
             return false;
         }
 
@@ -185,7 +189,10 @@ namespace meow
 
     size_t FileManager::writeFile(const char *path, const void *buffer, size_t len)
     {
-        if (!path || !buffer || len == 0)
+        if (len == 0)
+            return 0;
+
+        if (!path || !buffer)
         {
             log_e("Bad arguments");
             return 0;
@@ -211,7 +218,10 @@ namespace meow
 
     size_t FileManager::writeToFile(FILE *file, const void *buffer, size_t len)
     {
-        if (!file || !buffer || len == 0)
+        if (len == 0)
+            return 0;
+
+        if (!file || !buffer)
         {
             log_e("Bad arguments");
             return 0;
@@ -653,6 +663,7 @@ namespace meow
         }
 
         out_vec.clear();
+        out_vec.reserve(10);
 
         dirent *dir_entry{nullptr};
         String file_name;
@@ -680,7 +691,6 @@ namespace meow
             else
                 continue;
 
-            out_vec.reserve(10);
             switch (mode)
             {
             case INDX_MODE_DIR:
@@ -702,7 +712,6 @@ namespace meow
                     out_vec.emplace_back(file_name, false);
                 break;
             }
-            out_vec.shrink_to_fit();
 
             if (millis() - last_delay_time > 1000)
             {
@@ -711,6 +720,7 @@ namespace meow
             }
         }
 
+        out_vec.shrink_to_fit();
         std::sort(out_vec.begin(), out_vec.end());
 
         if (dir)

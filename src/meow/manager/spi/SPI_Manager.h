@@ -8,7 +8,7 @@ namespace meow
     class SPI_Manager
     {
     public:
-        bool initBus(uint8_t bus_num, uint8_t sclk_pin, uint8_t miso_pin, uint8_t mosi_pin);
+        bool initBus(uint8_t bus_num, int8_t sclk_pin = -1, int8_t miso_pin = -1, int8_t mosi_pin = -1);
         void deinitBus(uint8_t bus_num);
         SPIClass *getSpi4Bus(uint8_t bus_num);
 

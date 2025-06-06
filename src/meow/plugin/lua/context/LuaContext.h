@@ -35,7 +35,7 @@ namespace meow
         static const struct luaL_Reg LIB_CONTEXT[];
         static const struct luaL_Reg LIB_INPUT[];
         //----------------------------------------------------------------------------------
-        static LuaContext *_this_ptr;
+        static LuaContext *_self;
         //----------------------------------------------------------------------------------
 
         static void *luAlloc(void *ud, void *ptr, size_t osize, size_t nsize);

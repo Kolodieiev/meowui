@@ -13,6 +13,10 @@
 #include "Audio.h"
 #include "mp3_decoder/mp3_decoder.h"
 #include "meow/manager/files/FileManager.h"
+#include "meow/util/memory/mem_util.h"
+#include "meow/manager/audio/out/I2SOutManager.h"
+
+using namespace meow;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 AudioBuffer::AudioBuffer(size_t maxBlockSize)
@@ -28,7 +32,7 @@ AudioBuffer::~AudioBuffer()
 {
     if (m_buffer)
         free(m_buffer);
-    m_buffer = NULL;
+    m_buffer = nullptr;
 }
 
 int32_t AudioBuffer::getBufsize() { return m_buffSize; }
@@ -37,15 +41,16 @@ size_t AudioBuffer::init()
 {
     if (m_buffer)
         free(m_buffer);
-    m_buffer = NULL;
-    if (psramInit() && m_buffSizePSRAM > 0)
+    m_buffer = nullptr;
+
+    if (psramInit())
     {
         // PSRAM found, AudioBuffer will be allocated in PSRAM
         m_buffSize = m_buffSizePSRAM;
         m_buffer = (uint8_t *)ps_calloc(m_buffSize, sizeof(uint8_t));
         m_buffSize = m_buffSizePSRAM - m_resBuffSizePSRAM;
     }
-    if (m_buffer == NULL)
+    if (m_buffer == nullptr)
     {
         // PSRAM not found, not configured or not enough available
         m_buffer = (uint8_t *)heap_caps_calloc(m_buffSizeRAM, sizeof(uint8_t), MALLOC_CAP_DEFAULT | MALLOC_CAP_INTERNAL);
@@ -164,7 +169,6 @@ void AudioBuffer::resetBuffer()
     m_readPtr = m_buffer;
     m_endPtr = m_buffer + m_buffSize;
     m_f_start = true;
-    // memset(m_buffer, 0, m_buffSize); //Clear Inputbuffer
 }
 
 uint32_t AudioBuffer::getWritePos() { return m_writePtr - m_buffer; }
@@ -172,39 +176,27 @@ uint32_t AudioBuffer::getWritePos() { return m_writePtr - m_buffer; }
 uint32_t AudioBuffer::getReadPos() { return m_readPtr - m_buffer; }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // clang-format off
-Audio::Audio(uint8_t channelEnabled /* = I2S_SLOT_MODE_STEREO */, uint8_t i2sPort) {
+Audio::Audio() {
 
     mutex_audio = xSemaphoreCreateMutex();
 
-#define __malloc_heap_psram(size) \
-    heap_caps_malloc_prefer(size, 2, MALLOC_CAP_DEFAULT | MALLOC_CAP_SPIRAM, MALLOC_CAP_DEFAULT | MALLOC_CAP_INTERNAL)
+    if(psramInit()) 
+        m_ibuffSize = 4096; 
+    else 
+        m_ibuffSize = 512 + 64;
 
-    if(psramInit()) m_ibuffSize = 4096; else m_ibuffSize = 512 + 64;
-    m_outBuff = (int16_t*)__malloc_heap_psram(m_outbuffSize);
+    m_outBuff = (int16_t*)__malloc_heap_psram(m_outbuffSize * sizeof(int16_t));
 
     if(!m_outBuff) 
+    {
         log_e("oom");
+        esp_restart();
+    }
 
-    m_f_channelEnabled = channelEnabled;
-    m_i2s_num = i2sPort;  // i2s port number
+    m_sampleRate = 44100;
 
-    // -------- I2S configuration -------------------------------------------------------------------------------------------
-    m_i2s_config.sample_rate          = 44100;
-    m_i2s_config.bits_per_sample      = I2S_BITS_PER_SAMPLE_16BIT;
-    m_i2s_config.channel_format       = I2S_CHANNEL_FMT_RIGHT_LEFT;
-    m_i2s_config.intr_alloc_flags     = ESP_INTR_FLAG_LEVEL1; // interrupt priority
-    m_i2s_config.dma_buf_count        = 16;
-    m_i2s_config.dma_buf_len          = 512;
-    m_i2s_config.use_apll             = false; // must be disabled in V2.0.1-RC1
-    m_i2s_config.tx_desc_auto_clear   = true;   // new in V1.0.1
-    m_i2s_config.fixed_mclk           = true;
-    m_i2s_config.mclk_multiple        = I2S_MCLK_MULTIPLE_128;
-
-    m_i2s_config.mode             = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX);
-    m_i2s_config.communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S); // Arduino vers. > 2.0.0
-    i2s_driver_install((i2s_port_t)m_i2s_num, &m_i2s_config, 0, NULL);
-    m_f_forceMono = false;
-    i2s_zero_dma_buffer((i2s_port_t) m_i2s_num);
+    _i2s_out.init(m_sampleRate);
+    _i2s_out.enable();
 
     for(int i = 0; i < 3; ++i) {
         m_filter[i].a0 = 1;
@@ -215,14 +207,13 @@ Audio::Audio(uint8_t channelEnabled /* = I2S_SLOT_MODE_STEREO */, uint8_t i2sPor
     }
     computeLimit();  // first init, vol = 21, vol_steps = 21
 }
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Audio::~Audio() {
-    // I2Sstop(m_i2s_num);
-    // InBuff.~AudioBuffer(); #215 the AudioBuffer is automatically destroyed by the destructor
     setDefaults();
-    i2s_driver_uninstall((i2s_port_t)m_i2s_num); // #215 free I2S buffer
-    if(m_outBuff)     {free(m_outBuff);      m_outBuff      = NULL; }
+    _i2s_out.deinit();
+    free(m_outBuff);      
     vSemaphoreDelete(mutex_audio);
 }
 // clang-format on
@@ -237,18 +228,6 @@ void Audio::initInBuff()
     changeMaxBlockSize(1600); // default size mp3 or aac
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-esp_err_t Audio::I2Sstart(uint8_t i2s_num)
-{
-    // It is not necessary to call this function after i2s_driver_install() (it is started automatically),
-    // however it is necessary to call it after i2s_stop()
-    return i2s_start((i2s_port_t)i2s_num);
-}
-
-esp_err_t Audio::I2Sstop(uint8_t i2s_num)
-{
-    return i2s_stop((i2s_port_t)i2s_num);
-}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void Audio::setDefaults()
 {
@@ -359,11 +338,11 @@ bool Audio::connecttoFS(const char *path, int32_t fileStartPos)
         strcpy(audioPath + 1, path);
     }
 
-    if (!meow::_fs.fileExist(audioPath))
+    if (!_fs.fileExist(audioPath))
     {
         UTF8toASCII(audioPath);
 
-        if (!meow::_fs.fileExist(audioPath))
+        if (!_fs.fileExist(audioPath))
         {
             log_e("File doesn't exist");
             xSemaphoreGiveRecursive(mutex_audio);
@@ -372,7 +351,7 @@ bool Audio::connecttoFS(const char *path, int32_t fileStartPos)
         }
     }
 
-    audiofile = meow::_fs.openFile(audioPath, "r");
+    audiofile = _fs.openFile(audioPath, "r");
 
     if (!audiofile)
     {
@@ -382,7 +361,7 @@ bool Audio::connecttoFS(const char *path, int32_t fileStartPos)
         return false;
     }
 
-    m_fileSize = meow::_fs.getFileSize(audioPath);
+    m_fileSize = _fs.getFileSize(audioPath);
     _audio_size = m_fileSize;
 
     free(audioPath);
@@ -391,7 +370,7 @@ bool Audio::connecttoFS(const char *path, int32_t fileStartPos)
     if (ret)
         m_f_running = true;
     else
-        meow::_fs.closeFile(audiofile);
+        _fs.closeFile(audiofile);
     xSemaphoreGiveRecursive(mutex_audio);
     return ret;
 }
@@ -659,7 +638,7 @@ uint32_t Audio::stopSong()
     }
 
     // added this before putting 'm_f_localfile = false' in stopSong(); shoulf never occur....
-    meow::_fs.closeFile(audiofile);
+    _fs.closeFile(audiofile);
 
     memset(m_outBuff, 0, m_outbuffSize);           // Clear OutputBuffer
     memset(m_filterBuff, 0, sizeof(m_filterBuff)); // Clear FilterBuffer
@@ -689,11 +668,8 @@ bool Audio::pauseResume()
 void Audio::playChunk(bool i2s_only)
 {
     int16_t validSamples = 0;
-    size_t i2s_bytesConsumed = 0;
     int16_t *sample[2] = {0};
     int16_t *s2;
-    int sampleSize = 4; // 2 bytes per sample (int16_t) * 2 channels
-    esp_err_t err = ESP_OK;
     int i = 0;
 
     if (count > 0)
@@ -746,33 +722,23 @@ i2swrite:
 
     validSamples = m_validSamples;
 
-    err = i2s_write((i2s_port_t)m_i2s_num, (int16_t *)m_outBuff + count, validSamples * sampleSize, &i2s_bytesConsumed, 10);
+    size_t bts_consumed = _i2s_out.write(m_outBuff + count, validSamples * 2);
 
-    if (!(err == ESP_OK || err == ESP_ERR_TIMEOUT))
-        goto exit;
-    m_validSamples -= i2s_bytesConsumed / sampleSize;
-    count += i2s_bytesConsumed / 2;
+    if (bts_consumed == 0)
+        return;
+
+    m_validSamples -= bts_consumed / 4; // 2 bytes per sample (int16_t) * 2 channels
+    count += bts_consumed / 2;
+
     if (m_validSamples < 0)
     {
         m_validSamples = 0;
+        count = 0;
     }
-    if (m_validSamples == 0)
+    else if (m_validSamples == 0)
     {
         count = 0;
     }
-
-    return;
-exit:
-    if (err == ESP_OK)
-        return;
-    else if (err == ESP_ERR_INVALID_ARG)
-        log_e("NULL pointer or this handle is not tx handle");
-    else if (err == ESP_ERR_TIMEOUT)
-        log_e("Writing timeout, no writing event received from ISR within ticks_to_wait");
-    else if (err == ESP_ERR_INVALID_STATE)
-        log_e("I2S is not ready to write");
-    else
-        log_e("i2s err %i", err);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void Audio::loop()
@@ -815,7 +781,7 @@ void Audio::processLocalFile()
     availableBytes = min(availableBytes, _audio_size - byteCounter);
     if (m_contentlength)
     {
-        size_t file_pos = meow::_fs.getPos(audiofile);
+        size_t file_pos = _fs.getPos(audiofile);
         if (m_contentlength > file_pos)
             availableBytes = min(availableBytes, m_contentlength - file_pos);
     }
@@ -824,7 +790,7 @@ void Audio::processLocalFile()
         availableBytes = min(availableBytes, m_audioDataSize + m_audioDataStart - byteCounter);
     }
 
-    if (meow::_fs.readFromFile(audiofile, InBuff.getWritePtr(), availableBytes))
+    if (_fs.readFromFile(audiofile, InBuff.getWritePtr(), availableBytes))
     {
         byteCounter += availableBytes; // Pull request #42
         InBuff.bytesWritten(availableBytes);
@@ -878,7 +844,7 @@ void Audio::processLocalFile()
         if (m_resumeFilePos == -1)
             goto exit;
 
-        meow::_fs.seekPos(audiofile, m_resumeFilePos);
+        _fs.seekPos(audiofile, m_resumeFilePos);
         InBuff.resetBuffer();
         byteCounter = m_resumeFilePos;
         f_fileDataComplete = false; // #570
@@ -923,7 +889,7 @@ void Audio::processLocalFile()
         } // loop
     exit:
         m_f_running = false;
-        meow::_fs.closeFile(audiofile);
+        _fs.closeFile(audiofile);
 
         MP3Decoder_FreeBuffers();
 
@@ -998,7 +964,7 @@ bool Audio::initializeDecoder()
             goto exit;
         }
         gfH = ESP.getFreeHeap();
-        hWM = uxTaskGetStackHighWaterMark(NULL);
+        hWM = uxTaskGetStackHighWaterMark(nullptr);
         InBuff.changeMaxBlockSize(m_frameSizeMP3);
     }
     return true;
@@ -1089,7 +1055,7 @@ int Audio::sendBytes(uint8_t *data, size_t len)
         return 1;
     }
     // status: bytesDecoded > 0 and m_decodeError >= 0
-    char *st = NULL;
+    char *st = nullptr;
     std::vector<uint32_t> vec;
 
     m_validSamples = MP3GetOutputSamps() / getChannels();
@@ -1173,19 +1139,6 @@ void Audio::computeAudioTime(uint16_t bytesDecoderIn)
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool Audio::setPinout(uint8_t BCLK, uint8_t LRC, uint8_t DOUT, int8_t MCLK)
-{
-    esp_err_t result = ESP_OK;
-
-    m_pin_config.bck_io_num = BCLK;
-    m_pin_config.ws_io_num = LRC; //  wclk = lrc
-    m_pin_config.data_out_num = DOUT;
-    m_pin_config.data_in_num = I2S_GPIO_UNUSED;
-    m_pin_config.mck_io_num = MCLK;
-    result = i2s_set_pin((i2s_port_t)m_i2s_num, &m_pin_config);
-    return (result == ESP_OK);
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 uint32_t Audio::getFileSize()
 { // returns the size of webfile or local file
     if (!audiofile)
@@ -1203,7 +1156,7 @@ uint32_t Audio::getFilePos()
 {
     if (!audiofile)
         return 0;
-    return meow::_fs.getPos(audiofile);
+    return _fs.getPos(audiofile);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 uint32_t Audio::getAudioDataStartPos()
@@ -1294,19 +1247,6 @@ bool Audio::setFilePos(uint32_t pos)
     return true;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool Audio::audioFileSeek(const float speed)
-{
-    // 0.5 is half speed
-    // 1.0 is normal speed
-    // 1.5 is one and half speed
-    if ((speed > 1.5f) || (speed < 0.25f))
-        return false;
-
-    uint32_t srate = getSampleRate() * speed;
-    i2s_set_sample_rates((i2s_port_t)m_i2s_num, srate);
-    return true;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool Audio::setSampleRate(uint32_t sampRate)
 {
     if (!sampRate)
@@ -1342,52 +1282,33 @@ uint8_t Audio::getChannels()
 
 void Audio::reconfigI2S()
 {
-    if (m_channels == 1)
-    {
-        m_i2s_config.channel_format = I2S_CHANNEL_FMT_ALL_RIGHT;
-        i2s_set_clk((i2s_port_t)m_i2s_num, m_sampleRate, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
-    }
-    if (m_channels == 2)
-    {
-        m_i2s_config.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
-        i2s_set_clk((i2s_port_t)m_i2s_num, m_sampleRate, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
-    }
+    memset(m_outBuff, 0, m_outbuffSize * sizeof(int16_t)); // Clear OutputBuffer
+
+    if (getBitsPerSample() == 8 && getChannels() == 2)
+        _i2s_out.reconfigSampleRate(getSampleRate() * 2);
+    else
+        _i2s_out.reconfigSampleRate(getSampleRate());
+
     memset(m_filterBuff, 0, sizeof(m_filterBuff));        // Clear FilterBuffer
     IIR_calculateCoefficients(m_gain0, m_gain1, m_gain2); // must be recalculated after each samplerate change
-
-    return;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 void Audio::setBitrate(int br)
 {
     m_bitRate = br;
 }
+
 uint32_t Audio::getBitRate(bool avg)
 {
     if (avg)
         return m_avr_bitrate;
     return m_bitRate;
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void Audio::setI2SCommFMT_LSB(bool commFMT)
-{
-    // false: I2S communication format is by default I2S_COMM_FORMAT_I2S_MSB, right->left (AC101, PCM5102A)
-    // true:  changed to I2S_COMM_FORMAT_I2S_LSB for some DACs (PT8211)
-    //        Japanese or called LSBJ (Least Significant Bit Justified) format
-    if (commFMT)
-    {
-        m_i2s_config.communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_MSB); // v >= 2.0.0
-    }
-    else
-    {
-        m_i2s_config.communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S); // vers >= 2.0.0
-    }
 
-    i2s_driver_uninstall((i2s_port_t)m_i2s_num);
-    i2s_driver_install((i2s_port_t)m_i2s_num, &m_i2s_config, 0, NULL);
-}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 void Audio::computeVUlevel(int16_t sample[2])
 {
     auto avg = [&](uint8_t *sampArr) { // lambda, inner function, compute the average of 8 samples
@@ -1887,27 +1808,27 @@ int32_t Audio::mp3_correctResumeFilePos(uint32_t resumeFilePos)
     if (pos < m_audioDataStart)
         pos = m_audioDataStart;
 
-    meow::_fs.seekPos(audiofile, pos);
+    _fs.seekPos(audiofile, pos);
 
     while (!found)
     {
         if (pos + 3 >= maxPos)
             goto exit;
-        meow::_fs.readFromFile(audiofile, &byte1a);
+        _fs.readFromFile(audiofile, &byte1a);
         ++pos;
-        meow::_fs.readFromFile(audiofile, &byte2a);
+        _fs.readFromFile(audiofile, &byte2a);
         ++pos;
         while (true)
         {
             if (byte1a == 0xFF && (byte2a & 0x0E0) == 0xE0)
             {
-                meow::_fs.readFromFile(audiofile, &byte3a);
+                _fs.readFromFile(audiofile, &byte3a);
                 ++pos;
                 pos1 = pos - 3;
                 break;
             }
             byte1a = byte2a;
-            meow::_fs.readFromFile(audiofile, &byte2a);
+            _fs.readFromFile(audiofile, &byte2a);
             ++pos;
             if (pos >= maxPos)
                 goto exit;
@@ -1916,21 +1837,21 @@ int32_t Audio::mp3_correctResumeFilePos(uint32_t resumeFilePos)
 
         if (pos + 3 >= maxPos)
             goto exit;
-        meow::_fs.readFromFile(audiofile, &byte1b);
+        _fs.readFromFile(audiofile, &byte1b);
         ++pos;
-        meow::_fs.readFromFile(audiofile, &byte2b);
+        _fs.readFromFile(audiofile, &byte2b);
         ++pos;
         while (true)
         {
             if (byte1b == 0xFF && (byte2b & 0x0E0) == 0xE0)
             {
-                meow::_fs.readFromFile(audiofile, &byte3b);
+                _fs.readFromFile(audiofile, &byte3b);
                 ++pos;
                 pos2 = pos - 3;
                 break;
             }
             byte1b = byte2b;
-            meow::_fs.readFromFile(audiofile, &byte2b);
+            _fs.readFromFile(audiofile, &byte2b);
             ++pos;
             if (pos >= maxPos)
                 goto exit;

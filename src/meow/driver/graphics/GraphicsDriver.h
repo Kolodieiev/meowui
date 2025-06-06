@@ -1,7 +1,7 @@
 #pragma once
 #pragma GCC optimize("O3")
 #include <Arduino.h>
-#include <TFT_eSPI.h>
+#include "./TFT_eSPI/TFT_eSPI.h"
 #include "meowui_setup/graphics_setup.h"
 
 namespace meow
@@ -155,6 +155,38 @@ namespace meow
                 void pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint16_t *data, uint16_t transparent);
 #endif
 
+#ifdef BACKLIGHT_PIN
+                /**
+                 * @brief Вмикає підсвітку дисплея зі 100% яскравістю.
+                 *
+                 */
+                void enableBackLight();
+
+                /**
+                 * @brief Вимикає підсвітку дисплея
+                 *
+                 */
+                void disableBackLight();
+
+                /**
+                 * @brief Встановлює яскравість підсвітки дисплея.
+                 * Де 0 - підсвітка вимкнена, а 255 - рівень яскравості максимальний.
+                 *
+                 * @param value
+                 */
+                void setBrightness(uint8_t value);
+
+                /**
+                 * @brief Повертає значення поточної яскравості підсвітки дисплея.
+                 *
+                 * @return uint8_t
+                 */
+                uint8_t getBrightness() const { return _cur_brightness; }
+
+        private:
+                uint8_t _cur_brightness = 125;
+#endif
+
         private:
                 TFT_eSPI _tft = TFT_eSPI();
 
@@ -177,6 +209,6 @@ namespace meow
                 static void displayRendererTask(void *params);
 #endif
         };
-        
+
         extern GraphicsDriver _display;
 }

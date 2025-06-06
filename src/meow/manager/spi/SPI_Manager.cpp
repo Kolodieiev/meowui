@@ -4,11 +4,11 @@ namespace meow
 {
     std::unordered_map<uint8_t, SPIClass *> SPI_Manager::_spi_map;
 
-    bool SPI_Manager::initBus(uint8_t bus_num, uint8_t sclk_pin, uint8_t miso_pin, uint8_t mosi_pin)
+    bool SPI_Manager::initBus(uint8_t bus_num, int8_t sclk_pin, int8_t miso_pin, int8_t mosi_pin)
     {
         auto it = _spi_map.find(bus_num);
         if (it != _spi_map.end())
-            return false;
+            return true;
 
         try
         {

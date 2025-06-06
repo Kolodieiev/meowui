@@ -204,7 +204,7 @@ namespace meow
 
     void GameClient::packetHandlerTask(void *arg)
     {
-        GameClient *this_ptr = static_cast<GameClient *>(arg);
+        GameClient *self = static_cast<GameClient *>(arg);
         UdpPacket *packet = nullptr;
 
         while (1)
@@ -213,7 +213,7 @@ namespace meow
             {
                 if (packet)
                 {
-                    this_ptr->handlePacket(packet);
+                    self->handlePacket(packet);
                     delete packet;
                     packet = nullptr;
                 }
@@ -310,11 +310,11 @@ namespace meow
 
     void GameClient::checkConnectTask(void *arg)
     {
-        GameClient *this_ptr = static_cast<GameClient *>(arg);
+        GameClient *self = static_cast<GameClient *>(arg);
 
         while (1)
         {
-            this_ptr->handleCheckConnect();
+            self->handleCheckConnect();
             vTaskDelay(2000 / portTICK_PERIOD_MS);
         }
     }

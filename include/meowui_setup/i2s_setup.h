@@ -7,9 +7,9 @@
 #define PIN_I2S_OUT_LRC (uint8_t)1
 #define PIN_I2S_OUT_DOUT (uint8_t)2
 
-#define PIN_I2S_IN_SCK (uint8_t)-1
-#define PIN_I2S_IN_WS (uint8_t)-1
-#define PIN_I2S_IN_SD (uint8_t)-1
+#define PIN_I2S_IN_SCK (uint8_t)13
+#define PIN_I2S_IN_WS (uint8_t)14
+#define PIN_I2S_IN_SD (uint8_t)21
 
 #else
 

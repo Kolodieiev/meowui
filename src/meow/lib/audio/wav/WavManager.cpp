@@ -1,5 +1,5 @@
 #include "WavManager.h"
-#include "driver/i2s.h"
+#include "meow/manager/audio/out/I2SOutManager.h"
 
 namespace meow
 {
@@ -8,60 +8,17 @@ namespace meow
 
     WavManager::~WavManager()
     {
-        if (_task_handle != NULL)
+        if (_task_handle)
         {
             _params.cmd = TaskParams::CMD_STOP;
             vTaskDelete(_task_handle);
         }
-
-        if (_is_inited)
-            i2s_driver_uninstall(I2S_NUM_0);
 
         for (auto mix_it = _mix.begin(), last_it = _mix.end(); mix_it != last_it; ++mix_it)
             delete mix_it->second;
 
         _mix.clear();
         _track_id = 0;
-    }
-
-    bool WavManager::init(uint8_t I2S_BCLK_PIN, uint8_t I2S_LRC_PIN, uint8_t I2S_DOUT_PIN)
-    {
-        i2s_config_t i2s_config = {};
-
-        i2s_config.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX);
-        i2s_config.communication_format = I2S_COMM_FORMAT_STAND_I2S;
-        i2s_config.sample_rate = 16000;
-        i2s_config.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT;
-        i2s_config.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
-        i2s_config.intr_alloc_flags = ESP_INTR_FLAG_LEVEL1;
-        i2s_config.dma_buf_count = 16;
-        i2s_config.dma_buf_len = 512;
-        i2s_config.use_apll = false;
-        i2s_config.fixed_mclk = true;
-        i2s_config.tx_desc_auto_clear = true;
-
-        if (i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL) != ESP_OK)
-        {
-            log_e("Помилка ініціалізації I2S драйверу");
-            return false;
-        }
-
-        i2s_pin_config_t pin_config = {};
-
-        pin_config.bck_io_num = I2S_BCLK_PIN;
-        pin_config.ws_io_num = I2S_LRC_PIN;
-        pin_config.data_out_num = I2S_DOUT_PIN;
-        pin_config.data_in_num = I2S_PIN_NO_CHANGE;
-        pin_config.mck_io_num = I2S_PIN_NO_CHANGE;
-
-        if (i2s_set_pin(I2S_NUM_0, &pin_config) != ESP_OK)
-        {
-            log_e("Помилка ініціалізації I2S пінів");
-            return false;
-        }
-
-        _is_inited = true;
-        return true;
     }
 
     uint16_t WavManager::addToMix(WavTrack *sound)
@@ -84,11 +41,8 @@ namespace meow
 
     void WavManager::startMix()
     {
-        if (!_is_inited)
-        {
-            log_e("Помилка. I2S не ініціалізовано");
-            return;
-        }
+        if (!_i2s_out.isInited())
+            esp_restart();
 
         if (_is_playing)
             return;
@@ -117,13 +71,13 @@ namespace meow
         TaskParams *task_params = (TaskParams *)params;
 
         int16_t sample;
-        size_t bytes_written;
+        uint32_t cycles_counter = 0;
 
         while (task_params->cmd != TaskParams::CMD_STOP)
         {
             if (task_params->cmd != TaskParams::CMD_PAUSE)
             {
-                for (int16_t i{0}; i < 256; i += 2)
+                for (uint32_t i{0}; i < 256u; i += 2u)
                 {
                     sample = 0;
 
@@ -145,10 +99,16 @@ namespace meow
                     _samples_buf[i + 1] = sample;
                 }
 
-                i2s_write(I2S_NUM_0, _samples_buf, sizeof(uint16_t) * 256, &bytes_written, 200 / portTICK_PERIOD_MS);
+                _i2s_out.write(_samples_buf, sizeof(uint16_t) * 256);
             }
 
-            vTaskDelay(1 / portTICK_PERIOD_MS);
+            ++cycles_counter;
+
+            if (cycles_counter > 50u)
+            {
+                cycles_counter = 0;
+                vTaskDelay(1 / portTICK_PERIOD_MS);
+            }
         }
 
         vTaskDelete(NULL);

@@ -2,12 +2,11 @@
 
 #include "GraphicsDriver.h"
 #include "meow/util/img/BmpUtil.h"
+#include "esp32-hal-ledc.h"
 
 namespace meow
 {
-
 #ifdef DOUBLE_BUFFERRING
-
     volatile xSemaphoreHandle GraphicsDriver::_sync_mutex;
     volatile bool GraphicsDriver::_has_frame{false};
     volatile bool GraphicsDriver::_take_screenshot{false};
@@ -202,6 +201,26 @@ namespace meow
         _tft.setSwapBytes(true);
         _tft.pushImage(x, y, w, h, data, transparent);
         _tft.setSwapBytes(false);
+    }
+#endif
+
+#ifdef BACKLIGHT_PIN
+    void meow::GraphicsDriver::enableBackLight()
+    {
+        pinMode(BACKLIGHT_PIN, OUTPUT);
+        digitalWrite(BACKLIGHT_PIN, HIGH);
+    }
+
+    void meow::GraphicsDriver::disableBackLight()
+    {
+        digitalWrite(BACKLIGHT_PIN, LOW);
+    }
+
+    void meow::GraphicsDriver::setBrightness(uint8_t value)
+    {
+        _cur_brightness = value;
+        ledcAttach(BACKLIGHT_PIN, PWM_FREQ, PWM_RESOLUTION);
+        ledcWrite(PWM_CHANEL, value);
     }
 #endif
 

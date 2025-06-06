@@ -41,7 +41,7 @@ namespace meow
         {nullptr, nullptr},
     };
 
-    LuaContext *LuaContext::_this_ptr;
+    LuaContext *LuaContext::_self;
 
     LuaContext::LuaContext()
     {
@@ -55,7 +55,7 @@ namespace meow
         _notification = new Notification(1);
 #endif
 
-        _this_ptr = this;
+        _self = this;
     }
 
     LuaContext::~LuaContext()
@@ -157,7 +157,7 @@ namespace meow
                     return ps_realloc(ptr, nsize);
             }
 
-            _this_ptr->_msg = STR_NOT_ENOUGH_RAM;
+            _self->_msg = STR_NOT_ENOUGH_RAM;
             log_e("%s", STR_NOT_ENOUGH_RAM);
             return nullptr;
         }
@@ -172,13 +172,13 @@ namespace meow
         if (used_kb > 30)
             lua_gc(L, LUA_GCCOLLECT, 0);
 
-        if (_this_ptr->_hook_counter > 12)
+        if (_self->_hook_counter > 12)
         {
-            _this_ptr->_hook_counter = 0;
+            _self->_hook_counter = 0;
             vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
-        ++_this_ptr->_hook_counter;
+        ++_self->_hook_counter;
     }
 
     void LuaContext::luaErrToMsg()
@@ -242,13 +242,13 @@ namespace meow
 
     int LuaContext::lua_context_exit(lua_State *L)
     {
-        _this_ptr->release();
+        _self->release();
         return 0;
     }
 
     int LuaContext::lua_context_get_layout(lua_State *L)
     {
-        IWidgetContainer *layout = _this_ptr->getLayout();
+        IWidgetContainer *layout = _self->getLayout();
         if (!layout)
         {
             lua_pushnil(L);
@@ -268,7 +268,7 @@ namespace meow
     int LuaContext::lua_context_manage_widget(lua_State *L)
     {
         Label **label = (Label **)lua_touserdata(L, 1);
-        _this_ptr->_managed_widgets.push_back(*label);
+        _self->_managed_widgets.push_back(*label);
         return 0;
     }
 
@@ -373,7 +373,7 @@ namespace meow
         if (arg_num > 1)
             time = luaL_checknumber(L, 2);
 
-        _this_ptr->showToast(toast_str, time);
+        _self->showToast(toast_str, time);
         return 0;
     }
 
@@ -386,10 +386,10 @@ namespace meow
         if (arg_num == 1)
         {
             const char *notification_msg = luaL_checkstring(L, 1);
-            _this_ptr->_notification->setTitleText(STR_NOTIFICATION);
-            _this_ptr->_notification->setMsgText(notification_msg);
-            _this_ptr->_notification->setLeftText(emptyString);
-            _this_ptr->_notification->setRightText(STR_OK);
+            _self->_notification->setTitleText(STR_NOTIFICATION);
+            _self->_notification->setMsgText(notification_msg);
+            _self->_notification->setLeftText(emptyString);
+            _self->_notification->setRightText(STR_OK);
         }
         else if (arg_num == 4)
         {
@@ -398,19 +398,19 @@ namespace meow
             const char *n_left = luaL_checkstring(L, 3);
             const char *n_rigt = luaL_checkstring(L, 4);
 
-            _this_ptr->_notification->setTitleText(n_title);
-            _this_ptr->_notification->setMsgText(n_msg);
-            _this_ptr->_notification->setLeftText(n_left);
-            _this_ptr->_notification->setRightText(n_rigt);
+            _self->_notification->setTitleText(n_title);
+            _self->_notification->setMsgText(n_msg);
+            _self->_notification->setLeftText(n_left);
+            _self->_notification->setRightText(n_rigt);
         }
 
-        _this_ptr->showNotification(_this_ptr->_notification);
+        _self->showNotification(_self->_notification);
         return 0;
     }
 
     int LuaContext::lua_hide_notification(lua_State *L)
     {
-        _this_ptr->hideNotification();
+        _self->hideNotification();
         return 0;
     }
 
@@ -420,7 +420,7 @@ namespace meow
         uint16_t id = _res.loadBmpRes(path);
 
         if (id > 0)
-            _this_ptr->_loaded_img_id.push_back(id);
+            _self->_loaded_img_id.push_back(id);
 
         lua_pushinteger(L, id);
         return 1;
@@ -430,11 +430,11 @@ namespace meow
     {
         uint16_t id = luaL_checkinteger(L, 1);
 
-        for (auto it_b = _this_ptr->_loaded_img_id.begin(), it_e = _this_ptr->_loaded_img_id.end(); it_b != it_e; ++it_b)
+        for (auto it_b = _self->_loaded_img_id.begin(), it_e = _self->_loaded_img_id.end(); it_b != it_e; ++it_b)
         {
             if (*it_b == id)
             {
-                _this_ptr->_loaded_img_id.erase(it_b);
+                _self->_loaded_img_id.erase(it_b);
                 _res.deleteBmpRes(id);
                 break;
             }

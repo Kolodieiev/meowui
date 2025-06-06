@@ -18,12 +18,6 @@
 #include <Arduino.h>
 #include <libb64/cencode.h>
 
-#if ESP_IDF_VERSION_MAJOR == 5
-#include <driver/i2s_std.h>
-#else
-#include <driver/i2s.h>
-#endif
-
 #ifndef I2S_GPIO_UNUSED
 #define I2S_GPIO_UNUSED -1 // = I2S_PIN_NO_CHANGE in IDF < 5
 #endif
@@ -77,16 +71,14 @@ class Audio : private AudioBuffer
     AudioBuffer InBuff; // instance of input buffer
 
 public:
-    Audio(uint8_t channelEnabled = 3, uint8_t i2sPort = I2S_NUM_0); // #99
+    Audio();
     ~Audio();
     void reconfigI2S();
     bool connecttoFS(const char *path, int32_t m_fileStartPos = -1);
     bool setFileLoop(bool input); // TEST loop
     bool setAudioPlayPosition(uint16_t sec);
     bool setFilePos(uint32_t pos);
-    bool audioFileSeek(const float speed);
     bool setTimeOffset(int sec);
-    bool setPinout(uint8_t BCLK, uint8_t LRC, uint8_t DOUT, int8_t MCLK = I2S_GPIO_UNUSED);
     bool pauseResume();
     bool isRunning() { return m_f_running; }
     void loop();
@@ -114,7 +106,6 @@ public:
     uint32_t inBufferFree();   // returns the number of free bytes in the inputbuffer
     uint32_t inBufferSize();   // returns the size of the inputbuffer in bytes
     void setTone(int8_t gainLowPass, int8_t gainBandPass, int8_t gainHighPass);
-    void setI2SCommFMT_LSB(bool commFMT);
 
 private:
     size_t id3Size{0};
@@ -173,8 +164,6 @@ private:
     void computeLimit();
     void Gain(int16_t *sample);
     bool initializeDecoder();
-    esp_err_t I2Sstart(uint8_t i2s_num);
-    esp_err_t I2Sstop(uint8_t i2s_num);
     int16_t *IIR_filterChain0(int16_t iir_in[2], bool clear = false);
     int16_t *IIR_filterChain1(int16_t iir_in[2], bool clear = false);
     int16_t *IIR_filterChain2(int16_t iir_in[2], bool clear = false);
@@ -300,18 +289,6 @@ private:
     size_t _audio_size{0};
     SemaphoreHandle_t mutex_audio;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-#if ESP_IDF_VERSION_MAJOR == 5
-    i2s_chan_handle_t m_i2s_tx_handle = {};
-    i2s_chan_config_t m_i2s_chan_cfg = {}; // stores I2S channel values
-    i2s_std_config_t m_i2s_std_cfg = {};   // stores I2S driver values
-#else
-    i2s_config_t m_i2s_config = {};
-    i2s_pin_config_t m_pin_config = {};
-#endif
-#pragma GCC diagnostic pop
-
     std::vector<uint32_t> m_hashQueue;
 
     const size_t m_frameSizeMP3 = 1600;
@@ -331,12 +308,11 @@ private:
     uint8_t m_curve = 0;          // volume characteristic
     uint8_t m_bitsPerSample = 16; // bitsPerSample
     uint8_t m_channels = 2;
-    uint8_t m_i2s_num = I2S_NUM_0; // I2S_NUM_0 or I2S_NUM_1
-    uint8_t m_filterType[2];       // lowpass, highpass
-    uint8_t m_vuLeft = 0;          // average value of samples, left channel
-    uint8_t m_vuRight = 0;         // average value of samples, right channel
-    int16_t *m_outBuff = NULL;     // Interleaved L/R
-    int16_t m_validSamples = {0};  // #144
+    uint8_t m_filterType[2];      // lowpass, highpass
+    uint8_t m_vuLeft = 0;         // average value of samples, left channel
+    uint8_t m_vuRight = 0;        // average value of samples, right channel
+    int16_t *m_outBuff = NULL;    // Interleaved L/R
+    int16_t m_validSamples = {0}; // #144
     int16_t m_curSample{0};
     int16_t m_decodeError = 0;       // Stores the return value of the decoder
     uint32_t m_contentlength = 0;    // Stores the length if the stream comes from fileserver
@@ -351,7 +327,6 @@ private:
     bool m_f_playing = false;          // valid mp3 stream recognized
     bool m_f_loop = false;             // Set if audio file should loop
     bool m_f_forceMono = false;        // if true stereo -> mono
-    uint8_t m_f_channelEnabled = 3;    // internal DAC, both channels
     uint32_t m_audioFileDuration = 0;
     float m_audioCurrentTime = 0;
     uint32_t m_audioDataStart = 0;  // in bytes
@@ -364,6 +339,7 @@ private:
     int8_t m_gain0 = 0; // cut or boost filters (EQ)
     int8_t m_gain1 = 0;
     int8_t m_gain2 = 0;
+    bool m_f_commFMT = false; // false: default (PHILIPS), true: Least Significant Bit Justified (japanese format)
 
     //
 

@@ -1,12 +1,6 @@
 #pragma once
 #include <stdint.h>
 
-//
-//
-// УВАГА, ЦЕ ЛИШЕ ПРИКЛАД НАЛАШТУВАНЬ! Ви повинна налаштувати піни кнопок відповідно до свого проєкту!
-//
-//
-
 // #define TOUCHSCREEN_SUPPORT // Увімкнути підтримку сенсорного екрану
 
 #ifdef TOUCHSCREEN_SUPPORT
@@ -33,19 +27,35 @@ namespace meow
 {
     enum BtnID : uint8_t
     {
+        BTN_UP = 38,
+        BTN_LEFT = 39,
+        BTN_RIGHT = 40,
+        BTN_DOWN = 41,
+
+        BTN_D = 9,
         BTN_A = 5,
         BTN_C = 10,
         BTN_B = 6,
+
+        BTN_SAVE = 4, // START
+        BTN_EXIT = 0, // SELECT
     };
 }
 
-// -------------------------------- Макрос з ініціалізацією кнопок. Між фігурними дужками потрібно додати ініціалізацію кнопок, як показано нижче
-// -------------------------------- Де Button(uint8_t btn_id, bool is_touch)
-#define BUTTONS                            \
-    {                                      \
-        {BTN_A, new Button(BTN_A, false)}, \
-        {BTN_C, new Button(BTN_C, false)}, \
-        {BTN_B, new Button(BTN_B, false)}, \
+// -------------------------------- Макрос з ініціалізацією пінів. Між фігурними дужками потрібно додати ініціалізацію пінів, як показано нижче
+// -------------------------------- Де Button(uint8_t key_id, bool is_touch)
+#define BUTTONS                                    \
+    {                                              \
+        {BTN_UP, new Button(BTN_UP, false)},       \
+        {BTN_DOWN, new Button(BTN_DOWN, false)},   \
+        {BTN_LEFT, new Button(BTN_LEFT, false)},   \
+        {BTN_RIGHT, new Button(BTN_RIGHT, false)}, \
+        {BTN_D, new Button(BTN_D, false)},         \
+        {BTN_A, new Button(BTN_A, false)},         \
+        {BTN_C, new Button(BTN_C, false)},         \
+        {BTN_B, new Button(BTN_B, false)},         \
+        {BTN_SAVE, new Button(BTN_SAVE, false)},   \
+        {BTN_EXIT, new Button(BTN_EXIT, false)},   \
     }
 
 // -------------------------------- Налаштування чутливості сенсорних кнопок
