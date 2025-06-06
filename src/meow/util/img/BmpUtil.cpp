@@ -131,7 +131,7 @@ namespace meow
         }
 
         uint8_t *header_ptr = (uint8_t *)&header;
-        for (uint8_t i = 0; i < header.data_offset; ++i)
+        for (uint32_t i = 0; i < header.data_offset; ++i)
             data[i] = header_ptr[i];
 
         uint16_t *data_p16 = reinterpret_cast<uint16_t *>(data + header.data_offset);

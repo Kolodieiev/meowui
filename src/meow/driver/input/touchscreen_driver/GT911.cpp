@@ -205,7 +205,7 @@ namespace meow
     void GT911::calculateChecksum()
     {
         uint8_t checksum;
-        for (uint8_t i = 0; i < GT911_CONFIG_SIZE; i++)
+        for (uint16_t i = 0; i < GT911_CONFIG_SIZE; i++)
             checksum += _conf_buf[i];
 
         checksum = (~checksum) + 1;

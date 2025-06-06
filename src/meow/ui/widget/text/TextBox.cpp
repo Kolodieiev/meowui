@@ -139,14 +139,14 @@ namespace meow
             }
             else // pwd
             {
-                uint16_t txtLen = calcRealStrLen(_text);
+                uint32_t txt_len = calcRealStrLen(_text);
 
-                String pwdStr = "";
+                String pwd_str = "";
 
-                for (uint16_t i; i < txtLen; ++i)
-                    pwdStr += "*";
+                for (uint32_t i; i < txt_len; ++i)
+                    pwd_str += "*";
 
-                _display.drawString(pwdStr, _x_pos + x_offset + txt_x_pos, _y_pos + y_offset + txtYPos);
+                _display.drawString(pwd_str, _x_pos + x_offset + txt_x_pos, _y_pos + y_offset + txtYPos);
             }
         }
         else
@@ -161,14 +161,14 @@ namespace meow
             }
             else // pwd
             {
-                uint16_t txtLen = calcRealStrLen(sub_str);
+                uint32_t txt_len = calcRealStrLen(sub_str);
 
-                String pwdStr = "";
+                String pwd_str = "";
 
-                for (uint16_t i; i < txtLen; ++i)
-                    pwdStr += "*";
+                for (uint32_t i; i < txt_len; ++i)
+                    pwd_str += "*";
 
-                _display.drawString(pwdStr, _x_pos + x_offset + txt_x_pos, _y_pos + y_offset + txtYPos);
+                _display.drawString(pwd_str, _x_pos + x_offset + txt_x_pos, _y_pos + y_offset + txtYPos);
             }
         }
     }

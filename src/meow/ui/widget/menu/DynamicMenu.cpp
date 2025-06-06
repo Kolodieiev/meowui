@@ -46,7 +46,7 @@ namespace meow
                 xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
                 _widgets.reserve(temp_vec.size());
-                for (uint16_t i{0}; i < temp_vec.size(); ++i)
+                for (size_t i{0}; i < temp_vec.size(); ++i)
                 {
                     temp_vec[i]->setParent(this);
                     _widgets.push_back(temp_vec[i]);
@@ -107,7 +107,7 @@ namespace meow
                 xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
                 _widgets.reserve(temp_vec.size());
-                for (uint16_t i{0}; i < temp_vec.size(); ++i)
+                for (size_t i{0}; i < temp_vec.size(); ++i)
                 {
                     temp_vec[i]->setParent(this);
                     _widgets.push_back(temp_vec[i]);

@@ -18,7 +18,7 @@ namespace meow
         if (!_is_changed)
         {
             if (_visibility != INVISIBLE && _is_enabled)
-                for (uint16_t i{0}; i < _widgets.size(); ++i)
+                for (size_t i{0}; i < _widgets.size(); ++i)
                     _widgets[i]->onDraw();
         }
         else
@@ -36,7 +36,7 @@ namespace meow
             if (!_is_transparent)
                 clear();
 
-            for (uint16_t i{0}; i < _widgets.size(); ++i)
+            for (size_t i{0}; i < _widgets.size(); ++i)
                 _widgets[i]->forcedDraw();
         }
 

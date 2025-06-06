@@ -190,7 +190,7 @@ namespace meow
         if (!_is_changed)
         {
             if (_visibility != INVISIBLE && _is_enabled)
-                for (uint16_t i{0}; i < _widgets.size(); ++i)
+                for (size_t i{0}; i < _widgets.size(); ++i)
                     _widgets[i]->onDraw();
         }
         else
@@ -219,7 +219,7 @@ namespace meow
             uint16_t x{2};
             uint16_t y{2};
 
-            for (uint16_t i{0}; i < _widgets.size(); ++i)
+            for (size_t i{0}; i < _widgets.size(); ++i)
             {
                 _widgets[i]->setPos(x, y);
                 _widgets[i]->setWidth(_width - 4);
