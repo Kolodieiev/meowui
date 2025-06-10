@@ -1,0 +1,5 @@
+src/meow/plugin/lua
+src/meow/lib/qr
+src/meow/lib/audio/mp3
+src/meow/driver/graphics/TFT_eSPI
+src/meow/driver/input/touchscreen_driver
