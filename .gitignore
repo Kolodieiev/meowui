@@ -7,6 +7,9 @@
 !images/
 !images/**
 
+!cppcheck/
+!cppcheck/**
+
 !src/
 !src/meow/
 !src/meow/**
