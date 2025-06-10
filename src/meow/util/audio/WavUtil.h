@@ -14,8 +14,8 @@ namespace meow
         AudioData loadWav(const char *path_to_wav);
 
     private:
-        const uint8_t HEADER_SIZE{44};
         FileManager _file_mngr;
+        const uint8_t HEADER_SIZE{44};
 
         bool validateHeader(const WavHeader &wav_header);
     };

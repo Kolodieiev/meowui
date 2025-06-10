@@ -40,11 +40,11 @@ namespace meow
         int8_t _pad;
         //
         bool _is_locked{false};
-        unsigned long _lock_time;
-        unsigned long _lock_duration;
+        unsigned long _lock_time{0};
+        unsigned long _lock_duration{0};
         //
         bool _is_touched{false};
-        unsigned long _hold_duration;
+        unsigned long _hold_duration{0};
         //
         bool _is_holded{false};
         bool _is_pressed{false};

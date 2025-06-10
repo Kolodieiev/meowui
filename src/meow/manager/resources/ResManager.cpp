@@ -65,7 +65,7 @@ namespace meow
 
         if (it != _bmp_res.end())
         {
-            free((void *)(it->second.data_ptr));
+            free(it->second.data_ptr);
             _bmp_res.erase(it);
         }
     }
@@ -76,7 +76,7 @@ namespace meow
 
         if (it != _wav_res.end())
         {
-            free((void *)(it->second.data_ptr));
+            free(it->second.data_ptr);
             _wav_res.erase(it);
         }
     }
@@ -84,7 +84,7 @@ namespace meow
     void ResManager::clearBmpRes()
     {
         for (auto it = _bmp_res.begin(), last_it = _bmp_res.end(); it != last_it; ++it)
-            free((void *)(it->second.data_ptr));
+            free(it->second.data_ptr);
 
         _bmp_res.clear();
     }
@@ -92,7 +92,7 @@ namespace meow
     void ResManager::clearWavRes()
     {
         for (auto it = _wav_res.begin(), last_it = _wav_res.end(); it != last_it; ++it)
-            free((void *)(it->second.data_ptr));
+            free(it->second.data_ptr);
 
         _wav_res.clear();
     }

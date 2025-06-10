@@ -12,7 +12,7 @@ namespace sokoban
     class SokobanScene : public IGameScene
     {
     public:
-        SokobanScene(DataStream &stored_objs, bool is_loaded = false, uint8_t lvl = 1);
+        explicit SokobanScene(DataStream &stored_objs, bool is_loaded = false, uint8_t lvl = 1);
         // Деструктор обов'язковий до реалізації.
         virtual ~SokobanScene();
 

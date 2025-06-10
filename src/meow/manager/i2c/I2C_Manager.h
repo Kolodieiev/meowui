@@ -129,8 +129,9 @@ namespace meow
         bool receive(void *out_data_buff) const;
 
     private:
-        static bool _is_inited;
-
         bool checkInit() const;
+
+    private:
+        static bool _is_inited;
     };
 }

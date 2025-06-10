@@ -70,7 +70,7 @@ void SplashContext::update()
 
 void SplashContext::addLabel(uint16_t x_pos, uint16_t y_pos, const char *res_str, uint16_t color)
 {
-    EmptyLayout *layout = (EmptyLayout *)getLayout();
+    EmptyLayout *layout = getLayout()->castTo<EmptyLayout>();
 
     Label *lbl = new Label(_widget_id);
     layout->addWidget(lbl);

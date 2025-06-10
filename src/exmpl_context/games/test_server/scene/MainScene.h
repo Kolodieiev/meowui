@@ -15,7 +15,7 @@ namespace test_server
     class MainScene : public IGameScene
     {
     public:
-        MainScene(DataStream &stored_objs);
+        explicit MainScene(DataStream &stored_objs);
         MainScene(DataStream &stored_objs, GameServer &server);
         MainScene(DataStream &stored_objs, GameClient &client);
 
@@ -53,11 +53,11 @@ namespace test_server
         //
         std::unordered_map<uint32_t, IGameObject *> _client_id; // Таблиця в якій зберігається адреса клієнта та вказівник на його об'єкт
                                                                 //
-        void handleClientData(ClientWrapper *cl_wrap, UdpPacket *packet);
-        static void onClientData(ClientWrapper *cl_wrap, UdpPacket *packet, void *arg);
+        void handleClientData(const ClientWrapper *cl_wrap, const UdpPacket *packet);
+        static void onClientData(const ClientWrapper *cl_wrap, const UdpPacket *packet, void *arg);
         //
-        void handleClientDisconn(ClientWrapper *cl_wrap);
-        static void onClientDisconn(ClientWrapper *cl_wrap, void *arg);
+        void handleClientDisconn(const ClientWrapper *cl_wrap);
+        static void onClientDisconn(const ClientWrapper *cl_wrap, void *arg);
         //
         // Виконати дії, повязані зі сервером
         void doServerStuff();

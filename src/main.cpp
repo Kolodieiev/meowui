@@ -10,7 +10,6 @@ void setup()
 {
     // ESP_IDF_VERSION_MAJOR;
     // ESP_ARDUINO_VERSION_MAJOR;
-
     xTaskCreatePinnedToCore(guiTask, "guiTask", (1024 / 2) * 50, NULL, 10, NULL, 1);
 }
 

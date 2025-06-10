@@ -155,16 +155,6 @@ namespace meow
         uint16_t getItemsNumOnScreen() const;
 
     protected:
-        uint16_t _first_item_index{0};
-        uint16_t _cur_focus_pos{0};
-
-        uint16_t _item_height{2};
-        uint16_t _item_width{2};
-
-        uint16_t _items_spacing{0};
-
-        Orientation _orientation{VERTICAL};
-
         void drawItems(uint16_t start, uint16_t count);
         uint16_t getCyclesCount() const;
 
@@ -173,5 +163,14 @@ namespace meow
     private:
         using IWidgetContainer::delWidgetByID;
         using IWidgetContainer::delWidgets;
+
+    protected:
+        uint16_t _first_item_index{0};
+        uint16_t _cur_focus_pos{0};
+        uint16_t _item_height{2};
+        uint16_t _item_width{2};
+        uint16_t _items_spacing{0};
+
+        Orientation _orientation{VERTICAL};
     };
 }

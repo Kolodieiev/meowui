@@ -43,10 +43,14 @@ namespace meow
         void pauseResume();
 
     private:
-        bool _is_playing{false};
+        static void mixTask(void *params);
 
-        static uint64_t _track_id;
-        static std::unordered_map<uint16_t, WavTrack *> _mix;
+    private:
+        std::unordered_map<uint16_t, WavTrack *> _mix;
+
+        uint64_t _track_id;
+
+        TaskHandle_t _task_handle = NULL;
 
         struct TaskParams
         {
@@ -60,9 +64,7 @@ namespace meow
             CMD cmd{CMD_NONE};
         } _params;
 
-        TaskHandle_t _task_handle = NULL;
-
-        static void mixTask(void *params);
+        bool _is_playing{false};
     };
 
 }

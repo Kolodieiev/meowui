@@ -142,7 +142,7 @@ void PrefSelectContext::ok()
 
     if (id == ITEM_ID_AUDIO_MONO)
     {
-        ToggleItem *toggle = (ToggleItem *)_menu->getCurrItem();
+        ToggleItem *toggle = _menu->getCurrItem()->castTo<ToggleItem>();
 
         bool force_mono = toggle->isOn();
         if (force_mono)

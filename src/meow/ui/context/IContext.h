@@ -113,7 +113,7 @@ namespace meow
          * @param widget Вказівник на віджет.
          * @return uint16_t
          */
-        uint16_t getCenterX(IWidget *widget) const { return widget ? (D_WIDTH - widget->getWidth()) / 2 : 0; }
+        uint16_t getCenterX(const IWidget *widget) const { return widget ? (D_WIDTH - widget->getWidth()) / 2 : 0; }
 
         /**
          * @brief Повертає y-координату, на якій віджет буде встановлено по центру відносно екрану.
@@ -121,7 +121,7 @@ namespace meow
          * @param widget Вказівник на віджет.
          * @return uint16_t
          */
-        uint16_t getCenterY(IWidget *widget) const { return widget ? (D_HEIGHT - widget->getHeight()) / 2 : 0; }
+        uint16_t getCenterY(const IWidget *widget) const { return widget ? (D_HEIGHT - widget->getHeight()) / 2 : 0; }
 
         /**
          * @brief Відображає віджет Notification для поточного макету.
@@ -152,20 +152,22 @@ namespace meow
         void giveLayoutMutex();
 
     private:
-        SemaphoreHandle_t _layout_mutex;
+        void removeToast();
+
+    private:
+        SemaphoreHandle_t _layout_mutex{nullptr};
+
         IWidgetContainer *_layout{nullptr};
-        //
-        bool _is_released{false};
-        ContextID _next_context_ID;
+        Label *_toast_label{nullptr};
+        Notification *_notification{nullptr};
         //
         unsigned long _upd_time{0};
-        //
-        Label *_toast_label{nullptr};
-        unsigned long _toast_lifetime;
-        unsigned long _toast_birthtime;
-        void removeToast();
-        //
-        Notification *_notification{nullptr};
+        unsigned long _toast_lifetime{0};
+        unsigned long _toast_birthtime{0};
+
+        ContextID _next_context_ID{0};
+
+        bool _is_released{false};
     };
 
 }

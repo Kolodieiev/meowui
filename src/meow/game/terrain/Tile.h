@@ -21,7 +21,7 @@ namespace meow
 
         Tile(TileType type, const uint16_t *img_ptr) : _type{type}, _img_ptr{img_ptr} {}
 
-        const TileType _type;
         const uint16_t *_img_ptr;
+        const TileType _type;
     };
 }

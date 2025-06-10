@@ -75,22 +75,6 @@ namespace meow
         ServerMode getServerMode() const { return _server_mode; }
 
     private:
-        bool _is_working{false};
-
-        unsigned long _last_delay_time = 0;
-
-        String _server_ip;
-        String _server_dir;
-        String _ssid;
-        String _pwd;
-
-        ServerMode _server_mode{SERVER_MODE_RECEIVE};
-        //
-        WebServer *_server = nullptr;
-        bool _must_work = false;
-
-        FILE *in_file{nullptr};
-
         static void startWebServer(void *params);
         void fileServerTask(void *params);
 
@@ -98,5 +82,21 @@ namespace meow
         void handleSend();
         void handleFile();
         void handle404();
+
+    private:
+        String _server_ip;
+        String _server_dir;
+        String _ssid;
+        String _pwd;
+
+        FILE *in_file{nullptr};
+        WebServer *_server = nullptr;
+
+        unsigned long _last_delay_time = 0;
+
+        ServerMode _server_mode{SERVER_MODE_RECEIVE};
+        //
+        bool _must_work = false;
+        bool _is_working{false};
     };
 }

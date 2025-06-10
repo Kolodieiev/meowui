@@ -1,6 +1,7 @@
 #pragma GCC optimize("O3")
 #include "WavTrack.h"
-#include "math.h"
+#include <cmath>
+#include <limits>
 
 namespace meow
 {
@@ -17,8 +18,15 @@ namespace meow
         if (!_is_playing)
             return 0;
 
-        int16_t ret = *((int16_t *)(_data_buf + _current_sample));
-        ret = static_cast<int16_t>(ret * _volume);
+        int16_t ret = *reinterpret_cast<const int16_t *>(_data_buf + _current_sample);
+        float temp_val = static_cast<float>(ret) * _volume;
+
+        if (temp_val > 32767.0f)
+            temp_val = 32767.0f;
+        else if (temp_val < -32768.0f)
+            temp_val = -32768.0f;
+
+        ret = static_cast<int16_t>(temp_val);
 
         if (std::abs(ret) > _volume * _filtration_lvl)
         {

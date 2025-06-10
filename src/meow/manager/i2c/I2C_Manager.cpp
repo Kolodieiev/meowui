@@ -66,7 +66,7 @@ namespace meow
             return false;
 
         Wire.beginTransmission(addr);
-        Wire.write((uint8_t *)data_buff, data_size);
+        Wire.write(const_cast<uint8_t *>(static_cast<const uint8_t *>(data_buff)), data_size);
         return !Wire.endTransmission();
     }
 
@@ -77,7 +77,7 @@ namespace meow
 
         Wire.beginTransmission(addr);
         Wire.write(reg);
-        Wire.write((uint8_t *)data_buff, data_size);
+        Wire.write(const_cast<uint8_t *>(static_cast<const uint8_t *>(data_buff)), data_size);
         return !Wire.endTransmission();
     }
 
@@ -92,7 +92,7 @@ namespace meow
     {
         if (!checkInit())
             return false;
-        return Wire.write((uint8_t *)data_buff, data_size) == data_size;
+        return Wire.write(const_cast<uint8_t *>(static_cast<const uint8_t *>(data_buff)), data_size) == data_size;
     }
 
     bool I2C_Manager::readRegister(uint8_t addr, uint8_t reg, void *out_data_buff, uint8_t data_size) const
@@ -124,7 +124,7 @@ namespace meow
                 return false;
         }
 
-        uint8_t *temp_ptr = (uint8_t *)out_data_buff;
+        uint8_t *temp_ptr = static_cast<uint8_t *>(out_data_buff);
         for (uint8_t i = 0; i < data_size; ++i)
             temp_ptr[i] = Wire.read();
 
@@ -143,7 +143,7 @@ namespace meow
                 return false;
         }
 
-        uint8_t *temp_ptr = (uint8_t *)out_data_buff;
+        uint8_t *temp_ptr = static_cast<uint8_t *>(out_data_buff);
         uint16_t i = 0;
         while (Wire.available())
             temp_ptr[i++] = Wire.read();

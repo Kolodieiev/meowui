@@ -11,7 +11,7 @@ namespace meow
     {
         // TODO додати анімацію
     public:
-        Image(uint16_t widget_ID);
+        explicit Image(uint16_t widget_ID);
         virtual ~Image();
 
         /**
@@ -68,14 +68,13 @@ namespace meow
 #endif
 
     private:
-        bool _has_transp_color{true};
-        uint16_t _transparent_color{TFT_TRANSPARENT};
-
-        const uint16_t *_img_ptr{nullptr};
-
 #ifdef DOUBLE_BUFFERRING
         TFT_eSprite _img_buf = TFT_eSprite(_display.getTFT());
 #endif
+        const uint16_t *_img_ptr{nullptr};
+        uint16_t _transparent_color{TFT_TRANSPARENT};
+
+        bool _has_transp_color{true};
     };
 
 }

@@ -26,6 +26,8 @@
   #define SPI_BUSY_CHECK
 #endif
 
+const uint8_t  blue[] = {0, 11, 21, 31}; // blue 2 to 5 bit colour lookup table
+
 /***************************************************************************************
 ** Function name:           Legacy - deprecated
 ** Description:             Start/end transaction
@@ -209,13 +211,20 @@ bool TFT_eSPI::checkViewport(int32_t x, int32_t y, int32_t w, int32_t h)
 
   if ((x >= _vpW) || (y >= _vpH)) return false;
 
-  int32_t dx = 0;
-  int32_t dy = 0;
   int32_t dw = w;
   int32_t dh = h;
 
-  if (x < _vpX) { dx = _vpX - x; dw -= dx; x = _vpX; }
-  if (y < _vpY) { dy = _vpY - y; dh -= dy; y = _vpY; }
+  if (x < _vpX) 
+  {
+     dw -= _vpX - x;
+     x = _vpX; 
+  }
+
+  if (y < _vpY) 
+  { 
+    dh -= _vpY - y; 
+    y = _vpY; 
+  }
 
   if ((x + dw) > _vpW ) dw = _vpW - x;
   if ((y + dh) > _vpH ) dh = _vpH - y;
@@ -637,8 +646,6 @@ void TFT_eSPI::init(uint8_t tc)
   delay(150); // Wait for reset to complete
 
   begin_tft_write();
-
-  tc = tc; // Suppress warning
 
   // This loads the driver specific initialisation code  <<<<<<<<<<<<<<<<<<<<< ADD NEW DRIVERS TO THE LIST HERE <<<<<<<<<<<<<<<<<<<<<<<
 #if   defined (ILI9341_DRIVER) || defined(ILI9341_2_DRIVER) || defined (ILI9342_DRIVER)
@@ -1570,7 +1577,7 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint8
   {
     _swapBytes = false;
 
-    uint8_t  blue[] = {0, 11, 21, 31}; // blue 2 to 5 bit colour lookup table
+    
 
     _lastColor = -1; // Set to illegal value
 
@@ -1604,7 +1611,6 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint8
 
       data += w;
     }
-    _swapBytes = swap; // Restore old value
   }
   else if (cmap != nullptr) // Must be 4bpp
   {
@@ -1655,7 +1661,6 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint8
       pushPixels(lineBuf, dw);
       data += (w >> 1);
     }
-    _swapBytes = swap; // Restore old value
   }
   else // Must be 1bpp
   {
@@ -1703,8 +1708,6 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, uint8_t *da
   {
     _swapBytes = false;
 
-    uint8_t  blue[] = {0, 11, 21, 31}; // blue 2 to 5 bit colour lookup table
-
     _lastColor = -1; // Set to illegal value
 
     // Used to store last shifted colour
@@ -1737,7 +1740,6 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, uint8_t *da
 
       data += w;
     }
-    _swapBytes = swap; // Restore old value
   }
   else if (cmap != nullptr) // Must be 4bpp
   {
@@ -1788,7 +1790,6 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, uint8_t *da
       pushPixels(lineBuf, dw);
       data += (w >> 1);
     }
-    _swapBytes = swap; // Restore old value
   }
   else // Must be 1bpp
   {
@@ -1835,8 +1836,6 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, uint8_t *da
     _swapBytes = false;
 
     data += dx + dy * w;
-
-    uint8_t  blue[] = {0, 11, 21, 31}; // blue 2 to 5 bit colour lookup table
 
     _lastColor = -1; // Set to illegal value
 
@@ -1909,10 +1908,9 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, uint8_t *da
       bool move = true;
       uint16_t np = 0;
 
-      uint8_t index;  // index into cmap.
 
       if (splitFirst) {
-        index = (*ptr & 0x0F);  // odd = bits 3 .. 0
+        uint8_t index = (*ptr & 0x0F);  // odd = bits 3 .. 0
         if (index != transp) {
           move = false; sx = px;
           lineBuf[np] = cmap[index];
@@ -3061,13 +3059,6 @@ void TFT_eSPI::drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32
   if (_vpOoB) return;
 
   if (c < 32) return;
-
-    // Avoid warnings if fonts are disabled
-    x = x;
-    y = y;
-    color = color;
-    bg = bg;
-    size = size;
 }
 
 
@@ -3985,7 +3976,7 @@ void TFT_eSPI::fillSmoothCircle(int32_t x, int32_t y, int32_t r, uint32_t color,
 
   drawFastHLine(x - r, y, 2 * r + 1, color);
   int32_t xs = 1;
-  int32_t cx = 0;
+  int32_t cx;
 
   int32_t r1 = r * r;
   r++;
@@ -4059,7 +4050,7 @@ void TFT_eSPI::drawSmoothRoundRect(int32_t x, int32_t y, int32_t r, int32_t ir, 
 
   uint16_t t = r - ir + 1;
   int32_t xs = 0;
-  int32_t cx = 0;
+  int32_t cx;
 
   int32_t r2 = r * r;   // Outer arc radius^2
   r++;
@@ -4138,7 +4129,7 @@ void TFT_eSPI::fillSmoothRoundRect(int32_t x, int32_t y, int32_t w, int32_t h, i
   inTransaction = true;
 
   int32_t xs = 0;
-  int32_t cx = 0;
+  int32_t cx;
 
   // Limit radius to half width or height
   if (r < 0)   r = 0;
@@ -4527,7 +4518,6 @@ uint8_t TFT_eSPI::color16to8(uint16_t c)
 ***************************************************************************************/
 uint16_t TFT_eSPI::color8to16(uint8_t color)
 {
-  uint8_t  blue[] = {0, 11, 21, 31}; // blue 2 to 5 bit colour lookup table
   uint16_t color16 = 0;
 
   //        =====Green=====     ===============Red==============
@@ -5042,7 +5032,7 @@ int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY)
 int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY, uint8_t font)
 {
   int16_t sumX = 0;
-  uint8_t padding = 1, baseline = 0;
+  uint8_t baseline = 0;
   uint16_t cwidth = textWidth(string, font); // Find the pixel width of the string in the font
   uint16_t cheight = 8 * textsize;
 
@@ -5056,25 +5046,20 @@ int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY, uint8
     switch(textdatum) {
       case TC_DATUM:
         poX -= cwidth/2;
-        padding += 1;
         break;
       case TR_DATUM:
         poX -= cwidth;
-        padding += 2;
         break;
       case ML_DATUM:
         poY -= cheight/2;
-        //padding += 0;
         break;
       case MC_DATUM:
         poX -= cwidth/2;
         poY -= cheight/2;
-        padding += 1;
         break;
       case MR_DATUM:
         poX -= cwidth;
         poY -= cheight/2;
-        padding += 2;
         break;
       case BL_DATUM:
         poY -= cheight;
@@ -5083,12 +5068,10 @@ int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY, uint8
       case BC_DATUM:
         poX -= cwidth/2;
         poY -= cheight;
-        padding += 1;
         break;
       case BR_DATUM:
         poX -= cwidth;
         poY -= cheight;
-        padding += 2;
         break;
       case L_BASELINE:
         poY -= baseline;
@@ -5097,12 +5080,10 @@ int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY, uint8
       case C_BASELINE:
         poX -= cwidth/2;
         poY -= baseline;
-        padding += 1;
         break;
       case R_BASELINE:
         poX -= cwidth;
         poY -= baseline;
-        padding += 2;
         break;
     }
   }
@@ -5305,191 +5286,5 @@ SPIClass& TFT_eSPI::getSPIinstance(void)
   return spi;
 }
 #endif
-
-
-/***************************************************************************************
-** Function name:           verifySetupID
-** Description:             Compare the ID if USER_SETUP_ID defined in user setup file
-***************************************************************************************/
-bool TFT_eSPI::verifySetupID(uint32_t id)
-{
-#if defined (USER_SETUP_ID)
-  if (USER_SETUP_ID == id) return true;
-#else
-  id = id; // Avoid warning
-#endif
-  return false;
-}
-
-/***************************************************************************************
-** Function name:           getSetup
-** Description:             Get the setup details for diagnostic and sketch access
-***************************************************************************************/
-void TFT_eSPI::getSetup(setup_t &tft_settings)
-{
-// tft_settings.version is set in header file
-
-#if defined (USER_SETUP_INFO)
-  tft_settings.setup_info = USER_SETUP_INFO;
-#else
-  tft_settings.setup_info = "NA";
-#endif
-
-#if defined (USER_SETUP_ID)
-  tft_settings.setup_id = USER_SETUP_ID;
-#else
-  tft_settings.setup_id = 0;
-#endif
-
-#if defined (PROCESSOR_ID)
-  tft_settings.esp = PROCESSOR_ID;
-#else
-  tft_settings.esp = -1;
-#endif
-
-#if defined (SUPPORT_TRANSACTIONS)
-  tft_settings.trans = true;
-#else
-  tft_settings.trans = false;
-#endif
-
-#if defined (TFT_PARALLEL_8_BIT) || defined(TFT_PARALLEL_16_BIT)
-  tft_settings.serial = false;
-  tft_settings.tft_spi_freq = 0;
-#else
-  tft_settings.serial = true;
-  tft_settings.tft_spi_freq = SPI_FREQUENCY/100000;
-  #ifdef SPI_READ_FREQUENCY
-    tft_settings.tft_rd_freq = SPI_READ_FREQUENCY/100000;
-  #endif
-  #ifndef GENERIC_PROCESSOR
-    #ifdef TFT_SPI_PORT
-      tft_settings.port = TFT_SPI_PORT;
-    #else
-      tft_settings.port = 255;
-    #endif
-  #endif
-  #ifdef RP2040_PIO_SPI
-    tft_settings.interface = 0x10;
-  #else
-    tft_settings.interface = 0x0;
-  #endif
-#endif
-
-#if defined(TFT_SPI_OVERLAP)
-  tft_settings.overlap = true;
-#else
-  tft_settings.overlap = false;
-#endif
-
-  tft_settings.tft_driver = TFT_DRIVER;
-  tft_settings.tft_width  = _init_width;
-  tft_settings.tft_height = _init_height;
-
-#ifdef CGRAM_OFFSET
-  tft_settings.r0_x_offset = colstart;
-  tft_settings.r0_y_offset = rowstart;
-  tft_settings.r1_x_offset = 0;
-  tft_settings.r1_y_offset = 0;
-  tft_settings.r2_x_offset = 0;
-  tft_settings.r2_y_offset = 0;
-  tft_settings.r3_x_offset = 0;
-  tft_settings.r3_y_offset = 0;
-#else
-  tft_settings.r0_x_offset = 0;
-  tft_settings.r0_y_offset = 0;
-  tft_settings.r1_x_offset = 0;
-  tft_settings.r1_y_offset = 0;
-  tft_settings.r2_x_offset = 0;
-  tft_settings.r2_y_offset = 0;
-  tft_settings.r3_x_offset = 0;
-  tft_settings.r3_y_offset = 0;
-#endif
-
-#if defined (TFT_MOSI)
-  tft_settings.pin_tft_mosi = TFT_MOSI;
-#else
-  tft_settings.pin_tft_mosi = -1;
-#endif
-
-#if defined (TFT_MISO)
-  tft_settings.pin_tft_miso = TFT_MISO;
-#else
-  tft_settings.pin_tft_miso = -1;
-#endif
-
-#if defined (TFT_SCLK)
-  tft_settings.pin_tft_clk  = TFT_SCLK;
-#else
-  tft_settings.pin_tft_clk  = -1;
-#endif
-
-#if defined (TFT_CS)
-  tft_settings.pin_tft_cs   = TFT_CS;
-#else
-  tft_settings.pin_tft_cs   = -1;
-#endif
-
-#if defined (TFT_DC)
-  tft_settings.pin_tft_dc  = TFT_DC;
-#else
-  tft_settings.pin_tft_dc  = -1;
-#endif
-
-#if defined (TFT_RD)
-  tft_settings.pin_tft_rd  = TFT_RD;
-#else
-  tft_settings.pin_tft_rd  = -1;
-#endif
-
-#if defined (TFT_WR)
-  tft_settings.pin_tft_wr  = TFT_WR;
-#else
-  tft_settings.pin_tft_wr  = -1;
-#endif
-
-#if defined (TFT_RST)
-  tft_settings.pin_tft_rst = TFT_RST;
-#else
-  tft_settings.pin_tft_rst = -1;
-#endif
-
-#if defined (TFT_PARALLEL_8_BIT) || defined(TFT_PARALLEL_16_BIT)
-  tft_settings.pin_tft_d0 = TFT_D0;
-  tft_settings.pin_tft_d1 = TFT_D1;
-  tft_settings.pin_tft_d2 = TFT_D2;
-  tft_settings.pin_tft_d3 = TFT_D3;
-  tft_settings.pin_tft_d4 = TFT_D4;
-  tft_settings.pin_tft_d5 = TFT_D5;
-  tft_settings.pin_tft_d6 = TFT_D6;
-  tft_settings.pin_tft_d7 = TFT_D7;
-#else
-  tft_settings.pin_tft_d0 = -1;
-  tft_settings.pin_tft_d1 = -1;
-  tft_settings.pin_tft_d2 = -1;
-  tft_settings.pin_tft_d3 = -1;
-  tft_settings.pin_tft_d4 = -1;
-  tft_settings.pin_tft_d5 = -1;
-  tft_settings.pin_tft_d6 = -1;
-  tft_settings.pin_tft_d7 = -1;
-#endif
-
-#if defined (TFT_BL)
-  tft_settings.pin_tft_led = TFT_BL;
-#endif
-
-#if defined (TFT_BACKLIGHT_ON)
-  tft_settings.pin_tft_led_on = TFT_BACKLIGHT_ON;
-#endif
-
-#if defined (TOUCH_CS)
-  tft_settings.pin_tch_cs   = TOUCH_CS;
-  tft_settings.tch_spi_freq = SPI_TOUCH_FREQUENCY/100000;
-#else
-  tft_settings.pin_tch_cs   = -1;
-  tft_settings.tch_spi_freq = 0;
-#endif
-}
-
 
 #include "./TFT_eSprite.h"

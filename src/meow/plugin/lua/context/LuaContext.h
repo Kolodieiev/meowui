@@ -20,24 +20,6 @@ namespace meow
         virtual void update() override;
         //
     private:
-        bool _is_script_exec = false;
-        lua_State *_lua{nullptr};
-        String _msg;
-        uint16_t _hook_counter{0};
-        //----------------------------------------------------------------------------------
-        Notification *_notification{nullptr};
-        //----------------------------------------------------------------------------------
-        std::vector<uint16_t> _loaded_img_id;
-        //----------------------------------------------------------------------------------
-        std::vector<IWidget *> _managed_widgets;
-        //----------------------------------------------------------------------------------
-        static const LuaRegisterFunc LIB_REGISTER_FUNCS[];
-        static const struct luaL_Reg LIB_CONTEXT[];
-        static const struct luaL_Reg LIB_INPUT[];
-        //----------------------------------------------------------------------------------
-        static LuaContext *_self;
-        //----------------------------------------------------------------------------------
-
         static void *luAlloc(void *ud, void *ptr, size_t osize, size_t nsize);
         static void luaHook(lua_State *L, lua_Debug *ar);
         //
@@ -75,5 +57,24 @@ namespace meow
         static int lua_hide_notification(lua_State *L);
         static int lua_load_img(lua_State *L);
         static int lua_delete_img(lua_State *L);
+
+    private:
+        static LuaContext *_self;
+        static const LuaRegisterFunc LIB_REGISTER_FUNCS[];
+        static const struct luaL_Reg LIB_CONTEXT[];
+        static const struct luaL_Reg LIB_INPUT[];
+        
+        //----------------------------------------------------------------------------------
+
+        String _msg;
+        std::vector<uint16_t> _loaded_img_id;
+        std::vector<IWidget *> _managed_widgets;
+
+        lua_State *_lua{nullptr};
+        Notification *_notification{nullptr};
+
+        uint16_t _hook_counter{0};
+
+        bool _is_script_exec = false;
     };
 }

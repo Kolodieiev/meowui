@@ -3,20 +3,20 @@
 #include "GT911.h"
 #include <Wire.h>
 #include "meowui_setup/input_setup.h"
+#include "meowui_setup/i2c_setup.h"
 
 namespace meow
 {
-    bool GT911::begin(uint8_t pin_sda, uint8_t pin_scl, uint8_t pin_int, uint8_t pin_rst, uint16_t width, uint16_t height, uint8_t addr)
+    // TODO переписати на i2c_manager. Покращити наслідування.
+    bool GT911::begin(uint8_t pin_int, uint8_t pin_rst, uint16_t width, uint16_t height, uint8_t addr)
     {
-        _pin_sda = pin_sda;
-        _pin_scl = pin_scl;
         _pin_int = pin_int;
         _pin_rst = pin_rst;
         _width = width;
         _height = height;
         _addr = addr;
 
-        bool result = Wire.begin(_pin_sda, _pin_scl);
+        bool result = Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
 
         if (result)
         {
@@ -60,14 +60,12 @@ namespace meow
             return;
         }
 
-        uint8_t data[7];
-        uint16_t x, y;
-
         uint8_t pointInfo = readByteData(GT911_POINT_INFO);
         uint8_t bufferStatus = pointInfo >> 7 & 1;
 
         if (bufferStatus == 1 && pointInfo & 0xF > 0)
         {
+            uint8_t data[7];
             readBlockData(data, GT911_POINT_1, 7);
             readPoint(data);
             _is_holded = true;
@@ -204,7 +202,7 @@ namespace meow
 
     void GT911::calculateChecksum()
     {
-        uint8_t checksum;
+        uint8_t checksum{0};
         for (uint16_t i = 0; i < GT911_CONFIG_SIZE; i++)
             checksum += _conf_buf[i];
 

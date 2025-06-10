@@ -20,7 +20,7 @@ namespace meow
             TYPE_PASSWORD
         };
 
-        TextBox(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
+        explicit TextBox(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
         virtual ~TextBox() {}
 
         /**
@@ -88,9 +88,8 @@ namespace meow
         using Label::setTickerInFocus;
         using Label::updateWidthToFit;
 
-        FieldType _type = TYPE_TEXT;
-
         uint16_t getFitStr(String &ret_str) const;
+        FieldType _type = TYPE_TEXT;
     };
 
 }

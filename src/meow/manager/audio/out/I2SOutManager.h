@@ -81,12 +81,14 @@ namespace meow
 
     private:
         static bool _is_inited;
+        
+        //--------------------------------------------
+
+        i2s_std_config_t _i2s_tx_std_cfg{};
+        i2s_chan_config_t _i2s_chan_cfg{};
+        i2s_chan_handle_t _i2s_tx_handle{};
 
         bool _comm_fmt{false};
-
-        i2s_chan_handle_t _i2s_tx_handle{};
-        i2s_chan_config_t _i2s_chan_cfg{};
-        i2s_std_config_t _i2s_tx_std_cfg{};
     };
 
     /**

@@ -36,7 +36,7 @@ namespace meow
 
         _dma_buffer_actual_size = _buff_size * SOC_ADC_DIGI_RESULT_BYTES * ADC_DMA_BUFFER_FACTOR;
 
-        _dma_read_buffer = (uint8_t *)heap_caps_malloc(_dma_buffer_actual_size, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+        _dma_read_buffer = static_cast<uint8_t *>(heap_caps_malloc(_dma_buffer_actual_size, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL));
         if (!_dma_read_buffer)
         {
             log_e("Не вдалося виділити DMA буфер");
@@ -190,11 +190,11 @@ namespace meow
                     if (self->_frame_index >= self->_buff_size)
                         break;
 
-                    adc_digi_output_data_t *p = (adc_digi_output_data_t *)&self->_dma_read_buffer[i];
+                    const adc_digi_output_data_t *p = reinterpret_cast<adc_digi_output_data_t *>(&self->_dma_read_buffer[i]);
 
 #if CONFIG_IDF_TARGET_ESP32
                     uint16_t adc_raw = p->type1.data;
-#elif CONFIG_IDF_TARGET_ESP32S3
+#else
                     uint16_t adc_raw = p->type2.data;
 #endif
                     self->_samps_buff[self->_frame_index] = (int16_t)(((int32_t)adc_raw - 2048) * self->_gain);

@@ -19,7 +19,7 @@ namespace meow
             _remote_ip = packet.remoteIP();
             _port = packet.remotePort();
         }
-        catch (std::exception e)
+        catch (std::exception &e)
         {
             log_e("%s", e.what());
             esp_restart();
@@ -36,7 +36,7 @@ namespace meow
             --_size; // Hide \0
             _index = 1;
         }
-        catch (std::bad_alloc e)
+        catch (std::bad_alloc &e)
         {
             log_e("%s", e.what());
             esp_restart();

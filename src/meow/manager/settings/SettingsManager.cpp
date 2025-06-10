@@ -40,7 +40,7 @@ namespace meow
         if (file_size == 0)
             return emptyString;
 
-        char *buffer = (char *)malloc(file_size + 1);
+        char *buffer = static_cast<char *>(malloc(file_size + 1));
 
         if (!buffer)
         {

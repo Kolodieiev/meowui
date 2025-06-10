@@ -12,48 +12,48 @@ namespace meow
     {
         try
         {
-            Label *clone = new Label(id);
-            clone->_has_border = _has_border;
-            clone->_x_pos = _x_pos;
-            clone->_y_pos = _y_pos;
-            clone->_width = _width;
-            clone->_height = _height;
-            clone->_back_color = _back_color;
-            clone->_border_color = _border_color;
-            clone->_corner_radius = _corner_radius;
-            clone->_is_transparent = _is_transparent;
-            clone->_visibility = _visibility;
-            clone->_has_focus = _has_focus;
-            clone->_old_border_state = _old_border_state;
-            clone->_need_clear_border = _need_clear_border;
-            clone->_need_change_border = _need_change_border;
-            clone->_need_change_back = _need_change_back;
-            clone->_focus_border_color = _focus_border_color;
-            clone->_old_border_color = _old_border_color;
-            clone->_focus_back_color = _focus_back_color;
-            clone->_old_back_color = _old_back_color;
-            clone->_parent = _parent;
+            Label *cln = new Label(id);
+            cln->_has_border = _has_border;
+            cln->_x_pos = _x_pos;
+            cln->_y_pos = _y_pos;
+            cln->_width = _width;
+            cln->_height = _height;
+            cln->_back_color = _back_color;
+            cln->_border_color = _border_color;
+            cln->_corner_radius = _corner_radius;
+            cln->_is_transparent = _is_transparent;
+            cln->_visibility = _visibility;
+            cln->_has_focus = _has_focus;
+            cln->_old_border_state = _old_border_state;
+            cln->_need_clear_border = _need_clear_border;
+            cln->_need_change_border = _need_change_border;
+            cln->_need_change_back = _need_change_back;
+            cln->_focus_border_color = _focus_border_color;
+            cln->_old_border_color = _old_border_color;
+            cln->_focus_back_color = _focus_back_color;
+            cln->_old_back_color = _old_back_color;
+            cln->_parent = _parent;
 
-            clone->_is_multiline = _is_multiline;
-            clone->setText(_text);
-            clone->_text_size = _text_size;
-            clone->_text_color = _text_color;
-            clone->_font_ID = _font_ID;
-            clone->_text_offset = _text_offset;
-            clone->_text_gravity = _text_gravity;
-            clone->_text_alignment = _text_alignment;
-            clone->_is_ticker = _is_ticker;
-            clone->_temp_is_ticker = _temp_is_ticker;
-            clone->_is_ticker_in_focus = _is_ticker_in_focus;
-            clone->_temp_is_ticker_in_focus = _temp_is_ticker_in_focus;
-            clone->_temp_width = _temp_width;
+            cln->_is_multiline = _is_multiline;
+            cln->setText(_text);
+            cln->_text_size = _text_size;
+            cln->_text_color = _text_color;
+            cln->_font_ID = _font_ID;
+            cln->_text_offset = _text_offset;
+            cln->_text_gravity = _text_gravity;
+            cln->_text_alignment = _text_alignment;
+            cln->_is_ticker = _is_ticker;
+            cln->_temp_is_ticker = _temp_is_ticker;
+            cln->_is_ticker_in_focus = _is_ticker_in_focus;
+            cln->_temp_is_ticker_in_focus = _temp_is_ticker_in_focus;
+            cln->_temp_width = _temp_width;
 
             if (_back_img)
             {
-                clone->_back_img = _back_img->clone(_back_img->getID());
+                cln->_back_img = _back_img->clone(_back_img->getID());
             }
 
-            return clone;
+            return cln;
         }
         catch (const std::bad_alloc &e)
         {
@@ -262,7 +262,7 @@ namespace meow
 
         uint32_t length{0};
 
-        for (char c : str)
+        for (const char c : str) // cppcheck-suppress useStlAlgorithm
         {
             if ((c & 0xC0) != 0x80)
                 ++length;
@@ -276,12 +276,9 @@ namespace meow
             return 0;
 
         uint16_t len = _text.length();
-        uint8_t *ch_str_p8 = (uint8_t *)_text.c_str();
+        const uint8_t *ch_str_p8 = reinterpret_cast<uint8_t *>(const_cast<char *>(_text.c_str()));
 
         uint16_t byte_pos = charPosToByte(ch_str_p8, char_pos);
-
-        uint16_t unicode;
-        uint16_t pix_sum{0};
 
         const unsigned char *width_table;
 
@@ -295,11 +292,13 @@ namespace meow
             esp_restart();
         }
 
+        uint16_t pix_sum{0};
+
         while (byte_pos < len)
         {
-            unicode = utf8ToUnicode(ch_str_p8, byte_pos, len - byte_pos);
+            uint16_t unicode = utf8ToUnicode(ch_str_p8, byte_pos, len - byte_pos);
             unicode = getCharPos(unicode);
-            pix_sum += (*(const unsigned char *)(width_table + unicode));
+            pix_sum += *(width_table + unicode);
         }
 
         return pix_sum * _text_size;
@@ -403,26 +402,21 @@ namespace meow
             esp_restart();
         }
 
-        uint8_t *ch_str_p8 = (uint8_t *)_text.c_str();
-
+        const uint8_t *ch_str_p8 = reinterpret_cast<uint8_t *>(const_cast<char *>(_text.c_str()));
         uint16_t byte_pos = charPosToByte(ch_str_p8, start_pos);
-
-        uint32_t code;
-        uint16_t pos;
 
         uint16_t pix_sum{0};
         uint16_t chars_counter{0};
 
         while (byte_pos < len)
         {
-            code = utf8ToUnicode(ch_str_p8, byte_pos, len - byte_pos);
+            uint32_t code = utf8ToUnicode(ch_str_p8, byte_pos, len - byte_pos);
 
             if (!code)
                 continue;
 
-            pos = getCharPos(code);
-
-            uint16_t char_w = (*(const unsigned char *)(width_table + pos)) * _text_size;
+            uint16_t pos = getCharPos(code);
+            uint16_t char_w = *(width_table + pos) * _text_size;
 
             if (pix_sum + char_w >= _width - _text_offset - 3)
                 break;
@@ -440,41 +434,50 @@ namespace meow
 
     String Label::getSubStr(const String &str, uint16_t start, uint16_t length) const
     {
-        if (!length)
+        if (length == 0)
             return emptyString;
 
-        unsigned int c, i, ix, q;
-        unsigned int min = -1, max = -1; //
+        int bytePos = 0;
+        int charIndex = 0;
+        int startByte = -1;
+        int endByte = -1;
 
-        for (q = 0, i = 0, ix = str.length(); i < ix; ++i, q++)
+        while (bytePos < str.length())
         {
-            if (q == start)
-                min = i;
+            if (charIndex == start)
+                startByte = bytePos;
 
-            if (q <= start + length || length == -1)
-                max = i;
+            if (charIndex == start + length)
+            {
+                endByte = bytePos;
+                break;
+            }
 
-            c = (unsigned char)str[i];
+            unsigned char c = str[bytePos];
+            int charLen = 1;
 
-            if (c >= 0 && c <= 127)
-                i += 0;
+            if ((c & 0x80) == 0x00)
+                charLen = 1;
             else if ((c & 0xE0) == 0xC0)
-                ++i;
+                charLen = 2;
             else if ((c & 0xF0) == 0xE0)
-                i += 2;
+                charLen = 3;
             else if ((c & 0xF8) == 0xF0)
-                i += 3;
+                charLen = 4;
             else
-                ++i; // invalid utf8
+                charLen = 1; // Невідомий символ — вважаємо за 1 байт
+
+            bytePos += charLen;
+            ++charIndex;
         }
 
-        if (q <= start + length || length == -1)
-            max = i;
-
-        if (min == -1 || max == -1)
+        if (startByte == -1)
             return emptyString;
 
-        return str.substring(min, max);
+        if (endByte == -1)
+            endByte = str.length();
+
+        return str.substring(startByte, endByte);
     }
 
     uint16_t Label::getCharPos(uint32_t unicode) const
@@ -595,13 +598,12 @@ namespace meow
         else
         {
             String sub_str;
-            uint16_t sub_str_pix_num{0};
-            uint16_t txt_x_pos{0};
+            uint16_t sub_str_pix_num;
+            uint16_t txt_x_pos;
 
             if (!_is_multiline)
             {
                 sub_str_pix_num = getFitStr(sub_str, _first_draw_char_pos);
-
                 txt_x_pos = calcXStrOffset(sub_str_pix_num);
 
                 if (_is_ticker || (_is_ticker_in_focus && _has_focus))

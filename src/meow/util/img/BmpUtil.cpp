@@ -40,7 +40,7 @@ namespace meow
         //
         size_t data_size = static_cast<size_t>(width * height * 2);
         //
-        uint8_t *data = (uint8_t *)ps_malloc(data_size);
+        uint8_t *data = static_cast<uint8_t *>(ps_malloc(data_size));
         if (!data)
         {
             _fs.closeFile(f);
@@ -58,16 +58,14 @@ namespace meow
 
         _fs.closeFile(f);
 
-        uint16_t *data_temp = (uint16_t *)data;
+        uint16_t *data_temp = reinterpret_cast<uint16_t *>(data);
 
         if (is_flipped)
         {
-            uint16_t temp;
             uint32_t d_size = width * height;
-
             for (uint32_t i = 0; i < d_size / 2; ++i)
             {
-                temp = data_temp[i];
+                uint16_t temp = data_temp[i];
                 data_temp[i] = data_temp[d_size - i - 1];
                 data_temp[d_size - i - 1] = temp;
             }
@@ -88,7 +86,7 @@ namespace meow
         ImgData bmp_data;
         bmp_data.width = width;
         bmp_data.height = height;
-        bmp_data.data_ptr = (uint16_t *)data;
+        bmp_data.data_ptr = reinterpret_cast<uint16_t *>(data);
 
         return bmp_data;
     }
@@ -123,14 +121,14 @@ namespace meow
         uint32_t buf_size = header.width * header.height;
         header.height *= -1;
 
-        uint8_t *data = (uint8_t *)ps_malloc(header.file_size);
+        uint8_t *data = static_cast<uint8_t *>(ps_malloc(header.file_size));
         if (!data)
         {
             log_e("Помилка виділення %lu байт PSRAM", header.file_size);
             return false;
         }
 
-        uint8_t *header_ptr = (uint8_t *)&header;
+        const uint8_t *header_ptr = reinterpret_cast<uint8_t *>(&header);
         for (uint32_t i = 0; i < header.data_offset; ++i)
             data[i] = header_ptr[i];
 

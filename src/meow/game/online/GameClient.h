@@ -130,33 +130,6 @@ namespace meow
         void onDisconnect(ServerDisconnHandler disconn_handler, void *arg);
 
     protected:
-        const uint16_t SERVER_PORT = 777;
-        const uint16_t CLIENT_PORT = 777;
-        const uint16_t PACKET_QUEUE_SIZE = 6;
-
-        bool _is_freed{true};
-
-        String _name;
-        String _server_id;
-        IPAddress _server_ip;
-        AsyncUDP _client;
-        ClientStatus _status{STATUS_DISCONNECTED};
-        TaskHandle_t _check_task_handler{nullptr};
-        TaskHandle_t _packet_task_handler{nullptr};
-        SemaphoreHandle_t _udp_mutex{nullptr};
-        static QueueHandle_t _packet_queue;
-        //
-        unsigned long _last_act_time;
-        //
-        ServerConnectedHandler _server_connected_handler{nullptr};
-        void *_server_connected_arg{nullptr};
-
-        ServerDisconnHandler _server_disconn_handler{nullptr};
-        void *_server_disconn_arg{nullptr};
-
-        ServerDataHandler _server_data_handler{nullptr};
-        void *_server_data_arg{nullptr};
-        //
         void sendHandshake();
         void sendName();
         //
@@ -176,6 +149,38 @@ namespace meow
         void callDataHandler(UdpPacket *packet);
         void callConnectHandler();
         void callDisconnHandler();
-        //
+
+    protected:
+        AsyncUDP _client;
+
+        IPAddress _server_ip;
+
+        ServerConnectedHandler _server_connected_handler{nullptr};
+        ServerDisconnHandler _server_disconn_handler{nullptr};
+        ServerDataHandler _server_data_handler{nullptr};
+
+        String _name;
+        String _server_id;
+
+        SemaphoreHandle_t _udp_mutex{nullptr};
+
+        QueueHandle_t _packet_queue;
+
+        TaskHandle_t _check_task_handler{nullptr};
+        TaskHandle_t _packet_task_handler{nullptr};
+
+        void *_server_connected_arg{nullptr};
+        void *_server_disconn_arg{nullptr};
+        void *_server_data_arg{nullptr};
+
+        unsigned long _last_act_time{0};
+
+        const uint16_t SERVER_PORT = 777;
+        const uint16_t CLIENT_PORT = 777;
+        const uint16_t PACKET_QUEUE_SIZE = 6;
+
+        ClientStatus _status{STATUS_DISCONNECTED};
+
+        bool _is_freed{true};
     };
 } // namespace meow

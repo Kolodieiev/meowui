@@ -11,7 +11,7 @@ namespace meow
     class Label : public IWidget
     {
     public:
-        Label(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
+        explicit Label(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
         virtual ~Label() {};
 
         /**
@@ -215,30 +215,6 @@ namespace meow
         uint16_t getTickerDelay() const { return _ticker_update_delay; }
 
     protected:
-        bool _is_multiline{false};
-        uint16_t _text_len{0};
-        String _text{""};
-        uint8_t _text_size{1};
-        uint16_t _text_color{0xFFFF};
-        uint8_t _font_ID{2};
-        uint8_t _text_offset{0};
-        Gravity _text_gravity{GRAVITY_TOP};
-        Alignment _text_alignment{ALIGN_START};
-
-        bool _is_ticker{false};
-        bool _temp_is_ticker{false};
-        bool _is_ticker_in_focus{false};
-        bool _temp_is_ticker_in_focus{false};
-
-        unsigned long _last_time_ticker_update{0};
-        uint16_t _ticker_update_delay{160};
-
-        uint16_t _temp_width{0};
-
-        uint16_t _first_draw_char_pos{0};
-        //
-        Image *_back_img{nullptr};
-        //
         uint16_t calcXStrOffset(uint16_t str_pix_num) const;
         uint16_t calcYStrOffset() const;
         uint32_t calcRealStrLen(const String &str) const;
@@ -250,6 +226,31 @@ namespace meow
     private:
         uint16_t charPosToByte(const uint8_t *buf, uint16_t char_pos) const;
         uint32_t utf8ToUnicode(const uint8_t *buf, uint16_t &char_pos, uint16_t remaining) const;
+
+    protected:
+        String _text{""};
+
+        unsigned long _last_time_ticker_update{0};
+        Image *_back_img{nullptr};
+
+        uint16_t _text_color{0xFFFF};
+        uint16_t _text_len{0};
+        uint16_t _ticker_update_delay{160};
+        uint16_t _temp_width{0};
+        uint16_t _first_draw_char_pos{0};
+
+        uint8_t _text_size{1};
+        uint8_t _font_ID{2};
+        uint8_t _text_offset{0};
+        //
+        Gravity _text_gravity{GRAVITY_TOP};
+        Alignment _text_alignment{ALIGN_START};
+
+        bool _is_multiline{false};
+        bool _is_ticker{false};
+        bool _temp_is_ticker{false};
+        bool _is_ticker_in_focus{false};
+        bool _temp_is_ticker_in_focus{false};
     };
 
 }

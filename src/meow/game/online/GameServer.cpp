@@ -4,8 +4,6 @@
 
 namespace meow
 {
-    QueueHandle_t GameServer::_packet_queue;
-
     GameServer::GameServer()
     {
         // Виправлення помилки assert failed: tcpip_api_call (Invalid mbox)
@@ -38,9 +36,9 @@ namespace meow
 
         if (is_local)
         {
-            String name{server_name};
-            String pwd{pwd};
-            if (!_wifi.createAP(name, pwd, _max_connection, wifi_chan))
+            String serv_name{server_name};
+            String password{pwd};
+            if (!_wifi.createAP(serv_name, password, _max_connection, wifi_chan))
                 return false;
 
             _server_ip = "http://";
@@ -172,12 +170,16 @@ namespace meow
     {
         _is_open = false;
         xSemaphoreTake(_client_mutex, portMAX_DELAY);
-        for (auto it = _clients.begin(), last_it = _clients.end(); it != last_it; ++it)
+        for (auto it = _clients.begin(), last_it = _clients.end(); it != last_it;)
         {
             if (!it->second->isConfirmed())
             {
                 delete it->second;
-                _clients.erase(it);
+                it = _clients.erase(it);
+            }
+            else
+            {
+                ++it;
             }
         }
         xSemaphoreGive(_client_mutex);
@@ -204,7 +206,7 @@ namespace meow
         sendBroadcast(pack);
     }
 
-    void GameServer::sendPacket(const ClientWrapper *cl_wrap, UdpPacket &packet)
+    void GameServer::sendPacket(const ClientWrapper *cl_wrap, const UdpPacket &packet)
     {
         if (!cl_wrap)
             return;
@@ -214,9 +216,9 @@ namespace meow
         xSemaphoreGive(_udp_mutex);
     }
 
-    void GameServer::sendPacket(IPAddress remote_ip, UdpPacket &packet)
+    void GameServer::sendPacket(IPAddress remote_ip, const UdpPacket &packet)
     {
-        ClientWrapper *cl_wrap = findClient(remote_ip);
+        const ClientWrapper *cl_wrap = findClient(remote_ip);
         sendPacket(cl_wrap, packet);
     }
 
@@ -275,7 +277,7 @@ namespace meow
         xSemaphoreGive(_client_mutex);
     }
 
-    ClientWrapper *GameServer::findClient(IPAddress remote_ip) const
+    ClientWrapper *GameServer::findClient(const IPAddress remote_ip) const
     {
         uint32_t cl_ip = remote_ip;
         if (cl_ip == 0)
@@ -295,7 +297,7 @@ namespace meow
         return it->second;
     }
 
-    ClientWrapper *GameServer::findClient(ClientWrapper *cl_wrap) const
+    ClientWrapper *GameServer::findClient(const ClientWrapper *cl_wrap) const
     {
         return findClient(cl_wrap->getIP());
     }
@@ -317,7 +319,7 @@ namespace meow
 
     // ------------------------------------------------------------------------------------------------------------------------------
 
-    void GameServer::sendNameRespMsg(ClientWrapper *cl_wrap, bool result)
+    void GameServer::sendNameRespMsg(const ClientWrapper *cl_wrap, bool result)
     {
         uint8_t resp = 0;
 
@@ -338,7 +340,7 @@ namespace meow
         sendPacket(cl_wrap, packet);
     }
 
-    void GameServer::sendBusyMsg(ClientWrapper *cl_wrap)
+    void GameServer::sendBusyMsg(const ClientWrapper *cl_wrap)
     {
         log_i("Сервер зайнятий");
 
@@ -353,7 +355,7 @@ namespace meow
 
     // ------------------------------------------------------------------------------------------------------------------------------
 
-    void GameServer::handleHandshake(UdpPacket *packet)
+    void GameServer::handleHandshake(const UdpPacket *packet)
     {
         log_i("Отримано handshake");
 
@@ -368,7 +370,7 @@ namespace meow
         _server.writeTo(resp_msg.raw(), resp_msg.length(), packet->getRemoteIP(), packet->getRemotePort());
     }
 
-    void GameServer::handleName(ClientWrapper *cl_wrap, UdpPacket *packet)
+    void GameServer::handleName(ClientWrapper *cl_wrap, const UdpPacket *packet)
     {
         log_i("Запит авторизації");
 
@@ -449,12 +451,12 @@ namespace meow
 
     void GameServer::packetHandlerTask(void *arg)
     {
-        GameServer *self = static_cast<GameServer *>(arg);
-        UdpPacket *packet = nullptr;
+        GameServer *self{static_cast<GameServer *>(arg)};
+        UdpPacket *packet{nullptr};
 
         while (1)
         {
-            if (xQueueReceive(_packet_queue, &packet, portMAX_DELAY) == pdPASS)
+            if (xQueueReceive(self->_packet_queue, &packet, portMAX_DELAY) == pdPASS)
             {
                 if (packet)
                 {
@@ -475,11 +477,13 @@ namespace meow
             return;
         }
 
-        if (_packet_queue)
+        GameServer *self{static_cast<GameServer *>(arg)};
+
+        if (self->_packet_queue)
         {
             UdpPacket *pack = new UdpPacket(packet);
 
-            if (!xQueueSend(_packet_queue, &pack, portMAX_DELAY) == pdPASS)
+            if (!xQueueSend(self->_packet_queue, &pack, portMAX_DELAY) == pdPASS)
             {
                 log_e("Черга _packet_queue переповнена");
                 delete pack;
@@ -496,7 +500,7 @@ namespace meow
         UdpPacket ping(1);
         ping.setType(UdpPacket::TYPE_PING);
 
-        for (auto it = _clients.begin(), last_it = _clients.end(); it != last_it; ++it)
+        for (auto it = _clients.begin(), last_it = _clients.end(); it != last_it;)
         {
             if (!it->second->isConnected())
             {
@@ -508,10 +512,13 @@ namespace meow
                     callDisconnHandler(it->second);
                 }
                 delete it->second;
-                _clients.erase(it);
+                it = _clients.erase(it);
             }
             else
+            {
                 sendPacket(it->second, ping);
+                ++it;
+            }
         }
         xSemaphoreGive(_client_mutex);
     }
@@ -527,13 +534,14 @@ namespace meow
         }
     }
 
-    void GameServer::handleNameConfirm(ClientWrapper *cl_wrap, bool result)
+    void GameServer::handleNameConfirm(const ClientWrapper *cl_wrap, bool result)
     {
         _is_busy = false;
 
         if (findClient(cl_wrap))
         {
-            cl_wrap->confirm();
+            ClientWrapper *wrap = const_cast<ClientWrapper *>(cl_wrap);
+            wrap->confirm();
 
             sendNameRespMsg(cl_wrap, result);
 
@@ -544,14 +552,14 @@ namespace meow
         }
     }
 
-    void GameServer::onConfirmationResult(ClientWrapper *cl_wrap, bool result, GameServer *server_ptr)
+    void GameServer::onConfirmationResult(const ClientWrapper *cl_wrap, bool result, GameServer *server_ptr)
     {
         server_ptr->handleNameConfirm(cl_wrap, result);
     }
 
     // ------------------------------------------------------------------------------------------------------------------------------
 
-    void GameServer::callClientConfirmHandler(ClientWrapper *cl_wrap, ConfirmResultHandler result_handler)
+    void GameServer::callClientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler)
     {
         if (!_client_confirm_handler)
         {
@@ -563,7 +571,7 @@ namespace meow
         _client_confirm_handler(cl_wrap, result_handler, _client_confirm_arg);
     }
 
-    void GameServer::callDisconnHandler(ClientWrapper *cl_wrap)
+    void GameServer::callDisconnHandler(const ClientWrapper *cl_wrap)
     {
         if (_client_disconn_handler)
             _client_disconn_handler(cl_wrap, _client_disconn_arg);

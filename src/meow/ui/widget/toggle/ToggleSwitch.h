@@ -7,7 +7,7 @@ namespace meow
     class ToggleSwitch final : public IWidget
     {
     public:
-        ToggleSwitch(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_TOGGLE_SWITCH) {}
+        explicit ToggleSwitch(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_TOGGLE_SWITCH) {}
         virtual ~ToggleSwitch() {};
 
         /**
@@ -139,10 +139,10 @@ namespace meow
         using IWidget::setBackColor;
         using IWidget::setTransparency;
 
-        Orientation _orientation{HORIZONTAL};
-        bool _is_on{false};
         uint16_t _lever_color{0xFFFF};
         uint16_t _on_color{TFT_GREEN};
         uint16_t _off_color{TFT_RED};
+        Orientation _orientation{HORIZONTAL};
+        bool _is_on{false};
     };
 }

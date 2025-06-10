@@ -349,36 +349,6 @@ namespace meow
         bool isTransparent() const { return _is_transparent; }
 
     protected:
-        bool _is_changed{true};
-        bool _has_border{false};
-        bool _is_transparent{false};
-
-        uint16_t _x_pos{0};
-        uint16_t _y_pos{0};
-
-        uint16_t _width{1};
-        uint16_t _height{1};
-        uint16_t _back_color{0x0000};
-        uint16_t _border_color{0x0000};
-        uint8_t _corner_radius{0};
-        //
-        Visibility _visibility{VISIBLE};
-        //
-        bool _has_focus{false};
-        bool _old_border_state{false};
-        bool _need_clear_border{false};
-
-        bool _need_change_border{false};
-        bool _need_change_back{false};
-
-        uint16_t _focus_border_color{0xFFFF};
-        uint16_t _old_border_color{0xFFFF};
-
-        uint16_t _focus_back_color{0xFFFF};
-        uint16_t _old_back_color{0xFFFF};
-        //
-        const IWidget *_parent{nullptr};
-
         /*!
          * @brief  Залити місце розташування віджета фоновим кольором.
          */
@@ -389,8 +359,37 @@ namespace meow
          */
         void hide();
 
+    protected:
+        const IWidget *_parent{nullptr};
+
+        uint16_t _x_pos{0};
+        uint16_t _y_pos{0};
+        uint16_t _width{1};
+        uint16_t _height{1};
+        uint16_t _back_color{0x0000};
+        uint16_t _border_color{0x0000};
+        uint16_t _focus_border_color{0xFFFF};
+        uint16_t _old_border_color{0xFFFF};
+        uint16_t _focus_back_color{0xFFFF};
+        uint16_t _old_back_color{0xFFFF};
+
     private:
         const uint16_t _id;
+
+    protected:
+        Visibility _visibility{VISIBLE};
+        uint8_t _corner_radius{0};
+
+        bool _is_changed{true};
+        bool _has_border{false};
+        bool _is_transparent{false};
+        bool _has_focus{false};
+        bool _old_border_state{false};
+        bool _need_clear_border{false};
+        bool _need_change_border{false};
+        bool _need_change_back{false};
+
+    private:
         const TypeID _type_ID;
         const bool _is_container;
     };
@@ -408,7 +407,10 @@ namespace meow
     {
         if (_type_ID == T::staticType())
             return static_cast<T *>(this);
-
-        return nullptr;
+        else
+        {
+            log_e("Некоректне приведення типу %u до %u", T::staticType(), _type_ID);
+            return nullptr;
+        }
     }
 }

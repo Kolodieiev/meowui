@@ -15,7 +15,7 @@ public:
 
 private:
     float x1 = 0.0f, x2 = 0.0f, y1 = 0.0f, y2 = 0.0f;
-    float a0, a1, a2, b1, b2;
+    float a0{0}, a1{0}, a2{0}, b1{0}, b2{0};
 };
 
 class AutoGainControl

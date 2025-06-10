@@ -59,20 +59,6 @@ namespace meow
         uint8_t getNextSceneID() const { return _next_scene_ID; }
 
     protected:
-        SemaphoreHandle_t _obj_mutex;                           // Мютекс для синхронізації доступу до об'єктів
-        bool _is_paused{false};                                 // Прапор встановлення сцени на паузу
-        bool _is_released{false};                               // Прапор, який вказує, що поточна сцена готова звільнити своє місце для наступної сцени
-        bool _is_finished{false};                               // Прапор, який повідомляє керуючому контексту, що гру завершено
-        uint8_t _next_scene_ID{0};                              // Ідентифікатор наступної сцени
-        IGameUI *_game_UI{nullptr};                             // Шар ігрового UI. Тут можуть виводитися графічні елементи інтерфейса
-        IGameMenu *_game_menu{nullptr};                         // Шар ігрового меню, якщо в ньому є необхідність
-        IGameObject *_main_obj{nullptr};                        // Об'єкт, за яким завжди слідує камера
-        TerrainManager _terrain;                                // Самий нижній шар сцени
-        std::unordered_map<uint32_t, IGameObject *> _game_objs; // Список усіх ігрових об'єктів на сцені, які повинні взаємодіяти один з одним
-        WavManager _audio;                                      // Звуковий менеджер
-        ResManager _res_manager;                                // Менеджер ресурсів
-        DataStream &_stored_objs;                               // Контейнер для перенесення відбитків об'єктів до наступної сцени
-
         /**
          * @brief Блокує мютекс доступу до ігрових об'єктів.
          *
@@ -137,5 +123,28 @@ namespace meow
         {
             log_i("Викликано тригер: %d", trigg_id);
         }
+
+    protected:
+        ResManager _res_manager; // Менеджер ресурсів
+
+        TerrainManager _terrain; // Самий нижній шар сцени
+
+        WavManager _audio; // Звуковий менеджер
+
+        std::unordered_map<uint32_t, IGameObject *> _game_objs; // Список усіх ігрових об'єктів на сцені, які повинні взаємодіяти один з одним
+
+        DataStream &_stored_objs; // Контейнер для перенесення відбитків об'єктів до наступної сцени
+
+        SemaphoreHandle_t _obj_mutex; // Мютекс для синхронізації доступу до об'єктів
+
+        IGameUI *_game_UI{nullptr};      // Шар ігрового UI. Тут можуть виводитися графічні елементи інтерфейса
+        IGameMenu *_game_menu{nullptr};  // Шар ігрового меню, якщо в ньому є необхідність
+        IGameObject *_main_obj{nullptr}; // Об'єкт, за яким завжди слідує камера
+
+        uint8_t _next_scene_ID{0}; // Ідентифікатор наступної сцени
+
+        bool _is_paused{false};   // Прапор встановлення сцени на паузу
+        bool _is_released{false}; // Прапор, який вказує, що поточна сцена готова звільнити своє місце для наступної сцени
+        bool _is_finished{false}; // Прапор, який повідомляє керуючому контексту, що гру завершено
     };
 }

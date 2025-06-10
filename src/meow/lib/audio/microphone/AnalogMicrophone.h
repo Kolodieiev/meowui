@@ -12,7 +12,7 @@ namespace meow
 
         /**
          * @brief Ініціалізує аналоговий мікрофон.
-         * 
+         *
          * @param adc_unit На рівні esp-idf підтримується тільки UNIT_1
          * @param adc_chann Канал (не пін).
          * @param out_samps_buff Вихідний буфер.
@@ -49,24 +49,27 @@ namespace meow
         void setGainFactor(uint8_t gain) { _gain = gain; }
 
     private:
-        bool _is_inited = false;
-        uint8_t _gain = 1;
-        int16_t *_samps_buff;
-        uint16_t _frame_index;
-        uint16_t _buff_size;
-        //
-        adc_unit_t _adc_unit;
-        adc_channel_t _adc_channel;
-        uint32_t _sample_rate;
-        //
-        uint8_t *_dma_read_buffer = nullptr;
-        uint32_t _dma_buffer_actual_size = 0;
-        //
+        static bool convDoneCb(adc_continuous_handle_t handle, const adc_continuous_evt_data_t *edata, void *user_data);
+        static void readAnalogMicroTask(void *arg);
 
+    private:
         TaskHandle_t _read_task_handle{nullptr};
         adc_continuous_handle_t _adc_handle{nullptr};
 
-        static bool convDoneCb(adc_continuous_handle_t handle, const adc_continuous_evt_data_t *edata, void *user_data);
-        static void readAnalogMicroTask(void *arg);
+        int16_t *_samps_buff{nullptr};
+        uint8_t *_dma_read_buffer{nullptr};
+
+        adc_unit_t _adc_unit;
+        adc_channel_t _adc_channel;
+
+        uint32_t _sample_rate{0};
+        uint32_t _dma_buffer_actual_size{0};
+
+        uint16_t _frame_index{0};
+        uint16_t _buff_size{0};
+
+        uint8_t _gain{1};
+
+        bool _is_inited{false};
     };
 }

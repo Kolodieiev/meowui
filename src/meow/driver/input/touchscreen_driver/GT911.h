@@ -144,21 +144,17 @@ namespace meow
     public:
         virtual ~GT911() {}
 
-        bool begin(uint8_t pin_sda, uint8_t pin_scl, uint8_t pin_int, uint8_t pin_rst, uint16_t width, uint16_t height, uint8_t addr = GT911_ADDR1);
+        bool begin(uint8_t pin_int, uint8_t pin_rst, uint16_t width, uint16_t height, uint8_t addr = GT911_ADDR1);
         void stop();
-        virtual void setRotation(uint8_t rotation);
-        virtual void _update();
+        virtual void setRotation(uint8_t rotation) override;
+        virtual void _update() override;
 
     private:
-        uint8_t _addr;
-        uint8_t _pin_sda;
-        uint8_t _pin_scl;
-        uint8_t _pin_int;
-        uint8_t _pin_rst;
-        uint16_t _width;
-        uint16_t _height;
-        uint8_t _conf_buf[GT911_CONFIG_SIZE];
-        uint8_t _rotation = ROTATION_0;
+        uint8_t _addr{0};
+        uint8_t _pin_int{0};
+        uint8_t _pin_rst{0};
+        uint8_t _conf_buf[GT911_CONFIG_SIZE]{0};
+        uint8_t _rotation{ROTATION_0};
 
 
         void init();

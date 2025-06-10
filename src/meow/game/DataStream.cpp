@@ -22,7 +22,7 @@ namespace meow
             delete[] _buffer;
             _buffer = new uint8_t[size];
         }
-        catch (std::bad_alloc e)
+        catch (std::bad_alloc &e)
         {
             log_e("%s", e.what());
             esp_restart();

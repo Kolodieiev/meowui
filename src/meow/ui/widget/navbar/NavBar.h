@@ -7,7 +7,7 @@ namespace meow
     class NavBar final : public IWidget
     {
     public:
-        NavBar(uint16_t widget_ID);
+        explicit NavBar(uint16_t widget_ID);
         virtual ~NavBar();
 
         /**

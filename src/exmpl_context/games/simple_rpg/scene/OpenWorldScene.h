@@ -9,7 +9,7 @@ namespace simple_rpg
     class OpenWorldScene : public IBaseScene
     {
     public:
-        OpenWorldScene(DataStream &stored_objs);
+        explicit OpenWorldScene(DataStream &stored_objs);
         virtual ~OpenWorldScene();
 
     protected:

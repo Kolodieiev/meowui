@@ -10,7 +10,7 @@ namespace meow
     class Keyboard final : public IWidgetContainer
     {
     public:
-        Keyboard(uint16_t widget_ID);
+        explicit Keyboard(uint16_t widget_ID);
         virtual ~Keyboard() {}
 
         /**
@@ -101,11 +101,11 @@ namespace meow
         void setFocusPos(uint16_t x, uint16_t y);
 
     private:
+        KeyboardRow *getFocusRow() const;
+
         uint16_t _cur_focus_row_pos{0};
 
         bool _first_drawing{true};
         bool _has_manual_settings{false};
-
-        KeyboardRow *getFocusRow() const;
     };
 }

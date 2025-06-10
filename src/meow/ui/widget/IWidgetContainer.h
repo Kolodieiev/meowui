@@ -86,7 +86,7 @@ namespace meow
          * @param y Координата.
          * @return IWidget* - Вказівник на вкладений віджет або this.
          */
-        IWidget *getWidgetByCoords(uint16_t x, uint16_t y) const;
+        IWidget *getWidgetByCoords(uint16_t x, uint16_t y);
 
         /**
          * @brief Видаляє усі віджети з контейнера та очищує пам'ять, яку вони займали.
@@ -122,8 +122,8 @@ namespace meow
         bool isEnabled() const { return _is_enabled; }
 
     protected:
-        SemaphoreHandle_t _widg_mutex;
-        bool _is_enabled{true};
         std::vector<IWidget *> _widgets;
+        SemaphoreHandle_t _widg_mutex{nullptr};
+        bool _is_enabled{true};
     };
 }

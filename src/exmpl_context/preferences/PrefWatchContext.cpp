@@ -96,7 +96,7 @@ void PrefWatchContext::update()
     {
         _input.lock(BtnID::BTN_LEFT, CLICK_LOCK);
 
-        SpinBox *spinBox = (SpinBox *)getLayout()->getWidgetByIndx(_curent_focus_pos);
+        SpinBox *spinBox = getLayout()->getWidgetByIndx(_curent_focus_pos)->castTo<SpinBox>();
         spinBox->removeFocus();
 
         if (_curent_focus_pos > 0)
@@ -104,14 +104,14 @@ void PrefWatchContext::update()
         else
             _curent_focus_pos = MAX_SPIN_POS;
 
-        spinBox = (SpinBox *)getLayout()->getWidgetByIndx(_curent_focus_pos);
+        spinBox = getLayout()->getWidgetByIndx(_curent_focus_pos)->castTo<SpinBox>();
         spinBox->setFocus();
     }
     else if (_input.isReleased(BtnID::BTN_RIGHT))
     {
         _input.lock(BtnID::BTN_RIGHT, CLICK_LOCK);
 
-        SpinBox *spinBox = (SpinBox *)getLayout()->getWidgetByIndx(_curent_focus_pos);
+        SpinBox *spinBox = getLayout()->getWidgetByIndx(_curent_focus_pos)->castTo<SpinBox>();
         spinBox->removeFocus();
 
         if (_curent_focus_pos == MAX_SPIN_POS)
@@ -119,19 +119,19 @@ void PrefWatchContext::update()
         else
             ++_curent_focus_pos;
 
-        spinBox = (SpinBox *)getLayout()->getWidgetByIndx(_curent_focus_pos);
+        spinBox = getLayout()->getWidgetByIndx(_curent_focus_pos)->castTo<SpinBox>();
         spinBox->setFocus();
     }
     else if (_input.isHolded(BtnID::BTN_UP))
     {
         _input.lock(BtnID::BTN_UP, HOLD_LOCK);
-        SpinBox *spinBox = (SpinBox *)getLayout()->getWidgetByIndx(_curent_focus_pos);
+        SpinBox *spinBox = getLayout()->getWidgetByIndx(_curent_focus_pos)->castTo<SpinBox>();
         spinBox->up();
     }
     else if (_input.isHolded(BtnID::BTN_DOWN))
     {
         _input.lock(BtnID::BTN_DOWN, HOLD_LOCK);
-        SpinBox *spinBox = (SpinBox *)getLayout()->getWidgetByIndx(_curent_focus_pos);
+        SpinBox *spinBox = getLayout()->getWidgetByIndx(_curent_focus_pos)->castTo<SpinBox>();
         spinBox->down();
     }
 }

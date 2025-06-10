@@ -25,7 +25,7 @@ namespace meow
             return wav_data;
         }
 
-        uint8_t *data = (uint8_t *)ps_malloc(header.data_size);
+        uint8_t *data = static_cast<uint8_t *>(ps_malloc(header.data_size));
         if (!data)
         {
             log_e("Помилка виділення пам'яті");

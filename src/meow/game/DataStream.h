@@ -12,7 +12,7 @@ namespace meow
          *
          * @param size Розмір буфера даних.
          */
-        DataStream(size_t size);
+        explicit DataStream(size_t size);
         ~DataStream();
 
         /**
@@ -107,9 +107,11 @@ namespace meow
         }
 
     protected:
+        DataStream() {}
+
+    protected:
         uint8_t *_buffer{nullptr};
         size_t _index;
         size_t _size;
-        DataStream() {}
     };
 }

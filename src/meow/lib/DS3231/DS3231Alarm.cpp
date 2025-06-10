@@ -29,8 +29,11 @@ namespace meow
         uint8_t flags{0x08}; // hour minutes match
 
         buffer[0] = REG_ALARMTWO;
+        // cppcheck-suppress-begin badBitmaskCheck
         buffer[1] = uint8ToBcd(alarmData.minute) | ((flags & 0x01) << 7);
-        buffer[2] = uint8ToBcd(alarmData.hour) | ((flags & 0x02) << 6); // 24 hour mode only
+        // 24 hour mode only
+        buffer[2] = uint8ToBcd(alarmData.hour) | ((flags & 0x02) << 6);
+        // cppcheck-suppress-end badBitmaskCheck
 
         return _i2c.write(DS3231_ADDR, buffer, 3);
     }

@@ -27,14 +27,14 @@ namespace meow
          *
          * @param packet
          */
-        UdpPacket(AsyncUDPPacket &packet);
+        explicit UdpPacket(AsyncUDPPacket &packet);
 
         /**
          * @brief Створює новий об'єкт та виділяє місце під дані.
          *
          * @param data_len Розмір буфера даних.
          */
-        UdpPacket(size_t data_len);
+        explicit UdpPacket(size_t data_len);
 
         /**
          * @brief Встановлює тип пакета.
@@ -133,9 +133,10 @@ namespace meow
         using DataStream::flush;
         using DataStream::index;
 
+        UdpPacket() {}
+
+    private:
         IPAddress _remote_ip;
         uint16_t _port{0};
-
-        UdpPacket() {}
     };
 }

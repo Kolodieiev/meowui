@@ -11,7 +11,7 @@ namespace meow
     class MenuItem : public IWidget
     {
     public:
-        MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
+        explicit MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
         virtual ~MenuItem();
 
         /**
@@ -87,10 +87,12 @@ namespace meow
         String getText() const;
 
     protected:
-        const uint8_t ITEM_PADDING{5};
         using IWidget::setVisibility;
 
+    protected:
         Image *_img{nullptr};
         Label *_label{nullptr};
+
+        const uint8_t ITEM_PADDING{5};
     };
 }

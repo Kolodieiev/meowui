@@ -137,17 +137,20 @@ namespace meow
         _server->onNotFound([this]()
                             { this->handle404(); });
 
-        _must_work = true;
 
         _server->begin();
 
-        while (_must_work)
+        // cppcheck-suppress-begin knownConditionTrueFalse
+        _must_work = true; 
+        while (_must_work) 
         {
             _server->handleClient();
             vTaskDelay(1 / portTICK_PERIOD_MS);
         }
+        // cppcheck-suppress-end knownConditionTrueFalse
 
         _is_working = false;
+        vTaskDelete(NULL);
     }
 
     void FileServer::handleReceive()
@@ -254,7 +257,7 @@ namespace meow
         }
         else if (uploadfile.status == UPLOAD_FILE_WRITE)
         {
-            _fs.writeToFile(in_file, (const char *)uploadfile.buf, uploadfile.currentSize);
+            _fs.writeToFile(in_file, static_cast<const void *>(uploadfile.buf), uploadfile.currentSize);
             if (millis() - _last_delay_time > 1000)
             {
                 vTaskDelay(1 / portTICK_PERIOD_MS);

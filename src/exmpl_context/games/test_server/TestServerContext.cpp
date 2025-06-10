@@ -553,7 +553,7 @@ namespace test_server
         }
     }
 
-    void TestServerContext::handleServerData(UdpPacket *packet)
+    void TestServerContext::handleServerData(const UdpPacket *packet)
     {
         uint8_t START_GAME_DATA_CMD = 100;
         if (packet->isDataEquals(&START_GAME_DATA_CMD, 0, 1))
@@ -564,7 +564,7 @@ namespace test_server
         }
     }
 
-    void TestServerContext::onServerData(UdpPacket *packet, void *arg)
+    void TestServerContext::onServerData(const UdpPacket *packet, void *arg)
     {
         TestServerContext *self = static_cast<TestServerContext *>(arg);
         self->handleServerData(packet);
@@ -671,7 +671,7 @@ namespace test_server
         updateClientsList();
     }
 
-    void TestServerContext::updateClientsList(ClientWrapper *disconnected_client)
+    void TestServerContext::updateClientsList(const ClientWrapper *disconnected_client)
     {
         if (_context_id != ID_CONT_SERVER_LOBBY && _context_id != ID_CONT_LOBBY_CONT_MENU)
             return;
@@ -923,7 +923,7 @@ namespace test_server
         setLayout(layout);
     }
 
-    void TestServerContext::handleClientConn(ClientWrapper *cl_wrap, ConfirmResultHandler result_handler)
+    void TestServerContext::handleClientConn(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler)
     {
         _conn_client_wrap = cl_wrap;
         _confirm_handler = result_handler;
@@ -931,18 +931,18 @@ namespace test_server
         showClientConn();
     }
 
-    void TestServerContext::clientConfirmHandler(ClientWrapper *cl_wrap, ConfirmResultHandler result_handler, void *arg)
+    void TestServerContext::clientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler, void *arg)
     {
         TestServerContext *self = static_cast<TestServerContext *>(arg);
         self->handleClientConn(cl_wrap, result_handler);
     }
 
-    void TestServerContext::handleClientDisconn(ClientWrapper *cl_wrap)
+    void TestServerContext::handleClientDisconn(const ClientWrapper *cl_wrap)
     {
         updateClientsList(cl_wrap);
     }
 
-    void TestServerContext::clientDisconnHandler(ClientWrapper *cl_wrap, void *arg)
+    void TestServerContext::clientDisconnHandler(const ClientWrapper *cl_wrap, void *arg)
     {
         TestServerContext *self = static_cast<TestServerContext *>(arg);
         self->handleClientDisconn(cl_wrap);

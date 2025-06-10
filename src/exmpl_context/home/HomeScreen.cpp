@@ -60,7 +60,7 @@ HomeContext::HomeContext()
 HomeContext::~HomeContext()
 {
     delete _bat_ico;
-    free((void *)_wallpaper_ptr);
+    free(_wallpaper_ptr);
 }
 
 bool HomeContext::loop()

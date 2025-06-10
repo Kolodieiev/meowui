@@ -19,7 +19,7 @@ namespace meow
         return std::strcmp(_name.c_str(), name) == 0;
     }
 
-    bool ClientWrapper::is(ClientWrapper *cl_wrap) const
+    bool ClientWrapper::is(const ClientWrapper *cl_wrap) const
     {
         if (!cl_wrap)
             return false;

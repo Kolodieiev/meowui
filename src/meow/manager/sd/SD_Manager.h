@@ -19,17 +19,21 @@ namespace meow
         SD_Manager &operator=(SD_Manager &&) = delete;
 
     private:
-        uint8_t _pdrv{0xFF};
+        SD_Manager() {}
+
+    private:
         static bool _is_inited;
 
-        bool _has_setup = false;
+        // ----------------------------------------
+        SPIClass *_spi{nullptr};
+        const char *_mountpoint{nullptr};
 
-        uint8_t _cs_pin;
-        SPIClass *_spi;
-        uint32_t _frequency;
-        const char *_mountpoint;
-        uint8_t _max_files;
+        uint32_t _frequency{0};
 
-        SD_Manager() {}
+        uint8_t _pdrv{0xFF};
+        uint8_t _cs_pin{0};
+        uint8_t _max_files{20};
+        
+        bool _has_setup{false};
     };
 }

@@ -79,7 +79,7 @@ namespace sokoban
     void SokobanContext::showLvlMenu()
     {
         WidgetCreator creator;
-        EmptyLayout *layout = (EmptyLayout *)getLayout();
+        EmptyLayout *layout = getLayout()->castTo<EmptyLayout>();
 
         _lvl_menu = new FixedMenu(ID_LVL_LIST);
         layout->addWidget(_lvl_menu);

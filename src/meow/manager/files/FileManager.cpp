@@ -147,6 +147,7 @@ namespace meow
         if (seek_pos > 0 && fseek(f, seek_pos, SEEK_SET))
         {
             log_e("Помилка встановлення позиції(%d) у файлі %s", seek_pos, path);
+            fclose(f);
             return 0;
         }
 
@@ -241,7 +242,7 @@ namespace meow
         unsigned long last_delay_time = millis();
         for (size_t i = 0; i < full_blocks; ++i)
         {
-            total_written += fwrite((uint8_t *)buffer + total_written, opt_size, 1, file) * opt_size;
+            total_written += fwrite(static_cast<const uint8_t *>(buffer) + total_written, opt_size, 1, file) * opt_size;
             if (millis() - last_delay_time > 1000)
             {
                 vTaskDelay(1 / portTICK_PERIOD_MS);
@@ -250,7 +251,7 @@ namespace meow
         }
 
         if (remaining_bytes > 0)
-            total_written += fwrite((uint8_t *)buffer + total_written, remaining_bytes, 1, file) * remaining_bytes;
+            total_written += fwrite(static_cast<const uint8_t *>(buffer) + total_written, remaining_bytes, 1, file) * remaining_bytes;
 
         fflush(file);
 
@@ -532,12 +533,12 @@ namespace meow
         if (psramInit())
         {
             buf_size *= 160;
-            buffer = (uint8_t *)ps_malloc(buf_size);
+            buffer = static_cast<uint8_t *>(ps_malloc(buf_size));
         }
         else
         {
             buf_size *= 16;
-            buffer = (uint8_t *)malloc(buf_size);
+            buffer = static_cast<uint8_t *>(malloc(buf_size));
         }
 
         if (!buffer)
@@ -780,9 +781,9 @@ namespace meow
     FileInfo::FileInfo(const String &name, bool is_dir) : _is_dir{is_dir}, _name_len{name.length()}
     {
         if (psramInit())
-            _name = (char *)ps_malloc(_name_len + 1);
+            _name = static_cast<char *>(ps_malloc(_name_len + 1));
         else
-            _name = (char *)malloc(_name_len + 1);
+            _name = static_cast<char *>(malloc(_name_len + 1));
 
         if (!_name)
         {

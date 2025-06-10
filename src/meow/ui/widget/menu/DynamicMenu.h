@@ -12,7 +12,7 @@ namespace meow
     class DynamicMenu final : public Menu
     {
     public:
-        DynamicMenu(uint16_t widget_ID);
+        explicit DynamicMenu(uint16_t widget_ID);
         virtual ~DynamicMenu() {}
 
         /**
@@ -73,9 +73,9 @@ namespace meow
 
     private:
         OnNextItemsLoad _next_items_load_handler{nullptr};
-        void *_next_items_load_arg{nullptr};
-        //
         OnPrevItemsLoad _prev_items_load_handler{nullptr};
+
+        void *_next_items_load_arg{nullptr};
         void *_prev_items_load_arg{nullptr};
     };
 

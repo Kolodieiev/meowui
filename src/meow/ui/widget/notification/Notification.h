@@ -3,16 +3,18 @@
 #include "../IWidget.h"
 #include "../text/Label.h"
 
-// TODO замінити завантаження label на прості виклики, типу set text
-
 namespace meow
 {
     class Notification final : public IWidget
     {
 
     public:
-        Notification(uint16_t widget_ID);
+        explicit Notification(uint16_t widget_ID);
         virtual ~Notification();
+        Notification(const Notification &other) = delete;
+        Notification &operator=(const Notification &other) = delete;
+        Notification(Notification &&other) = delete;
+        Notification &operator=(Notification &&other) = delete;
 
         /**
          * @brief Викликає процедуру малювання віджета на дисплей.

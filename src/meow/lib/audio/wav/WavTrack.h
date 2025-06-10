@@ -28,21 +28,21 @@ namespace meow
     private:
         WavTrack() : _data_buf{nullptr}, _data_size{0} {}
 
-        const uint8_t MAX_VOLUME{100};
+    private:
         const float DEF_VOLUME{1.0f};
-
         float _volume{DEF_VOLUME};
-        //
+
         const uint8_t *_data_buf{nullptr};
+        
         const uint32_t _data_size;
-        //
         uint32_t _current_sample{0};
-        //
+
         uint16_t _filtration_lvl{1};
-        //
+
+        const uint8_t MAX_VOLUME{100};
+
         bool _is_playing{true};
         bool _on_repeate{false};
-        //
     };
 
 }

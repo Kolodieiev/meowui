@@ -66,39 +66,39 @@ public:
   void setBitmapColor(uint16_t fg, uint16_t bg);
 
   // Draw a single pixel at x,y
-  void drawPixel(int32_t x, int32_t y, uint32_t color);
+  void drawPixel(int32_t x, int32_t y, uint32_t color) override;
 
   // Draw a single character in the GLCD or GFXFF font
-  void drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32_t bg, uint8_t size),
+  void drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32_t bg, uint8_t size) override;
 
-      // Fill Sprite with a colour
-      fillSprite(uint32_t color),
+  // Fill Sprite with a colour
+  void fillSprite(uint32_t color);
 
-      // Define a window to push 16 bit colour pixels into in a raster order
-      // Colours are converted to the set Sprite colour bit depth
-      setWindow(int32_t x0, int32_t y0, int32_t x1, int32_t y1),
-      // Push a color (aka singe pixel) to the sprite's set window area
-      pushColor(uint16_t color),
-      // Push len colors (pixels) to the sprite's set window area
-      pushColor(uint16_t color, uint32_t len),
-      // Push a pixel pre-formatted as a 1, 4, 8 or 16 bit colour (avoids conversion overhead)
-      writeColor(uint16_t color),
+  // Define a window to push 16 bit colour pixels into in a raster order
+  // Colours are converted to the set Sprite colour bit depth
+  void setWindow(int32_t x0, int32_t y0, int32_t x1, int32_t y1) override;
+  // Push a color (aka singe pixel) to the sprite's set window area
+  void pushColor(uint16_t color) override;
+  // Push len colors (pixels) to the sprite's set window area
+  void pushColor(uint16_t color, uint32_t len);
+  // Push a pixel pre-formatted as a 1, 4, 8 or 16 bit colour (avoids conversion overhead)
+  void writeColor(uint16_t color);
 
-      // Set the scroll zone, top left corner at x,y with defined width and height
-      // The colour (optional, black is default) is used to fill the gap after the scroll
-      setScrollRect(int32_t x, int32_t y, int32_t w, int32_t h, uint16_t color = TFT_BLACK),
-      // Scroll the defined zone dx,dy pixels. Negative values left,up, positive right,down
-      // dy is optional (default is 0, so no up/down scroll).
-      // The sprite coordinate frame does not move because pixels are moved
-      scroll(int16_t dx, int16_t dy = 0),
+  // Set the scroll zone, top left corner at x,y with defined width and height
+  // The colour (optional, black is default) is used to fill the gap after the scroll
+  void setScrollRect(int32_t x, int32_t y, int32_t w, int32_t h, uint16_t color = TFT_BLACK);
+  // Scroll the defined zone dx,dy pixels. Negative values left,up, positive right,down
+  // dy is optional (default is 0, so no up/down scroll).
+  // The sprite coordinate frame does not move because pixels are moved
+  void scroll(int16_t dx, int16_t dy = 0);
 
-      // Draw lines
-      drawLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t color),
-      drawFastVLine(int32_t x, int32_t y, int32_t h, uint32_t color),
-      drawFastHLine(int32_t x, int32_t y, int32_t w, uint32_t color),
+  // Draw lines
+  void drawLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t color) override;
+  void drawFastVLine(int32_t x, int32_t y, int32_t h, uint32_t color) override;
+  void drawFastHLine(int32_t x, int32_t y, int32_t w, uint32_t color) override;
 
-      // Fill a rectangular area with a color (aka draw a filled rectangle)
-      fillRect(int32_t x, int32_t y, int32_t w, int32_t h, uint32_t color);
+  // Fill a rectangular area with a color (aka draw a filled rectangle)
+  void fillRect(int32_t x, int32_t y, int32_t w, int32_t h, uint32_t color) override;
 
   // Set the coordinate rotation of the Sprite (for 1bpp Sprites only)
   // Note: this uses coordinate rotation and is primarily for ePaper which does not support
@@ -121,7 +121,7 @@ public:
                         int16_t *min_x, int16_t *min_y, int16_t *max_x, int16_t *max_y);
 
   // Read the colour of a pixel at x,y and return value in 565 format
-  uint16_t readPixel(int32_t x0, int32_t y0);
+  uint16_t readPixel(int32_t x0, int32_t y0) override;
 
   // return the numerical value of the pixel at x,y (used when scrolling)
   // 16bpp = colour, 8bpp = byte, 4bpp = colour index, 1bpp = 1 or 0
@@ -144,12 +144,12 @@ public:
   bool pushToSprite(TFT_eSprite *dspr, int32_t x, int32_t y, uint16_t transparent);
 
   // Draw a single character in the selected font
-  int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y, uint8_t font),
-      drawChar(uint16_t uniCode, int32_t x, int32_t y);
+  int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y, uint8_t font) override;
+  int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y) override;
 
   // Return the width and height of the sprite
-  int16_t width(void),
-      height(void);
+  int16_t width(void) override;
+  int16_t height(void) override;
 
   // Functions associated with anti-aliased fonts
   // Draw a single unicode character using the loaded font
@@ -168,24 +168,12 @@ private:
   void *callocSprite(int16_t width, int16_t height, uint8_t frames = 1);
 
   // Override the non-inlined TFT_eSPI functions
-  void begin_nin_write(void) { ; }
-  void end_nin_write(void) { ; }
+  void begin_nin_write(void) override { ; }
+  void end_nin_write(void) override { ; }
 
 protected:
-  uint8_t _bpp;     // bits per pixel (1, 4, 8 or 16)
-  uint16_t *_img;   // pointer to 16 bit sprite
-  uint8_t *_img8;   // pointer to  1 and 8 bit sprite frame 1 or frame 2
-  uint8_t *_img4;   // pointer to  4 bit sprite (uses color map)
-  uint8_t *_img8_1; // pointer to frame 1
-  uint8_t *_img8_2; // pointer to frame 2
-
-  uint16_t *_colorMap; // color map pointer: 16 entries, used with 4 bit color map.
-
   int32_t _sinra; // Sine of rotation angle in fixed point
   int32_t _cosra; // Cosine of rotation angle in fixed point
-
-  bool _created; // A Sprite has been created and memory reserved
-  bool _gFont = false;
 
   int32_t _xs, _ys, _xe, _ye, _xptr, _yptr; // for setWindow
   int32_t _sx, _sy;                         // x,y for scroll zone
@@ -195,4 +183,15 @@ protected:
   int32_t _iwidth, _iheight; // Sprite memory image bit width and height (swapped during rotations)
   int32_t _dwidth, _dheight; // Real sprite width and height (for <8bpp Sprites)
   int32_t _bitwidth;         // Sprite image bit width for drawPixel (for <8bpp Sprites, not swapped)
+
+  uint16_t *_img;      // pointer to 16 bit sprite
+  uint16_t *_colorMap; // color map pointer: 16 entries, used with 4 bit color map.
+  uint8_t *_img8;      // pointer to  1 and 8 bit sprite frame 1 or frame 2
+  uint8_t *_img4;      // pointer to  4 bit sprite (uses color map)
+  uint8_t *_img8_1;    // pointer to frame 1
+  uint8_t *_img8_2;    // pointer to frame 2
+
+  uint8_t _bpp;  // bits per pixel (1, 4, 8 or 16)
+  bool _created; // A Sprite has been created and memory reserved
+  bool _gFont = false;
 };

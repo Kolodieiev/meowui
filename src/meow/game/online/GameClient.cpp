@@ -4,8 +4,6 @@
 
 namespace meow
 {
-    QueueHandle_t GameClient::_packet_queue{nullptr};
-
     GameClient::GameClient()
     {
         // Виправлення помилки assert failed: tcpip_api_call (Invalid mbox)
@@ -158,7 +156,7 @@ namespace meow
 
         UdpPacket packet(_server_id.length());
         packet.setType(UdpPacket::TYPE_HANDSHAKE);
-        packet.write((void *)_server_id.c_str(), _server_id.length());
+        packet.write(_server_id.c_str(), _server_id.length());
 
         sendPacket(packet);
     }
@@ -169,7 +167,7 @@ namespace meow
 
         UdpPacket packet(_name.length());
         packet.setType(UdpPacket::TYPE_NAME);
-        packet.write((void *)_name.c_str(), _name.length());
+        packet.write(_name.c_str(), _name.length());
 
         sendPacket(packet);
     }
@@ -204,12 +202,12 @@ namespace meow
 
     void GameClient::packetHandlerTask(void *arg)
     {
-        GameClient *self = static_cast<GameClient *>(arg);
-        UdpPacket *packet = nullptr;
+        GameClient *self{static_cast<GameClient *>(arg)};
+        UdpPacket *packet{nullptr};
 
         while (1)
         {
-            if (xQueueReceive(_packet_queue, &packet, portMAX_DELAY) == pdPASS)
+            if (xQueueReceive(self->_packet_queue, &packet, portMAX_DELAY) == pdPASS)
             {
                 if (packet)
                 {
@@ -230,11 +228,13 @@ namespace meow
             return;
         }
 
-        if (_packet_queue)
+        GameClient *self = static_cast<GameClient *>(arg);
+
+        if (self->_packet_queue)
         {
             UdpPacket *pack = new UdpPacket(packet);
 
-            if (!xQueueSend(_packet_queue, &pack, portMAX_DELAY) == pdPASS)
+            if (!xQueueSend(self->_packet_queue, &pack, portMAX_DELAY) == pdPASS)
             {
                 log_e("Черга _packet_queue переповнена");
                 delete pack;

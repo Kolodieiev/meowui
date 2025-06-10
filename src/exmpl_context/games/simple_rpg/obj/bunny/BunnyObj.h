@@ -23,16 +23,17 @@ namespace simple_rpg
         virtual size_t getDataSize() const override { return 0; }
 
     private:
-        const uint16_t PIX_PER_STEP{5};
+        void initAnimVectors();
+        void disableAnimation();
 
+    private:
         std::vector<const uint16_t *> move_up_anim;
         std::vector<const uint16_t *> move_down_anim;
         std::vector<const uint16_t *> move_right_anim;
         std::vector<const uint16_t *> move_left_anim;
 
-        MovingDirection _prev_direction{DIRECTION_NONE};
+        const uint16_t PIX_PER_STEP{5};
 
-        void initAnimVectors();
-        void disableAnimation();
+        MovingDirection _prev_direction{DIRECTION_NONE};
     };
 }

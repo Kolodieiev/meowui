@@ -156,7 +156,7 @@ namespace test_server
 
     // ----------------------------------------------------------------------------------------------------------------------------- Сервер
 
-    void MainScene::onClientData(ClientWrapper *cl_wrap, UdpPacket *packet, void *arg)
+    void MainScene::onClientData(const ClientWrapper *cl_wrap, const UdpPacket *packet, void *arg)
     {
         MainScene *self = static_cast<MainScene *>(arg);
         self->handleClientData(cl_wrap, packet);
@@ -164,12 +164,12 @@ namespace test_server
 
     // --------------------------------------------------
 
-    void MainScene::handleClientDisconn(ClientWrapper *cl_wrap)
+    void MainScene::handleClientDisconn(const ClientWrapper *cl_wrap)
     {
         // Тут реалізовувати обробку відключення клієнта
     }
 
-    void MainScene::onClientDisconn(ClientWrapper *cl_wrap, void *arg)
+    void MainScene::onClientDisconn(const ClientWrapper *cl_wrap, void *arg)
     {
         MainScene *self = static_cast<MainScene *>(arg);
         self->handleClientDisconn(cl_wrap);
@@ -254,7 +254,7 @@ namespace test_server
 
     // -----------------------------------------------------------------------------------------------------------------------------
 
-    void MainScene::handleClientData(ClientWrapper *cl_wrap, UdpPacket *packet)
+    void MainScene::handleClientData(const ClientWrapper *cl_wrap, const UdpPacket *packet)
     {
         // Дані повинні містити як мінімум команду
         if (packet->dataLen() < 1)
@@ -311,11 +311,11 @@ namespace test_server
                     log_e("Перевищено максимально допустимий розмір пакету");
                     return;
                 }
-                UdpPacket packet(1 + data_size);
-                packet.write(CMD_INIT);
-                serialize(packet);
+                UdpPacket pack(1 + data_size);
+                pack.write(CMD_INIT);
+                serialize(pack);
 
-                _server.sendBroadcast(packet);
+                _server.sendBroadcast(pack);
             }
         }
         else if (cmd == CMD_MOVE)

@@ -31,7 +31,7 @@ private:
     // const uint8_t PIN_VOLT_MEASH{17}; У виправленій схемі
 
     Image *_bat_ico;
-    const uint16_t *_wallpaper_ptr{nullptr};
+    uint16_t *_wallpaper_ptr{nullptr};
     unsigned long _upd_timer{0};
 
     Label *_bat_cap_lbl{nullptr};

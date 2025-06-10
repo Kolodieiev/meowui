@@ -191,7 +191,7 @@ const PROGMEM fontinfo fontdata[] = {
 #define TFT_TRANSPARENT 0xF81F // Колір rgb(255, 0, 255)
 
 // Default palette for 4 bit colour sprites
-static const uint16_t default_4bit_palette[] PROGMEM = {
+const uint16_t default_4bit_palette[] PROGMEM = {
     TFT_BLACK,     //  0  ^
     TFT_BROWN,     //  1  |
     TFT_RED,       //  2  |
@@ -216,86 +216,41 @@ static const uint16_t default_4bit_palette[] PROGMEM = {
 // #define TFT_eSPI_DEBUG     // Switch on debug support serial messages  (not used yet)
 // #define TFT_eSPI_FNx_DEBUG // Switch on debug support for function "x" (not used yet)
 
-// This structure allows sketches to retrieve the user setup parameters at runtime
-// by calling getSetup(), zero impact on code size unless used, mainly for diagnostics
-typedef struct
-{
-  String version = TFT_ESPI_VERSION;
-  String setup_info; // Setup reference name available to use in a user setup
-  uint32_t setup_id; // ID available to use in a user setup
-  int32_t esp;       // Processor code
-  uint8_t trans;     // SPI transaction support
-  uint8_t serial;    // Serial (SPI) or parallel
-#ifndef GENERIC_PROCESSOR
-  uint8_t port; // SPI port
-#endif
-  uint8_t overlap;   // ESP8266 overlap mode
-  uint8_t interface; // Interface type
-
-  uint16_t tft_driver; // Hexadecimal code
-  uint16_t tft_width;  // Rotation 0 width and height
-  uint16_t tft_height;
-
-  uint8_t r0_x_offset; // Display offsets, not all used yet
-  uint8_t r0_y_offset;
-  uint8_t r1_x_offset;
-  uint8_t r1_y_offset;
-  uint8_t r2_x_offset;
-  uint8_t r2_y_offset;
-  uint8_t r3_x_offset;
-  uint8_t r3_y_offset;
-
-  int8_t pin_tft_mosi; // SPI pins
-  int8_t pin_tft_miso;
-  int8_t pin_tft_clk;
-  int8_t pin_tft_cs;
-
-  int8_t pin_tft_dc; // Control pins
-  int8_t pin_tft_rd;
-  int8_t pin_tft_wr;
-  int8_t pin_tft_rst;
-
-  int8_t pin_tft_d0; // Parallel port pins
-  int8_t pin_tft_d1;
-  int8_t pin_tft_d2;
-  int8_t pin_tft_d3;
-  int8_t pin_tft_d4;
-  int8_t pin_tft_d5;
-  int8_t pin_tft_d6;
-  int8_t pin_tft_d7;
-
-  int8_t pin_tft_led;
-  int8_t pin_tft_led_on;
-
-  int8_t pin_tch_cs; // Touch chip select pin
-
-  int16_t tft_spi_freq; // TFT write SPI frequency
-  int16_t tft_rd_freq;  // TFT read  SPI frequency
-  int16_t tch_spi_freq; // Touch controller read/write SPI frequency
-} setup_t;
-
-
 // Clipping macro for pushImage
-#define PI_CLIP                                        \
-  if (_vpOoB) return;                                  \
-  x+= _xDatum;                                         \
-  y+= _yDatum;                                         \
-                                                       \
-  if ((x >= _vpW) || (y >= _vpH)) return;              \
-                                                       \
-  int32_t dx = 0;                                      \
-  int32_t dy = 0;                                      \
-  int32_t dw = w;                                      \
-  int32_t dh = h;                                      \
-                                                       \
-  if (x < _vpX) { dx = _vpX - x; dw -= dx; x = _vpX; } \
-  if (y < _vpY) { dy = _vpY - y; dh -= dy; y = _vpY; } \
-                                                       \
-  if ((x + dw) > _vpW ) dw = _vpW - x;                 \
-  if ((y + dh) > _vpH ) dh = _vpH - y;                 \
-                                                       \
-  if (dw < 1 || dh < 1) return;
-
+#define PI_CLIP                   \
+  if (_vpOoB)                     \
+    return;                       \
+  x += _xDatum;                   \
+  y += _yDatum;                   \
+                                  \
+  if ((x >= _vpW) || (y >= _vpH)) \
+    return;                       \
+                                  \
+  int32_t dx = 0;                 \
+  int32_t dy = 0;                 \
+  int32_t dw = w;                 \
+  int32_t dh = h;                 \
+                                  \
+  if (x < _vpX)                   \
+  {                               \
+    dx = _vpX - x;                \
+    dw -= dx;                     \
+    x = _vpX;                     \
+  }                               \
+  if (y < _vpY)                   \
+  {                               \
+    dy = _vpY - y;                \
+    dh -= dy;                     \
+    y = _vpY;                     \
+  }                               \
+                                  \
+  if ((x + dw) > _vpW)            \
+    dw = _vpW - x;                \
+  if ((y + dh) > _vpH)            \
+    dh = _vpH - y;                \
+                                  \
+  if (dw < 1 || dh < 1)           \
+    return;
 
 /***************************************************************************************
 **                         Section 8: Class member and support functions
@@ -311,7 +266,7 @@ class TFT_eSPI : public Print
 
   //--------------------------------------- public ------------------------------------//
 public:
-  TFT_eSPI(int16_t _W = TFT_WIDTH, int16_t _H = TFT_HEIGHT);
+  explicit TFT_eSPI(int16_t _W = TFT_WIDTH, int16_t _H = TFT_HEIGHT);
 
   // init() and begin() are equivalent, begin() included for backwards compatibility
   // Sketch defined tab colour option is for ST7735 displays only
@@ -325,10 +280,11 @@ public:
       drawFastHLine(int32_t x, int32_t y, int32_t w, uint32_t color),
       fillRect(int32_t x, int32_t y, int32_t w, int32_t h, uint32_t color);
 
-  virtual int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y, uint8_t font),
-      drawChar(uint16_t uniCode, int32_t x, int32_t y),
-      height(void),
-      width(void);
+  virtual int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y, uint8_t font);
+  virtual int16_t drawChar(uint16_t uniCode, int32_t x, int32_t y);
+
+  virtual int16_t height(void);
+  virtual int16_t width(void);
 
   // Read the colour of a pixel at x,y and return value in 565 format
   virtual uint16_t readPixel(int32_t x, int32_t y);
@@ -410,8 +366,8 @@ public:
       fillEllipse(int16_t x, int16_t y, int32_t rx, int32_t ry, uint16_t color),
 
       //                 Corner 1               Corner 2               Corner 3
-      drawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t color),
-      fillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t color);
+      drawTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color),
+      fillTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color);
 
   // Smooth (anti-aliased) graphics drawing
   // Draw a pixel blended with the background pixel colour (bg_color) specified,  return blended colour
@@ -683,26 +639,91 @@ public:
   void setAttribute(uint8_t id = 0, uint8_t a = 0); // Set attribute value
   uint8_t getAttribute(uint8_t id = 0);             // Get attribute value
 
-  // Used for diagnostic sketch to see library setup adopted by compiler, see Section 7 above
-  void getSetup(setup_t &tft_settings); // Sketch provides the instance to populate
-  bool verifySetupID(uint32_t id);
-
   // Global variables
   static SPIClass &getSPIinstance(void); // Get SPI class handle
+  //--------------------------------------- private ------------------------------------//
 
+private:
+#if defined(ESP32_PARALLEL)
+  // Lookup table for ESP32 parallel bus interface uses 1kbyte RAM,
+  uint32_t xset_mask[256]; // Makes Sprite rendering test 33% faster, for slower macro equivalent
+                           // see commented out #define set_mask(C) within TFT_eSPI_ESP32.h
+#endif
+  // Port and pin masks for control signals (ESP826 only) - TODO: remove need for this
+  volatile uint32_t *dcport, *csport;
+  getColorCallback getColor = nullptr; // Smooth font callback function pointer
+
+private:
   uint32_t textcolor, textbgcolor; // Text foreground and background colours
+  uint32_t bitmap_fg, bitmap_bg;   // Bitmap foreground (bit=1) and background (bit=0) colours
+  uint32_t cspinmask, dcpinmask, wrpinmask, sclkpinmask;
 
-  uint32_t bitmap_fg, bitmap_bg; // Bitmap foreground (bit=1) and background (bit=0) colours
+#if defined(ESP32_PARALLEL)
+  // Bit masks for ESP32 parallel bus interface
+  uint32_t xclr_mask, xdir_mask; // Port set/clear and direction control masks
+#endif
 
+protected:
+  int32_t _init_width, _init_height; // Display w/h as input, used by setRotation()
+  int32_t _width, _height;           // Display w/h as modified by current rotation
+  int32_t addr_row, addr_col;        // Window position - used to minimise window commands
+
+  // Viewport variables
+  int32_t _vpX, _vpY, _vpW, _vpH; // Note: x start, y start, x end + 1, y end + 1
+  int32_t _xDatum;
+  int32_t _yDatum;
+  int32_t _xWidth;
+  int32_t _yHeight;
+
+  int32_t cursor_x, cursor_y, padX; // Text cursor x,y and padding setting
+  int32_t bg_cursor_x;              // Background fill cursor
+  int32_t last_cursor_x;            // Previous text cursor position when fill used
+
+  uint32_t fontsloaded; // Bit field of fonts loaded
+  uint32_t _lastColor;  // Buffered value of last colour used
+
+private:
+  uint16_t decoderBuffer; // Unicode code-point buffer - not for user access
+
+#if defined(SSD1963_DRIVER)
+  uint16_t Cswap; // Swap buffer for SSD1963
+#endif
+
+protected:
+  int16_t _xPivot; // TFT x pivot point coordinate for rotated Sprites
+  int16_t _yPivot; // TFT x pivot point coordinate for rotated Sprites
+
+private:
   uint8_t textfont, // Current selected font number
       textsize,     // Current font size multiplier
       textdatum,    // Text reference datum
       rotation;     // Display rotation (0-3)
 
-  uint8_t decoderState = 0; // UTF8 decoder state        - not for user access
-  uint16_t decoderBuffer;   // Unicode code-point buffer - not for user access
+  uint8_t decoderState = 0; // UTF8 decoder state - not for user access
+  // Display variant settings
+  uint8_t tabcolor = 0,           // ST7735 screen protector "tab" colour (now invalid)
+      colstart = 0, rowstart = 0; // Screen display area to CGRAM area coordinate offsets
 
-  //--------------------------------------- private ------------------------------------//
+#if defined(SSD1963_DRIVER)
+  uint8_t r6, g6, b6; // RGB buffer for SSD1963
+#endif
+
+private:
+  bool locked, inTransaction, lockTransaction; // SPI transaction and mutex lock flags
+
+protected:
+  bool _vpDatum;
+  bool _vpOoB;
+  bool isDigits;             // adjust bounding box for numbers to reduce visual jiggling
+  bool textwrapX, textwrapY; // If set, 'wrap' text at right and optionally bottom edge of display
+  bool _swapBytes;           // Swap the byte order for TFT pushImage()
+  bool _booted;              // init() or begin() has already run once
+  // User sketch manages these via set/getAttribute()
+  bool _cp437;        // If set, use correct CP437 charset (default is ON)
+  bool _utf8;         // If set, use UTF-8 decoder in print stream 'write()' function (default ON)
+  bool _psram_enable; // Enable PSRAM use for library functions (TBD) and Sprites
+  bool _fillbg;       // Fill background flag (just for for smooth fonts at the moment)
+
 private:
   // Legacy begin and end prototypes - deprecated TODO: delete
   void spi_begin();
@@ -746,96 +767,9 @@ private:
   // Helper function: calculate distance of a point from a finite length line between two points
   float wedgeLineDistance(float pax, float pay, float bax, float bay, float dr);
 
-  // Display variant settings
-  uint8_t tabcolor,               // ST7735 screen protector "tab" colour (now invalid)
-      colstart = 0, rowstart = 0; // Screen display area to CGRAM area coordinate offsets
-
-  // Port and pin masks for control signals (ESP826 only) - TODO: remove need for this
-  volatile uint32_t *dcport, *csport;
-  uint32_t cspinmask, dcpinmask, wrpinmask, sclkpinmask;
-
-#if defined(ESP32_PARALLEL)
-  // Bit masks for ESP32 parallel bus interface
-  uint32_t xclr_mask, xdir_mask; // Port set/clear and direction control masks
-
-  // Lookup table for ESP32 parallel bus interface uses 1kbyte RAM,
-  uint32_t xset_mask[256]; // Makes Sprite rendering test 33% faster, for slower macro equivalent
-                           // see commented out #define set_mask(C) within TFT_eSPI_ESP32.h
-#endif
-
-  // uint32_t lastColor = 0xFFFF; // Last colour - used to minimise bit shifting overhead
-
-  getColorCallback getColor = nullptr; // Smooth font callback function pointer
-
-  bool locked, inTransaction, lockTransaction; // SPI transaction and mutex lock flags
-
-  //-------------------------------------- protected ----------------------------------//
-protected:
-  // int32_t  win_xe, win_ye;          // Window end coords - not needed
-
-  int32_t _init_width, _init_height; // Display w/h as input, used by setRotation()
-  int32_t _width, _height;           // Display w/h as modified by current rotation
-  int32_t addr_row, addr_col;        // Window position - used to minimise window commands
-
-  int16_t _xPivot; // TFT x pivot point coordinate for rotated Sprites
-  int16_t _yPivot; // TFT x pivot point coordinate for rotated Sprites
-
-  // Viewport variables
-  int32_t _vpX, _vpY, _vpW, _vpH; // Note: x start, y start, x end + 1, y end + 1
-  int32_t _xDatum;
-  int32_t _yDatum;
-  int32_t _xWidth;
-  int32_t _yHeight;
-  bool _vpDatum;
-  bool _vpOoB;
-
-  int32_t cursor_x, cursor_y, padX; // Text cursor x,y and padding setting
-  int32_t bg_cursor_x;              // Background fill cursor
-  int32_t last_cursor_x;            // Previous text cursor position when fill used
-
-  uint32_t fontsloaded; // Bit field of fonts loaded
-
-  uint8_t glyph_ab, // Smooth font glyph delta Y (height) above baseline
-      glyph_bb;     // Smooth font glyph delta Y (height) below baseline
-
-  bool isDigits;             // adjust bounding box for numbers to reduce visual jiggling
-  bool textwrapX, textwrapY; // If set, 'wrap' text at right and optionally bottom edge of display
-  bool _swapBytes;           // Swap the byte order for TFT pushImage()
-
-  bool _booted; // init() or begin() has already run once
-
-  // User sketch manages these via set/getAttribute()
-  bool _cp437;        // If set, use correct CP437 charset (default is ON)
-  bool _utf8;         // If set, use UTF-8 decoder in print stream 'write()' function (default ON)
-  bool _psram_enable; // Enable PSRAM use for library functions (TBD) and Sprites
-
-  uint32_t _lastColor; // Buffered value of last colour used
-
-  bool _fillbg; // Fill background flag (just for for smooth fonts at the moment)
-
-#if defined(SSD1963_DRIVER)
-  uint16_t Cswap;     // Swap buffer for SSD1963
-  uint8_t r6, g6, b6; // RGB buffer for SSD1963
-#endif
-
-/***************************************************************************************
-**                         Section 9: TFT_eSPI class conditional extensions
-***************************************************************************************/
-// Load the Touch extension
-#ifdef TOUCH_CS
-#if defined(TFT_PARALLEL_8_BIT) || defined(RP2040_PIO_INTERFACE)
-#if !defined(DISABLE_ALL_LIBRARY_WARNINGS)
-#error>>>>------>> Touch functions not supported in 8/16 bit parallel mode or with RP2040 PIO.
-#endif
-#else
-#include "Extensions/Touch.h" // Loaded if TOUCH_CS is defined by user
-#endif
-#else
-#if !defined(DISABLE_ALL_LIBRARY_WARNINGS)
-#warning>>>>------>> TOUCH_CS pin not defined, TFT_eSPI touch functions will not be available!
-#endif
-#endif
-
+  /***************************************************************************************
+  **                         Section 9: TFT_eSPI class conditional extensions
+  ***************************************************************************************/
 }; // End of class TFT_eSPI
 
 // Swap any type

@@ -90,8 +90,8 @@ namespace meow
         virtual operator bool() const { return _file != nullptr; }
 
     private:
-        FILE *_file;
         String _name;
+        FILE *_file;
         size_t _size;
     };
 
@@ -396,23 +396,6 @@ namespace meow
             INDX_MODE_ALL
         };
 
-        const uint32_t TASK_SIZE{(1024 / 2) * 30};
-        //
-        String _rm_path;
-        //
-        String _copy_from_path;
-        String _copy_to_path;
-        uint8_t _copy_progress{0};
-        //
-        bool _is_working{false};
-        bool _is_canceled{false};
-        TaskHandle_t _task_handler{nullptr};
-        //
-        TaskDoneHandler _doneHandler{nullptr};
-        void *_doneArg{nullptr};
-        //
-        bool _last_task_result = true;
-        //
         uint8_t getEntryType(const char *path, dirent *entry = nullptr);
         //
         void startIndex(std::vector<FileInfo> &out_vec, const char *dir_path, IndexMode mode, const char *file_ext = "");
@@ -426,6 +409,24 @@ namespace meow
         static void copyFileTask(void *params);
         //
         size_t writeOptimal(FILE *file, const void *buffer, size_t len);
+
+    private:
+        TaskDoneHandler _doneHandler{nullptr};
+
+        String _rm_path;
+        String _copy_from_path;
+        String _copy_to_path;
+
+        TaskHandle_t _task_handler{nullptr};
+        void *_doneArg{nullptr};
+
+        const uint32_t TASK_SIZE{(1024 / 2) * 30};
+
+        uint8_t _copy_progress{0};
+
+        bool _is_working{false};
+        bool _is_canceled{false};
+        bool _last_task_result = true;
     };
 
     /**

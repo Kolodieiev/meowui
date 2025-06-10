@@ -72,7 +72,7 @@ namespace meow
         if (!_is_inited)
             return;
 
-        uint8_t *buff = (uint8_t *)calloc(128, sizeof(uint8_t));
+        uint8_t *buff = static_cast<uint8_t *>(calloc(128, sizeof(uint8_t)));
         size_t bytes_loaded = 0;
         i2s_channel_preload_data(_i2s_rx_handle, buff, sizeof(buff), &bytes_loaded);
         free(buff);

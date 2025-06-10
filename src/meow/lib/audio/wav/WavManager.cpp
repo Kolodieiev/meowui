@@ -3,9 +3,6 @@
 
 namespace meow
 {
-    uint64_t WavManager::_track_id;
-    std::unordered_map<uint16_t, WavTrack *> WavManager::_mix;
-
     WavManager::~WavManager()
     {
         if (_task_handle)
@@ -16,9 +13,6 @@ namespace meow
 
         for (auto mix_it = _mix.begin(), last_it = _mix.end(); mix_it != last_it; ++mix_it)
             delete mix_it->second;
-
-        _mix.clear();
-        _track_id = 0;
     }
 
     uint16_t WavManager::addToMix(WavTrack *sound)
@@ -49,7 +43,7 @@ namespace meow
 
         _is_playing = true;
 
-        xTaskCreatePinnedToCore(mixTask, "mixTask", (1024 / 2) * 10, &_params, 10, &_task_handle, 0);
+        xTaskCreatePinnedToCore(mixTask, "mixTask", (1024 / 2) * 10, this, 10, &_task_handle, 0);
     }
 
     void WavManager::pauseResume()
@@ -68,30 +62,30 @@ namespace meow
     {
         int16_t _samples_buf[256];
 
-        TaskParams *task_params = (TaskParams *)params;
+        WavManager *self = static_cast<WavManager *>(params);
 
         int16_t sample;
         uint32_t cycles_counter = 0;
 
-        while (task_params->cmd != TaskParams::CMD_STOP)
+        while (self->_params.cmd != TaskParams::CMD_STOP)
         {
-            if (task_params->cmd != TaskParams::CMD_PAUSE)
+            if (self->_params.cmd != TaskParams::CMD_PAUSE)
             {
                 for (uint32_t i{0}; i < 256u; i += 2u)
                 {
                     sample = 0;
 
-                    for (auto it = _mix.begin(), last_it = _mix.end(); it != last_it; ++it)
+                    for (auto it = self->_mix.begin(), last_it = self->_mix.end(); it != last_it;)
                     {
                         if (it->second->isPlaying())
                         {
-                            // TODO clipping
                             sample += it->second->getNextSample();
+                            ++it;
                         }
                         else
                         {
                             delete it->second;
-                            _mix.erase(it);
+                            it = self->_mix.erase(it);
                         }
                     }
 

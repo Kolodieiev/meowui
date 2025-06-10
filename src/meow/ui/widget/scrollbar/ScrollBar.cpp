@@ -10,44 +10,44 @@ namespace meow
     {
         try
         {
-            ScrollBar *clone = new ScrollBar(id);
-            clone->_has_border = _has_border;
-            clone->_x_pos = _x_pos;
-            clone->_y_pos = _y_pos;
-            clone->_width = _width;
-            clone->_height = _height;
-            clone->_back_color = _back_color;
-            clone->_border_color = _border_color;
-            clone->_corner_radius = _corner_radius;
-            clone->_is_transparent = _is_transparent;
-            clone->_visibility = _visibility;
-            clone->_has_focus = _has_focus;
-            clone->_old_border_state = _old_border_state;
-            clone->_need_clear_border = _need_clear_border;
-            clone->_need_change_border = _need_change_border;
-            clone->_need_change_back = _need_change_back;
-            clone->_focus_border_color = _focus_border_color;
-            clone->_old_border_color = _old_border_color;
-            clone->_focus_back_color = _focus_back_color;
-            clone->_old_back_color = _old_back_color;
-            clone->_parent = _parent;
+            ScrollBar *cln = new ScrollBar(id);
+            cln->_has_border = _has_border;
+            cln->_x_pos = _x_pos;
+            cln->_y_pos = _y_pos;
+            cln->_width = _width;
+            cln->_height = _height;
+            cln->_back_color = _back_color;
+            cln->_border_color = _border_color;
+            cln->_corner_radius = _corner_radius;
+            cln->_is_transparent = _is_transparent;
+            cln->_visibility = _visibility;
+            cln->_has_focus = _has_focus;
+            cln->_old_border_state = _old_border_state;
+            cln->_need_clear_border = _need_clear_border;
+            cln->_need_change_border = _need_change_border;
+            cln->_need_change_back = _need_change_back;
+            cln->_focus_border_color = _focus_border_color;
+            cln->_old_border_color = _old_border_color;
+            cln->_focus_back_color = _focus_back_color;
+            cln->_old_back_color = _old_back_color;
+            cln->_parent = _parent;
 
-            clone->_max_value = _max_value;
-            clone->_cur_value = _cur_value;
-            clone->_slider_color = _slider_color;
-            clone->_orientation = _orientation;
-            clone->_slider_last_x_pos = _slider_last_x_pos;
-            clone->_slider_last_y_pos = _slider_last_y_pos;
-            clone->_slider_width = _slider_width;
-            clone->_slider_height = _slider_height;
-            clone->_slider_step_size = _slider_step_size;
-            clone->_smart_scroll_enabled = _smart_scroll_enabled;
-            clone->_smart_value = _smart_value;
-            clone->_steps_to_scroll = _steps_to_scroll;
-            clone->_steps_counter = _steps_counter;
-            clone->_scroll_direction = _scroll_direction;
+            cln->_max_value = _max_value;
+            cln->_cur_value = _cur_value;
+            cln->_slider_color = _slider_color;
+            cln->_orientation = _orientation;
+            cln->_slider_last_x_pos = _slider_last_x_pos;
+            cln->_slider_last_y_pos = _slider_last_y_pos;
+            cln->_slider_width = _slider_width;
+            cln->_slider_height = _slider_height;
+            cln->_slider_step_size = _slider_step_size;
+            cln->_smart_scroll_enabled = _smart_scroll_enabled;
+            cln->_smart_value = _smart_value;
+            cln->_steps_to_scroll = _steps_to_scroll;
+            cln->_steps_counter = _steps_counter;
+            cln->_scroll_direction = _scroll_direction;
 
-            return clone;
+            return cln;
         }
         catch (const std::bad_alloc &e)
         {
@@ -181,30 +181,34 @@ namespace meow
     {
         if (_cur_value < _max_value - 1)
         {
-            _cur_value++;
+            _is_changed = true;
+            ++_cur_value;
 
-            if (!_smart_scroll_enabled)
-                _is_changed = true;
-            else if (_scroll_direction == 0)
+            if (_smart_scroll_enabled)
             {
-                if (_steps_counter < _steps_to_scroll - 1)
-                    _steps_counter++;
+                if (_scroll_direction == 0)
+                {
+                    if (_steps_counter < _steps_to_scroll - 1)
+                    {
+                        ++_steps_counter;
+                    }
+                    else
+                    {
+                        _steps_counter = 0;
+                        ++_smart_value;
+                    }
+                }
+                else if (_steps_counter > 0)
+                {
+                    --_steps_counter;
+                }
                 else
                 {
-                    _is_changed = true;
-                    _steps_counter = 0;
-                    _smart_value++;
+                    _scroll_direction = 0;
+                    _steps_counter = 1;
                 }
             }
-            else if (_steps_counter > 0)
-                _steps_counter--;
-            else
-            {
-                _scroll_direction = 0;
-                _steps_counter = 1;
-            }
 
-            _is_changed = true;
             return true;
         }
         return false;
@@ -214,30 +218,34 @@ namespace meow
     {
         if (_cur_value > 0)
         {
-            _cur_value--;
+            _is_changed = true;
+            --_cur_value;
 
-            if (!_smart_scroll_enabled)
-                _is_changed = true;
-            else if (_scroll_direction == 1)
+            if (_smart_scroll_enabled)
             {
-                if (_steps_counter < _steps_to_scroll - 1)
-                    _steps_counter++;
+                if (_scroll_direction == 1)
+                {
+                    if (_steps_counter < _steps_to_scroll - 1)
+                    {
+                        ++_steps_counter;
+                    }
+                    else
+                    {
+                        _steps_counter = 0;
+                        --_smart_value;
+                    }
+                }
+                else if (_steps_counter > 0)
+                {
+                    --_steps_counter;
+                }
                 else
                 {
-                    _is_changed = true;
-                    _steps_counter = 0;
-                    _smart_value--;
+                    _scroll_direction = 1;
+                    _steps_counter = 1;
                 }
             }
-            else if (_steps_counter > 0)
-                _steps_counter--;
-            else
-            {
-                _scroll_direction = 1;
-                _steps_counter = 1;
-            }
 
-            _is_changed = true;
             return true;
         }
         return false;

@@ -24,7 +24,7 @@ namespace meow
         mbedtls_md5_context ctx;
         mbedtls_md5_init(&ctx);
         mbedtls_md5_starts(&ctx);
-        mbedtls_md5_update(&ctx, (const unsigned char *)mapped_region, running_partition->size);
+        mbedtls_md5_update(&ctx, static_cast<const unsigned char *>(mapped_region), running_partition->size);
         mbedtls_md5_finish(&ctx, out_buff);
         mbedtls_md5_free(&ctx);
 

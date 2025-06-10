@@ -148,7 +148,7 @@ namespace meow
                     path_to_bmp += millis();
                     path_to_bmp += ".bmp";
 
-                    bool res = util.saveBmp(header, (uint16_t *)_rend_buf_ptr->getPointer(), path_to_bmp.c_str());
+                    bool res = util.saveBmp(header, static_cast<uint16_t *>(_rend_buf_ptr->getPointer()), path_to_bmp.c_str());
 
                     if (res)
                         log_i("Скріншот успішно збережено");

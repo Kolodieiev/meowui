@@ -5,10 +5,9 @@
 namespace meow
 {
     IGameScene::IGameScene(DataStream &stored_objs) : _terrain{TerrainManager()},
-                                                      _stored_objs{stored_objs}
+                                                      _stored_objs{stored_objs},
+                                                      _obj_mutex{xSemaphoreCreateMutex()}
     {
-        _obj_mutex = xSemaphoreCreateMutex();
-
         if (!_obj_mutex)
         {
             log_e("Не вдалося створити _obj_mutex");
@@ -48,7 +47,7 @@ namespace meow
         std::list<IGameObject *> view_obj;
         IGameObject *obj;
 
-        for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
+        for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it;)
         {
             obj = it->second;
 
@@ -89,11 +88,13 @@ namespace meow
                     }
                     view_obj.push_back(obj);
                 }
+
+                ++it;
             }
             else
             {
                 delete it->second;
-                _game_objs.erase(it);
+                it = _game_objs.erase(it);
             }
         }
 

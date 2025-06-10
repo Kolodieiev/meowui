@@ -173,8 +173,6 @@ void ReaderContext::fillBooks(uint16_t pos)
     std::vector<MenuItem *> items;
     makeBooksItems(items, pos, _books_list_menu->getItemsNumOnScreen());
 
-    uint16_t books_num = _books.size();
-
     uint16_t size = items.size();
 
     for (size_t i = 0; i < size; ++i)
@@ -632,7 +630,7 @@ void ReaderContext::loadPrevTxt()
 bool ReaderContext::isCyrillic(char ch)
 {
     unsigned char uc = static_cast<unsigned char>(ch);
-    return (uc >= 0xC0 && uc <= 0xFF) || (uc >= 0x80 && uc <= 0xBF);
+    return uc >= 0x80;
 }
 
 bool ReaderContext::containCyrillic(const char *dir_name, const char *book_name)
@@ -657,9 +655,9 @@ bool ReaderContext::readText(String &out_str, const char *dir_name, const char *
 {
     char *buffer;
     if (psramInit())
-        buffer = (char *)ps_malloc(len + 1);
+        buffer = static_cast<char *>(ps_malloc(len + 1));
     else
-        buffer = (char *)malloc(len + 1);
+        buffer = static_cast<char *>(malloc(len + 1));
 
     if (!buffer)
     {
@@ -693,7 +691,7 @@ bool ReaderContext::readText(String &out_str, const char *dir_name, const char *
 
         if (correct_char_pos > 0)
         {
-            char *temp_buff = (char *)malloc(correct_char_pos + 2);
+            char *temp_buff = static_cast<char *>(malloc(correct_char_pos + 2));
             if (temp_buff)
             {
                 memcpy(temp_buff, buffer, correct_char_pos + 1);

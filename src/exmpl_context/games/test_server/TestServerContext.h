@@ -132,8 +132,8 @@ namespace test_server
         void updateConnectState(wl_status_t conn_status);
 
         // Підключення до сервера
-        void handleServerData(UdpPacket *packet);
-        static void onServerData(UdpPacket *packet, void *arg);
+        void handleServerData(const UdpPacket *packet);
+        static void onServerData(const UdpPacket *packet, void *arg);
         void handleServerConn();
         void handleServerDisconn();
         static void serverConnHandler(void *arg);
@@ -149,7 +149,7 @@ namespace test_server
         // Головне вікно лоббі. Очікування гравців
         FixedMenu *_clients_list_menu;
         void showServerLobby();
-        void updateClientsList(ClientWrapper *disconnected_client = nullptr);
+        void updateClientsList(const ClientWrapper *disconnected_client = nullptr);
         void handleServerLobbyBtns();
         void openServerLobby();
         // Показати контекстне меню
@@ -159,17 +159,17 @@ namespace test_server
         void handleLobbyContMenuBtns();
 
         // Обробка запиту приєднання гравця
-        ClientWrapper *_conn_client_wrap{nullptr};
+        const ClientWrapper *_conn_client_wrap{nullptr};
         ConfirmResultHandler _confirm_handler{nullptr};
         //
         // Приєднання клієнта
-        static void clientConfirmHandler(ClientWrapper *cl_wrap, ConfirmResultHandler result_handler, void *arg);
-        void handleClientConn(ClientWrapper *cl_wrap, ConfirmResultHandler result_handler);
+        static void clientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler, void *arg);
+        void handleClientConn(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler);
         void showClientConn();
         void handleClientConnBtns();
         // Обробка від'єднання клієнта
-        void handleClientDisconn(ClientWrapper *cl_wrap);
-        static void clientDisconnHandler(ClientWrapper *cl_wrap, void *arg);
+        void handleClientDisconn(const ClientWrapper *cl_wrap);
+        static void clientDisconnHandler(const ClientWrapper *cl_wrap, void *arg);
         // ---------------------------- Pref
         FixedMenu *_pref_menu;
         void showPrefMain();

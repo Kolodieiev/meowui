@@ -82,7 +82,7 @@ Mp3Context::Mp3Context()
 
 void Mp3Context::showPlaying()
 {
-    const uint8_t DISPLAY_PADDING{10};
+    uint8_t paddings{10};
 
     WidgetCreator creator;
     IWidgetContainer *layout = creator.getEmptyLayout();
@@ -109,7 +109,7 @@ void Mp3Context::showPlaying()
     _progress->setWidth(D_WIDTH - 20);
     _progress->setHeight(10);
     _progress->setProgress(1);
-    _progress->setPos(DISPLAY_PADDING, D_HEIGHT - TFT_CUTOUT - _progress->getHeight());
+    _progress->setPos(paddings, D_HEIGHT - TFT_CUTOUT - _progress->getHeight());
 
     _cur_track_time_lbl = _track_name_lbl->clone(ID_CUR_TRACK_TIME);
     layout->addWidget(_cur_track_time_lbl);
@@ -117,14 +117,14 @@ void Mp3Context::showPlaying()
     _cur_track_time_lbl->setAlign(IWidget::ALIGN_END);
     _cur_track_time_lbl->initWidthToFit();
     _cur_track_time_lbl->setBackColor(COLOR_MAIN_BACK);
-    _cur_track_time_lbl->setPos(DISPLAY_PADDING, _progress->getYPos() - 25);
+    _cur_track_time_lbl->setPos(paddings, _progress->getYPos() - 25);
     _cur_track_time_lbl->setTicker(false);
 
     _gen_track_time_lbl = _cur_track_time_lbl->clone(ID_GEN_TRACK_TIME);
     layout->addWidget(_gen_track_time_lbl);
     _gen_track_time_lbl->setText(STR_ZERO_TRACK_TIME);
     _gen_track_time_lbl->initWidthToFit();
-    _gen_track_time_lbl->setPos(D_WIDTH - _cur_track_time_lbl->getWidth() - DISPLAY_PADDING, _cur_track_time_lbl->getYPos());
+    _gen_track_time_lbl->setPos(D_WIDTH - _cur_track_time_lbl->getWidth() - paddings, _cur_track_time_lbl->getYPos());
 
     //
 
@@ -612,8 +612,6 @@ bool Mp3Context::updateTrackDuration()
         return false;
 
     uint32_t minutes = floor((float)duration / 60);
-    uint32_t sec = duration - minutes * 60;
-
     String track_time{""};
 
     if (minutes < 100)
@@ -626,8 +624,7 @@ bool Mp3Context::updateTrackDuration()
 
     track_time += ":";
 
-    sec = duration - minutes * 60;
-
+    uint32_t sec = duration - minutes * 60;
     if (sec < 10)
         track_time += "0";
 
@@ -646,8 +643,6 @@ void Mp3Context::updateTrackTime()
     _track_time = _audio.getAudioCurrentTime();
 
     uint32_t minutes = floor((float)_track_time / 60);
-    uint32_t sec = _track_time - minutes * 60;
-
     String track_time_str;
 
     if (minutes < 100)
@@ -660,7 +655,7 @@ void Mp3Context::updateTrackTime()
 
     track_time_str += ":";
 
-    sec = _track_time - minutes * 60;
+    uint32_t sec = _track_time - minutes * 60;
 
     if (sec < 10)
         track_time_str += "0";

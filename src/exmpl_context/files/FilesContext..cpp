@@ -427,7 +427,7 @@ void FilesContext::saveDialogResult()
         _dialog_success_res = _fs.createDir(dir_path.c_str());
         showResultToast(_dialog_success_res);
     }
-    else if (_mode = MODE_RENAME_DIALOG)
+    else if (_mode == MODE_RENAME_DIALOG)
     {
         String old_name;
         String new_name;
@@ -1020,13 +1020,9 @@ void FilesContext::executeScript()
     char *text_buf;
 
     if (psramInit())
-    {
-        text_buf = (char *)ps_malloc(f_size + 1);
-    }
+        text_buf = static_cast<char *>(ps_malloc(f_size + 1));
     else
-    {
-        text_buf = (char *)malloc(f_size + 1);
-    }
+        text_buf = static_cast<char *>(malloc(f_size + 1));
 
     if (!text_buf)
     {

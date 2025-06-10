@@ -13,7 +13,7 @@ namespace simple_rpg
     class IBaseScene : public IGameScene
     {
     public:
-        IBaseScene(DataStream &stored_objs);
+        explicit IBaseScene(DataStream &stored_objs);
         virtual ~IBaseScene() override;
         virtual void update() override;
 

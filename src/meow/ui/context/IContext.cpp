@@ -50,10 +50,9 @@ namespace meow
         }
     }
 
-    IContext::IContext()
+    IContext::IContext() : _layout_mutex{xSemaphoreCreateMutex()},
+                           _layout{new EmptyLayout(1)}
     {
-        _layout_mutex = xSemaphoreCreateMutex();
-        _layout = new EmptyLayout(1);
         _layout->setBackColor(TFT_YELLOW);
         _layout->setWidth(_display.width());
         _layout->setHeight(_display.height());

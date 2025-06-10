@@ -15,10 +15,6 @@ namespace meow
     class TerrainManager
     {
     public:
-        const uint16_t VIEW_W;      // Ширина view-порта
-        const uint16_t VIEW_H;      // Висота view-порта
-        const uint16_t HALF_VIEW_W; // Використовується для позиціонування об'єктів
-        const uint16_t HALF_VIEW_H; // Використовується для позиціонування об'єктів
         //
         TerrainManager() : VIEW_W{_display.width()},
                            VIEW_H{_display.height()},
@@ -141,20 +137,31 @@ namespace meow
         bool isInView(uint16_t x_pos, uint16_t y_pos, uint16_t sprite_w, uint16_t sprite_h);
 
     private:
-        uint16_t _view_x{0};                              // X верхнього лівого кута view-порта
-        uint16_t _view_y{0};                              // Y верхнього лівого кута view-порта
-        uint16_t _terrain_w{0};                           // Ширина ігрового рівня в пікселях
-        uint16_t _terrain_h{0};                           // Висота ігрового рівня в пікселях
-        Tile ***_terrain{nullptr};                        // Набір плиток ігрового рівня
-        std::unordered_map<uint16_t, Tile *> _tile_descr; // Опис плиток
-        const uint16_t *_back_img{nullptr};               // Фонове зображення
-        uint8_t _tile_side_len{0};                        // Розмір сторони плитки
-        uint16_t _tile_x_num{0};                          // Кількість плиток мапи по горизонталі
-        uint16_t _tile_y_num{0};                          // Кількість плиток мапи по вертикалі
-
         void freeMem();
         void freeTilesDescriptionData();
 
         uint16_t coordToTilePos(uint16_t coord);
+
+    private:
+        std::unordered_map<uint16_t, Tile *> _tile_descr; // Опис плиток
+
+        Tile ***_terrain{nullptr};          // Набір плиток ігрового рівня
+        const uint16_t *_back_img{nullptr}; // Фонове зображення
+
+    public:
+        const uint16_t VIEW_W;      // Ширина view-порта
+        const uint16_t VIEW_H;      // Висота view-порта
+        const uint16_t HALF_VIEW_W; // Використовується для позиціонування об'єктів
+        const uint16_t HALF_VIEW_H; // Використовується для позиціонування об'єктів
+        
+    private:
+        uint16_t _view_x{0};     // X верхнього лівого кута view-порта
+        uint16_t _view_y{0};     // Y верхнього лівого кута view-порта
+        uint16_t _terrain_w{0};  // Ширина ігрового рівня в пікселях
+        uint16_t _terrain_h{0};  // Висота ігрового рівня в пікселях
+        uint16_t _tile_x_num{0}; // Кількість плиток мапи по горизонталі
+        uint16_t _tile_y_num{0}; // Кількість плиток мапи по вертикалі
+
+        uint8_t _tile_side_len{0}; // Розмір сторони плитки
     };
 }

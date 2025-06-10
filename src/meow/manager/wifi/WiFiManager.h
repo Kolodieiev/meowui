@@ -179,23 +179,24 @@ namespace meow
         bool isBusy() const { return _is_busy; }
 
     private:
-        bool _is_busy{false};
-
-        void *_scanDoneHandlerArg{nullptr};
-        WiFiScanDoneHandler _scanDoneHandler{nullptr};
-
-        void *_connDoneHandlerArg{nullptr};
-        WiFiConnectDoneHandler _connDoneHandler{nullptr};
-
         void callConnDoneHandler();
         void callScanDoneHandler();
 
         static void onEvent(WiFiEvent_t event);
+
+    private:
+        WiFiScanDoneHandler _scanDoneHandler{nullptr};
+        WiFiConnectDoneHandler _connDoneHandler{nullptr};
+
+        void *_scanDoneHandlerArg{nullptr};
+        void *_connDoneHandlerArg{nullptr};
+
+        bool _is_busy{false};
     };
 
     /**
      * @brief Глобальний об'єкт-обгортка для роботи з модулем WiFi.
-     * 
+     *
      */
     extern WiFiManager _wifi;
 }

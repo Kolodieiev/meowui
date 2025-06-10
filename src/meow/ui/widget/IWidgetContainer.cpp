@@ -4,10 +4,7 @@
 
 namespace meow
 {
-    IWidgetContainer::IWidgetContainer(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID, type_ID, true)
-    {
-        _widg_mutex = xSemaphoreCreateMutex();
-    }
+    IWidgetContainer::IWidgetContainer(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID, type_ID, true), _widg_mutex{xSemaphoreCreateMutex()} {}
 
     IWidgetContainer::~IWidgetContainer()
     {
@@ -33,12 +30,15 @@ namespace meow
 
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
+        // cppcheck-suppress constVariableReference
         for (const auto &widget : _widgets)
+        {
             if (widget->getID() == search_ID)
             {
                 log_e("Контейнер: %u. WidgetID повинен бути унікальним. Повторюється з: %u.", getID(), widget->getID());
                 esp_restart();
             }
+        }
 
         widget_ptr->setParent(this);
         _widgets.push_back(widget_ptr);
@@ -72,12 +72,15 @@ namespace meow
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
+        // cppcheck-suppress useStlAlgorithm
         for (const auto &widget_ptr : _widgets)
+        {
             if (widget_ptr->getID() == widget_ID)
             {
                 xSemaphoreGive(_widg_mutex);
                 return widget_ptr;
             }
+        }
 
         xSemaphoreGive(_widg_mutex);
         return nullptr;
@@ -95,7 +98,7 @@ namespace meow
         return result;
     }
 
-    IWidget *IWidgetContainer::getWidgetByCoords(uint16_t x, uint16_t y) const
+    IWidget *IWidgetContainer::getWidgetByCoords(uint16_t x, uint16_t y)
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
@@ -105,7 +108,7 @@ namespace meow
             {
                 if (widget->isContainer())
                 {
-                    IWidgetContainer *container = (IWidgetContainer *)widget;
+                    IWidgetContainer *container = static_cast<IWidgetContainer *>(widget);
                     xSemaphoreGive(_widg_mutex);
                     return container->getWidgetByCoords(x, y);
                 }
@@ -118,7 +121,7 @@ namespace meow
         }
 
         xSemaphoreGive(_widg_mutex);
-        return (IWidget *)this;
+        return this;
     }
 
     void IWidgetContainer::delWidgets()

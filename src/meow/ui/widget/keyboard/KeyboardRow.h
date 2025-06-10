@@ -10,7 +10,7 @@ namespace meow
     {
 
     public:
-        KeyboardRow(uint16_t widget_ID);
+        explicit KeyboardRow(uint16_t widget_ID);
         virtual ~KeyboardRow() {}
 
         /**
@@ -123,11 +123,11 @@ namespace meow
         void removeFocus();
 
     private:
-        uint16_t _cur_focus_pos{0};
+        IWidget *getFocusBtn() const;
 
+    private:
+        uint16_t _cur_focus_pos{0};
         uint16_t _btn_height{1};
         uint16_t _btn_width{1};
-
-        IWidget *getFocusBtn() const;
     };
 }

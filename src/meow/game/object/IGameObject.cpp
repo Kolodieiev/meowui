@@ -370,10 +370,9 @@ namespace meow
     uint16_t body_w = _sprite.width - _sprite.rigid_offsets.left - _sprite.rigid_offsets.right - 1;
     uint16_t body_h = _sprite.height - _sprite.rigid_offsets.top - _sprite.rigid_offsets.bottom - 1;
 
-    IGameObject *obj;
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      obj = it->second;
+      IGameObject * obj = it->second;
 
       if (obj != this && obj->hasIntersectWithRect(x_to, y_to, body_w, body_h, true))
         return true;

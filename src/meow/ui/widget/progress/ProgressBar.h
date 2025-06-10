@@ -10,7 +10,7 @@ namespace meow
     {
 
     public:
-        ProgressBar(uint16_t widget_ID);
+        explicit ProgressBar(uint16_t widget_ID);
         virtual ~ProgressBar();
 
         /**
@@ -104,14 +104,15 @@ namespace meow
         using IWidget::isTransparent;
         using IWidget::setTransparency;
 
+    private:
         uint16_t _progress{1};
         uint16_t _max{1};
         uint16_t _progress_color{0xFFFF};
+        uint16_t _prev_progress{1};
         //
         Orientation _orientation{HORIZONTAL};
         // opt
         bool _is_first_draw{true};
-        uint16_t _prev_progress{1};
     };
 
 }

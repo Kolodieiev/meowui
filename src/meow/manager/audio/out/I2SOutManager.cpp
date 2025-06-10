@@ -98,13 +98,11 @@ namespace meow
         {
             int16_t buffer_copy[buff_len];
             int16_t *dst = buffer_copy;
-            buffer;
 
             size_t num_real_mono_samples = buff_len / 2;
-            int16_t mono_sample;
             for (size_t i = 0; i < num_real_mono_samples; ++i)
             {
-                mono_sample = *buffer;
+                int16_t mono_sample = *buffer;
                 *dst++ = mono_sample;
                 *dst++ = mono_sample;
                 buffer += 2;
@@ -157,7 +155,7 @@ namespace meow
         if (!_is_inited)
             return;
 
-        uint8_t *buff = (uint8_t *)calloc(128, sizeof(uint8_t));
+        uint8_t *buff = static_cast<uint8_t *>(calloc(128, sizeof(uint8_t)));
         size_t bytes_loaded = 0;
         i2s_channel_preload_data(_i2s_tx_handle, buff, sizeof(buff), &bytes_loaded);
         free(buff);

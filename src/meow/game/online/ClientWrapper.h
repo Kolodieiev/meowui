@@ -90,17 +90,20 @@ namespace meow
          * @return true - Якщо віддалені ip-адреси співпадають.
          * @return false - Інакше.
          */
-        bool is(ClientWrapper *cl_wrap) const;
+        bool is(const ClientWrapper *cl_wrap) const;
+
+    protected:
+        ClientWrapper() {}
 
     protected:
         IPAddress _remote_ip;
-        uint16_t _port;
 
         String _name;
-        bool _is_confirmed{false};
 
         unsigned long _last_act_time;
 
-        ClientWrapper() {}
+        uint16_t _port;
+
+        bool _is_confirmed{false};
     };
 } // namespace meow

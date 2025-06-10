@@ -7,7 +7,7 @@ namespace meow
     class FixedMenu final : public Menu
     {
     public:
-        FixedMenu(uint16_t widget_ID);
+        explicit FixedMenu(uint16_t widget_ID);
         virtual ~FixedMenu() {}
 
         /**

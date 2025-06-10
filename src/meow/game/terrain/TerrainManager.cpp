@@ -138,7 +138,7 @@ namespace meow
 
         freeMem(); // Звільнити ресурси, якщо було викликано не перший раз
 
-        _terrain = (Tile ***)ps_malloc(sizeof(Tile **) * _tile_y_num);
+        _terrain = static_cast<Tile ***>(ps_malloc(sizeof(Tile **) * _tile_y_num));
 
         if (!_terrain)
         {
@@ -148,7 +148,7 @@ namespace meow
 
         for (uint16_t i{0}; i < _tile_y_num; ++i)
         {
-            _terrain[i] = (Tile **)ps_malloc(sizeof(Tile *) * _tile_x_num);
+            _terrain[i] =  static_cast<Tile **>(ps_malloc(sizeof(Tile *) * _tile_x_num));
 
             if (!_terrain[i])
             {
@@ -171,7 +171,7 @@ namespace meow
 
     bool TerrainManager::canPass(uint16_t x_from, uint16_t y_from, uint16_t x_to, uint16_t y_to, const SpriteDescription &sprite)
     {
-        if (x_to < 0 || y_to < 0 || x_to > _terrain_w || y_to > _terrain_h || !_terrain)
+        if (x_to > _terrain_w || y_to > _terrain_h || !_terrain)
             return false;
 
         if (!sprite.is_rigid)

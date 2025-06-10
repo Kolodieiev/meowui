@@ -31,9 +31,6 @@ namespace meow
             DIRECTION_RIGHT
         };
 
-        uint16_t _x_global{0}; // Координата Х відносно ігрового рівня
-        uint16_t _y_global{0}; // Координата Y відносно ігрового рівня
-
         IGameObject(const IGameObject &rhs) = delete;
         IGameObject &operator=(const IGameObject &rhs) = delete;
 
@@ -104,19 +101,6 @@ namespace meow
         virtual void deserialize(DataStream &ds) = 0;
 
     protected:
-        const uint32_t _obj_ID;                                  // Ідентифікатор об'єкта. Може не використовуватися в локальній грі.
-        uint8_t _type_ID{0};                                     // Ідентифікатор типу об'єкта
-        uint8_t _trigger_ID{0};                                  // Ідентифіктор тригера. Може не використовуватися, якщо об'єкт не тригериться.
-        bool _is_triggered{false};                               // Прапор спрацювання тригера об'єкта.  Може не використовуватися, якщо об'єкт не тригериться.
-        String _name;                                            // Ім'я об'єкта, може не використовуватися
-        bool _is_destroyed{false};                               // Прапор знищення об'єкта іншими об'єктами або сценою
-        uint8_t _layer{0};                                       // Шар сортування об'єкта по осі Z. Чим більше значення, тим вище шар
-        ResManager &_res_manager;                                // Менеджер ресурсів
-        WavManager &_audio;                                      // Менеджер аудіо
-        TerrainManager &_terrain;                                // Поверхня ігрового рівня
-        std::unordered_map<uint32_t, IGameObject *> &_game_objs; // Список ігрових об'єктів на сцені
-        SpriteDescription _sprite{};                             // Об'єкт структури, яка описує спрайт об'єкта та його стани
-
         /**
          * @brief Метод, в якому рекомендується ралізовувати ініціалізацію об'єкта.
          *
@@ -309,11 +293,38 @@ namespace meow
 
     private:
         friend class IGameScene;
+        static uint32_t _global_obj_id_counter; // Глобальний лічильник ідентифікаторів об'єктів.
+
+    private:
+        TFT_eSprite _obj_sprite; 
+
+    protected:
+        ResManager &_res_manager;                                // Менеджер ресурсів 
+        TerrainManager &_terrain;                                // Поверхня ігрового рівня 
+        WavManager &_audio;                                      // Менеджер аудіо 
+        std::unordered_map<uint32_t, IGameObject *> &_game_objs; // Список ігрових об'єктів на сцені
+        SpriteDescription _sprite{};                             // Об'єкт структури, яка описує спрайт об'єкта та його стани
+
+        String _name; // Ім'я об'єкта, може не використовуватися
+
+    private:
         int32_t _x_local{0}; // Координата X відносно дисплея
         int32_t _y_local{0}; // Координата Y відносно дисплея
 
-        static uint32_t _global_obj_id_counter; // Глобальний лічильник ідентифікаторів об'єктів.
-        TFT_eSprite _obj_sprite;
+    protected:
+        const uint32_t _obj_ID; // Ідентифікатор об'єкта. Може не використовуватися в локальній грі.
+
+    public:
+        uint16_t _x_global{0}; // Координата Х відносно ігрового рівня
+        uint16_t _y_global{0}; // Координата Y відносно ігрового рівня
+
+    protected:
+        uint8_t _type_ID{0};    // Ідентифікатор типу об'єкта
+        uint8_t _trigger_ID{0}; // Ідентифіктор тригера. Може не використовуватися, якщо об'єкт не тригериться.
+        uint8_t _layer{0};      // Шар сортування об'єкта по осі Z. Чим більше значення, тим вище шар
+
+        bool _is_triggered{false}; // Прапор спрацювання тригера об'єкта.  Може не використовуватися, якщо об'єкт не тригериться.
+        bool _is_destroyed{false}; // Прапор знищення об'єкта іншими об'єктами або сценою
     };
 
 }

@@ -9,7 +9,7 @@ namespace simple_rpg
     class CaveScene : public IBaseScene
     {
     public:
-        CaveScene(DataStream &stored_objs);
+        explicit CaveScene(DataStream &stored_objs);
         virtual ~CaveScene();
 
     protected:

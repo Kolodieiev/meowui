@@ -11,7 +11,7 @@ namespace meow
     class ToggleItem final : public MenuItem
     {
     public:
-        ToggleItem(uint16_t widget_ID);
+        explicit ToggleItem(uint16_t widget_ID);
         virtual ~ToggleItem();
 
         /**
@@ -77,6 +77,7 @@ namespace meow
     private:
         using IWidget::setVisibility;
 
+    private:
         ToggleSwitch *_toggle{nullptr};
     };
 }

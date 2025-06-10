@@ -15,26 +15,26 @@ namespace meow
      * @brief Тип функції-обробника результату, яку буде надано сервером разом із запитом на авторизацію нового клієнта.
      *
      */
-    typedef std::function<void(ClientWrapper *client_wrap, bool result, GameServer *server_ptr)> ConfirmResultHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, bool result, GameServer *server_ptr)> ConfirmResultHandler;
 
     /**
      * @brief Тип обробника, який може бути викликано сервером у разі отримання нового запиту на авторизацію від клієнта.
      *
      */
-    typedef std::function<void(ClientWrapper *client_wrap, ConfirmResultHandler result_handler, void *arg)> ClientConfirmHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, ConfirmResultHandler result_handler, void *arg)> ClientConfirmHandler;
 
     /**
      * @brief Тип обробника, який може бути викликано сервером у разі втрати з'єднання з одним із клієнтів.
      *
      */
-    typedef std::function<void(ClientWrapper *client_wrap, void *arg)> ClientDisconnHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, void *arg)> ClientDisconnHandler;
 
     /**
      * @brief Тип обробника, який може бути викликано сервером у разі отримання пакету даних від одного із клієнтів.
      * Не потрібно видаляти ClientWrapper* та UdpPacket*, ними керує сервер самостійно.
      *
      */
-    typedef std::function<void(ClientWrapper *client_wrap, UdpPacket *packet, void *arg)> ClientDataHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, const UdpPacket *packet, void *arg)> ClientDataHandler;
 
     class GameServer
     {
@@ -142,7 +142,7 @@ namespace meow
          * @param cl_wrap Вказівник на обгортку клієнта.
          * @param packet Пакет, що буде надіслано клієнту.
          */
-        void sendPacket(const ClientWrapper *cl_wrap, UdpPacket &packet);
+        void sendPacket(const ClientWrapper *cl_wrap, const UdpPacket &packet);
 
         /**
          * @brief Надсилає пакет на віддалену ip-адресу.
@@ -150,7 +150,7 @@ namespace meow
          * @param remote_ip Віддалена ip-адреса клієнта.
          * @param packet Пакет, що буде надіслано клієнту.
          */
-        void sendPacket(IPAddress remote_ip, UdpPacket &packet);
+        void sendPacket(const IPAddress remote_ip, const UdpPacket &packet);
 
         /**
          * @brief Формує та надсилає пакет на віддалену ip-адресу.
@@ -209,39 +209,8 @@ namespace meow
         const char *getName() const { return _server_name.c_str(); }
 
     protected:
-        const uint16_t SERVER_PORT = 777;
-        const uint16_t PACKET_QUEUE_SIZE = 30;
-
-        bool _is_freed{true};
-
-        uint8_t _max_connection;
-        uint8_t _cur_clients_size{0};
-
-        TaskHandle_t _ping_task_handler{nullptr};
-        TaskHandle_t _packet_task_handler{nullptr};
-        static QueueHandle_t _packet_queue;
-        SemaphoreHandle_t _client_mutex{nullptr};
-        SemaphoreHandle_t _udp_mutex{nullptr};
-
-        String _server_name;
-        String _server_id;
-        String _server_ip;
-        bool _is_open{false};
-
-        AsyncUDP _server;
-        std::unordered_map<uint32_t, ClientWrapper *> _clients;
-        //
-        ClientConfirmHandler _client_confirm_handler{nullptr};
-        void *_client_confirm_arg{nullptr};
-        ClientDisconnHandler _client_disconn_handler{nullptr};
-        void *_client_disconn_arg{nullptr};
-        ClientDataHandler _client_data_handler{nullptr};
-        void *_client_data_arg{nullptr};
-
-        bool _is_busy{false};
-        //
-        ClientWrapper *findClient(IPAddress remote_ip) const;
-        ClientWrapper *findClient(ClientWrapper *cl_wrap) const;
+        ClientWrapper *findClient(const IPAddress remote_ip) const;
+        ClientWrapper *findClient(const ClientWrapper *cl_wrap) const;
         ClientWrapper *findClient(const char *name) const;
         //
         void handlePacket(UdpPacket *packet);
@@ -249,21 +218,55 @@ namespace meow
         //
         static void onPacket(void *arg, AsyncUDPPacket &packet);
         //
-        void handleHandshake(UdpPacket *packet);
-        void handleName(ClientWrapper *cl_wrap, UdpPacket *packet);
+        void handleHandshake(const UdpPacket *packet);
+        void handleName(ClientWrapper *cl_wrap, const UdpPacket *packet);
         void handleData(ClientWrapper *cl_wrap, UdpPacket *packet);
         //
-        void sendNameRespMsg(ClientWrapper *cl_wrap, bool result);
-        void sendBusyMsg(ClientWrapper *cl_wrap);
+        void sendNameRespMsg(const ClientWrapper *cl_wrap, bool result);
+        void sendBusyMsg(const ClientWrapper *cl_wrap);
         //
-        void callDisconnHandler(ClientWrapper *cl_wrap);
-        void callClientConfirmHandler(ClientWrapper *cl_wrap, ConfirmResultHandler result_handler);
+        void callDisconnHandler(const ClientWrapper *cl_wrap);
+        void callClientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler);
         //
         void handlePingClient();
         static void pingClientTask(void *arg);
         //
-        void handleNameConfirm(ClientWrapper *cl_wrap, bool result);
-        static void onConfirmationResult(ClientWrapper *cl_wrap, bool result, GameServer *server_ptr);
+        void handleNameConfirm(const ClientWrapper *cl_wrap, bool result);
+        static void onConfirmationResult(const ClientWrapper *cl_wrap, bool result, GameServer *server_ptr);
         //
+    protected:
+        AsyncUDP _server;
+
+        std::unordered_map<uint32_t, ClientWrapper *> _clients;
+
+        ClientConfirmHandler _client_confirm_handler{nullptr};
+        ClientDisconnHandler _client_disconn_handler{nullptr};
+        ClientDataHandler _client_data_handler{nullptr};
+
+        String _server_name;
+        String _server_id;
+        String _server_ip;
+
+        TaskHandle_t _ping_task_handler{nullptr};
+        TaskHandle_t _packet_task_handler{nullptr};
+
+        SemaphoreHandle_t _client_mutex{nullptr};
+        SemaphoreHandle_t _udp_mutex{nullptr};
+
+        QueueHandle_t _packet_queue{nullptr};
+
+        void *_client_confirm_arg{nullptr};
+        void *_client_disconn_arg{nullptr};
+        void *_client_data_arg{nullptr};
+
+        const uint16_t SERVER_PORT = 777;
+        const uint16_t PACKET_QUEUE_SIZE = 30;
+
+        uint8_t _max_connection{1};
+        uint8_t _cur_clients_size{0};
+
+        bool _is_freed{true};
+        bool _is_open{false};
+        bool _is_busy{false};
     };
 }

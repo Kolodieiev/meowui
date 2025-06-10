@@ -113,7 +113,7 @@ namespace meow
         std::unordered_map<BtnID, Button *> _buttons = BUTTONS;
 
 #ifdef TOUCHSCREEN_SUPPORT
-        ITouchscreen *_touchscreen;
+        ITouchscreen *_touchscreen{nullptr};
 #endif
     };
 

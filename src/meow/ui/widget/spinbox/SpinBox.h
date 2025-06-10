@@ -14,7 +14,7 @@ namespace meow
             TYPE_FLOAT
         };
 
-        SpinBox(uint16_t widget_id);
+        explicit SpinBox(uint16_t widget_id);
         virtual ~SpinBox() {}
 
         /**
@@ -115,12 +115,13 @@ namespace meow
         using Label::setTickerInFocus;
         using Label::updateWidthToFit;
 
+        void setSpinValToDraw();
+
+    private:
         float _min = 0.0f;
         float _max = 0.0f;
         float _value = 0.0f;
 
         SpinType _spin_type = TYPE_INT;
-
-        void setSpinValToDraw();
     };
 }

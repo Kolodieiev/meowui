@@ -68,12 +68,16 @@ namespace meow
         void clearWavRes();
 
     private:
-        uint16_t _img_res_id_i{1};
-        uint16_t _audio_res_id_i{1};
+    
+    private:
         std::unordered_map<uint16_t, AudioData> _wav_res;
         std::unordered_map<uint16_t, ImgData> _bmp_res;
+
         AudioData _empty_audio;
         ImgData _empty_img;
+
+        uint16_t _img_res_id_i{1};
+        uint16_t _audio_res_id_i{1};
     };
 
     /**

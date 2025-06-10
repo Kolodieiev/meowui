@@ -251,27 +251,18 @@ namespace meow
             uint8_t crypt_key_l{0};
         };
 
-        // ----------------------------------------------------------------
+        bool isBusy();
 
+        void setup();
+        bool readRegisters();
+        bool writeRegisters();
+        bool waitResponce(size_t resp_size);
+        void waitBusy();
+
+    private:
         const uint32_t CONFIG_BAUD_RATE = 9600;
         const uint32_t NORMAL_BAUD_RATE = 115200;
 
-        // ----------------------------------------------------------------
-
-        TransmitPower _transmit_power{POWER_MAX};
-        uint8_t _channel{23};
-        bool _is_inited{false};
-        AirDataRate _air_data_rate = AIR_DATA_RATE_2_4K;
-        PacketLen _packet_len = PACK_LEN_200B;
-        uint8_t _real_packet_len = 200;
-
-        // ----------------------------------------------------------------
-
-        LRE220T_Mode _mode;
-
-        // ----------------------------------------------------------------
-
-        uint8_t _shadow_registers[8];
         REG_0 *_reg_0 = (REG_0 *)&_shadow_registers[0];
         REG_1 *_reg_1 = (REG_1 *)&_shadow_registers[1];
         REG_2 *_reg_2 = (REG_2 *)&_shadow_registers[2];
@@ -281,14 +272,15 @@ namespace meow
         REG_6 *_reg_6 = (REG_6 *)&_shadow_registers[6];
         REG_7 *_reg_7 = (REG_7 *)&_shadow_registers[7];
 
-        // ----------------------------------------------------------------
+        TransmitPower _transmit_power{POWER_MAX};
+        AirDataRate _air_data_rate = AIR_DATA_RATE_2_4K;
+        PacketLen _packet_len = PACK_LEN_200B;
+        LRE220T_Mode _mode{MODE_CONFIG};
 
-        bool isBusy();
+        uint8_t _channel{23};
+        uint8_t _real_packet_len = 200;
+        uint8_t _shadow_registers[8]{};
 
-        void setup();
-        bool readRegisters();
-        bool writeRegisters();
-        bool waitResponce(size_t resp_size);
-        void waitBusy();
+        bool _is_inited{false};
     };
 } // namespace meowui

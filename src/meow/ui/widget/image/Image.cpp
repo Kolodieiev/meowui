@@ -25,32 +25,32 @@ namespace meow
     {
         try
         {
-            Image *clone = new Image(id);
-            clone->_has_border = _has_border;
-            clone->_x_pos = _x_pos;
-            clone->_y_pos = _y_pos;
-            clone->_back_color = _back_color;
-            clone->_border_color = _border_color;
-            clone->_corner_radius = _corner_radius;
-            clone->_is_transparent = _is_transparent;
-            clone->_has_transp_color = _has_transp_color;
-            clone->_transparent_color = _transparent_color;
-            clone->_visibility = _visibility;
-            clone->_has_focus = _has_focus;
-            clone->_old_border_state = _old_border_state;
-            clone->_need_clear_border = _need_clear_border;
-            clone->_need_change_border = _need_change_border;
-            clone->_need_change_back = _need_change_back;
-            clone->_focus_border_color = _focus_border_color;
-            clone->_old_border_color = _old_border_color;
-            clone->_focus_back_color = _focus_back_color;
-            clone->_old_back_color = _old_back_color;
-            clone->_parent = _parent;
+            Image *cln = new Image(id);
+            cln->_has_border = _has_border;
+            cln->_x_pos = _x_pos;
+            cln->_y_pos = _y_pos;
+            cln->_back_color = _back_color;
+            cln->_border_color = _border_color;
+            cln->_corner_radius = _corner_radius;
+            cln->_is_transparent = _is_transparent;
+            cln->_has_transp_color = _has_transp_color;
+            cln->_transparent_color = _transparent_color;
+            cln->_visibility = _visibility;
+            cln->_has_focus = _has_focus;
+            cln->_old_border_state = _old_border_state;
+            cln->_need_clear_border = _need_clear_border;
+            cln->_need_change_border = _need_change_border;
+            cln->_need_change_back = _need_change_back;
+            cln->_focus_border_color = _focus_border_color;
+            cln->_old_border_color = _old_border_color;
+            cln->_focus_back_color = _focus_back_color;
+            cln->_old_back_color = _old_back_color;
+            cln->_parent = _parent;
 
-            clone->init(_width, _height);
-            clone->setSrc(_img_ptr);
+            cln->init(_width, _height);
+            cln->setSrc(_img_ptr);
 
-            return clone;
+            return cln;
         }
         catch (const std::bad_alloc &e)
         {
@@ -141,9 +141,9 @@ namespace meow
     {
         try
         {
-            Image *clone = new Image(*this);
-            clone->_id = id;
-            return clone;
+            Image *cln = new Image(*this);
+            cln->_id = id;
+            return cln;
         }
         catch (const std::bad_alloc &e)
         {
