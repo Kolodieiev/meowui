@@ -23,6 +23,7 @@
 
 #define TFT_BACKLIGHT_ON HIGH  // HIGH or LOW are options
 
+#define USE_HSPI_PORT
 
 #define LOAD_FONT2  
 #define LOAD_FONT4 
