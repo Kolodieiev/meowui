@@ -5,25 +5,9 @@
 #include "../TFT_eSPI.h"
 #include "./TFT_eSPI_ESP32.h"
 
-// Select the SPI port to use, ESP32 has 2 options
 #if !defined(TFT_PARALLEL_8_BIT)
-#ifdef CONFIG_IDF_TARGET_ESP32
-#ifdef USE_HSPI_PORT
-SPIClass spi = SPIClass(HSPI);
-#elif defined(USE_FSPI_PORT)
-SPIClass spi = SPIClass(FSPI);
-#else // use default VSPI port
-SPIClass spi = SPIClass(VSPI);
-#endif
-#else
-#ifdef USE_HSPI_PORT
-SPIClass spi = SPIClass(HSPI);
-#elif defined(USE_FSPI_PORT)
-SPIClass spi = SPIClass(FSPI);
-#else // use FSPI port
-SPIClass &spi = SPI;
-#endif
-#endif
+SPIClass spi;
+uint8_t SPI_BUS_NUM{HSPI};
 #endif
 
 #ifdef ESP32_DMA
