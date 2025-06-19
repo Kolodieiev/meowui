@@ -39,6 +39,19 @@ namespace meow
 
         BTN_SAVE = 4, // START
         BTN_EXIT = 0, // SELECT
+
+        // BTN_UP = 0, // Для швидкого тесту на випадок, якщо плата не має кнопок.
+        // BTN_LEFT = 0,
+        // BTN_RIGHT = 0,
+        // BTN_DOWN = 0,
+
+        // BTN_D = 0,
+        // BTN_A = 0,
+        // BTN_C = 0,
+        // BTN_B = 0,
+
+        // BTN_SAVE = 0, // START
+        // BTN_EXIT = 0, // SELECT
     };
 }
 
