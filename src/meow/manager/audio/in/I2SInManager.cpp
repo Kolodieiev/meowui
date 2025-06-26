@@ -1,6 +1,8 @@
 #include "I2SInManager.h"
 #include "meowui_setup/i2s_setup.h"
 
+#define MIN_MICRO_BUFF_LEN 40UL
+
 namespace meow
 {
     bool I2SInManager::_is_inited{false};
@@ -112,6 +114,15 @@ namespace meow
             esp_restart();
         }
 
+        if (buff_len < MIN_MICRO_BUFF_LEN)
+        {
+            log_e("Мінімальний розмір буфера мікрофону повинен бути не менше %zu", MIN_MICRO_BUFF_LEN);
+            esp_restart();
+        }
+
+        if (buff_len & 1)
+            --buff_len;
+
         size_t bytes_to_read = buff_len * sizeof(int32_t);
         int32_t raw_buffer[buff_len];
         size_t bytes_read = 0;
@@ -120,7 +131,7 @@ namespace meow
 
         size_t samples_read = bytes_read / sizeof(int32_t);
 
-        for (size_t i = 0; i < samples_read; ++i)
+        for (size_t i = 0; i < samples_read; i += 2)
             out_buffer[i] = raw_buffer[i] >> 12;
 
         return samples_read;
