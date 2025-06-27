@@ -160,11 +160,11 @@ namespace test_server
 
         // Обробка запиту приєднання гравця
         const ClientWrapper *_conn_client_wrap{nullptr};
-        ConfirmResultHandler _confirm_handler{nullptr};
+        ConfirmResultHandler_t _confirm_handler{nullptr};
         //
         // Приєднання клієнта
-        static void clientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler, void *arg);
-        void handleClientConn(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler);
+        static void clientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler_t result_handler, void *arg);
+        void handleClientConn(const ClientWrapper *cl_wrap, ConfirmResultHandler_t result_handler);
         void showClientConn();
         void handleClientConnBtns();
         // Обробка від'єднання клієнта

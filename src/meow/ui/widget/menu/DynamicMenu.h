@@ -6,8 +6,8 @@
 
 namespace meow
 {
-    typedef std::function<void(std::vector<MenuItem *> &items, uint8_t size, uint16_t cur_id, void *arg)> OnNextItemsLoad;
-    typedef std::function<void(std::vector<MenuItem *> &items, uint8_t size, uint16_t cur_id, void *arg)> OnPrevItemsLoad;
+    typedef std::function<void(std::vector<MenuItem *> &items, uint8_t size, uint16_t cur_id, void *arg)> NextItemsLoadHandler_t;
+    typedef std::function<void(std::vector<MenuItem *> &items, uint8_t size, uint16_t cur_id, void *arg)> PrevItemsLoadHandler_t;
 
     class DynamicMenu final : public Menu
     {
@@ -53,7 +53,7 @@ namespace meow
          * @param handler Обробник.
          * @param arg Аргумент, що буде передано в обробник.
          */
-        void setOnNextItemsLoadHandler(OnNextItemsLoad handler, void *arg)
+        void setOnNextItemsLoadHandler(NextItemsLoadHandler_t handler, void *arg)
         {
             _next_items_load_handler = handler;
             _next_items_load_arg = arg;
@@ -65,15 +65,15 @@ namespace meow
          * @param handler Обробник.
          * @param arg Аргумент, що буде передано в обробник.
          */
-        void setOnPrevItemsLoadHandler(OnPrevItemsLoad handler, void *arg)
+        void setOnPrevItemsLoadHandler(PrevItemsLoadHandler_t handler, void *arg)
         {
             _prev_items_load_handler = handler;
             _prev_items_load_arg = arg;
         }
 
     private:
-        OnNextItemsLoad _next_items_load_handler{nullptr};
-        OnPrevItemsLoad _prev_items_load_handler{nullptr};
+        NextItemsLoadHandler_t _next_items_load_handler{nullptr};
+        PrevItemsLoadHandler_t _prev_items_load_handler{nullptr};
 
         void *_next_items_load_arg{nullptr};
         void *_prev_items_load_arg{nullptr};

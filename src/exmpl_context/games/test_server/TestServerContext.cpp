@@ -923,7 +923,7 @@ namespace test_server
         setLayout(layout);
     }
 
-    void TestServerContext::handleClientConn(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler)
+    void TestServerContext::handleClientConn(const ClientWrapper *cl_wrap, ConfirmResultHandler_t result_handler)
     {
         _conn_client_wrap = cl_wrap;
         _confirm_handler = result_handler;
@@ -931,7 +931,7 @@ namespace test_server
         showClientConn();
     }
 
-    void TestServerContext::clientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler, void *arg)
+    void TestServerContext::clientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler_t result_handler, void *arg)
     {
         TestServerContext *self = static_cast<TestServerContext *>(arg);
         self->handleClientConn(cl_wrap, result_handler);

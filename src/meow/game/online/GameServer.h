@@ -15,26 +15,26 @@ namespace meow
      * @brief Тип функції-обробника результату, яку буде надано сервером разом із запитом на авторизацію нового клієнта.
      *
      */
-    typedef std::function<void(const ClientWrapper *client_wrap, bool result, GameServer *server_ptr)> ConfirmResultHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, bool result, GameServer *server_ptr)> ConfirmResultHandler_t;
 
     /**
      * @brief Тип обробника, який може бути викликано сервером у разі отримання нового запиту на авторизацію від клієнта.
      *
      */
-    typedef std::function<void(const ClientWrapper *client_wrap, ConfirmResultHandler result_handler, void *arg)> ClientConfirmHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, ConfirmResultHandler_t result_handler, void *arg)> ClientConfirmHandler_t;
 
     /**
      * @brief Тип обробника, який може бути викликано сервером у разі втрати з'єднання з одним із клієнтів.
      *
      */
-    typedef std::function<void(const ClientWrapper *client_wrap, void *arg)> ClientDisconnHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, void *arg)> ClientDisconnHandler_t;
 
     /**
      * @brief Тип обробника, який може бути викликано сервером у разі отримання пакету даних від одного із клієнтів.
      * Не потрібно видаляти ClientWrapper* та UdpPacket*, ними керує сервер самостійно.
      *
      */
-    typedef std::function<void(const ClientWrapper *client_wrap, const UdpPacket *packet, void *arg)> ClientDataHandler;
+    typedef std::function<void(const ClientWrapper *client_wrap, const UdpPacket *packet, void *arg)> ClientDataHandler_t;
 
     class GameServer
     {
@@ -168,7 +168,7 @@ namespace meow
          * @param handler Обробник, що буде викликано у разі настання події.
          * @param arg Аргумент, який буде передано обробнику.
          */
-        void onConfirmation(ClientConfirmHandler handler, void *arg);
+        void onConfirmation(ClientConfirmHandler_t handler, void *arg);
 
         /**
          * @brief Встановлює обробник, який буде викликано після втрати з'єднання з будь-яким із авторизованих клієнтів.
@@ -176,7 +176,7 @@ namespace meow
          * @param handler Обробник, що буде викликано у разі настання події.
          * @param arg Аргумент, який буде передано обробнику.
          */
-        void onDisconnect(ClientDisconnHandler handler, void *arg);
+        void onDisconnect(ClientDisconnHandler_t handler, void *arg);
 
         /**
          * @brief Встановлює обробник, який буде викликано після отримання пакету даних від будь-якого із авторизованих клієнтів.
@@ -184,7 +184,7 @@ namespace meow
          * @param handler Обробник, що буде викликано у разі настання події.
          * @param arg Аргумент, який буде передано обробнику.
          */
-        void onData(ClientDataHandler handler, void *arg);
+        void onData(ClientDataHandler_t handler, void *arg);
 
         /**
          * @brief Повертає вказівник на список клієнтів.
@@ -226,7 +226,7 @@ namespace meow
         void sendBusyMsg(const ClientWrapper *cl_wrap);
         //
         void callDisconnHandler(const ClientWrapper *cl_wrap);
-        void callClientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler result_handler);
+        void callClientConfirmHandler(const ClientWrapper *cl_wrap, ConfirmResultHandler_t result_handler);
         //
         void handlePingClient();
         static void pingClientTask(void *arg);
@@ -239,9 +239,9 @@ namespace meow
 
         std::unordered_map<uint32_t, ClientWrapper *> _clients;
 
-        ClientConfirmHandler _client_confirm_handler{nullptr};
-        ClientDisconnHandler _client_disconn_handler{nullptr};
-        ClientDataHandler _client_data_handler{nullptr};
+        ClientConfirmHandler_t _client_confirm_handler{nullptr};
+        ClientDisconnHandler_t _client_disconn_handler{nullptr};
+        ClientDataHandler_t _client_data_handler{nullptr};
 
         String _server_name;
         String _server_id;

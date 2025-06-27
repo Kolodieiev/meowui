@@ -353,19 +353,19 @@ namespace meow
 
 #pragma region set_handler
 
-    void GameClient::onData(const ServerDataHandler data_handler, void *arg)
+    void GameClient::onData(const ServerDataHandler_t data_handler, void *arg)
     {
         _server_data_handler = data_handler;
         _server_data_arg = arg;
     }
 
-    void GameClient::onConnect(const ServerConnectedHandler conn_handler, void *arg)
+    void GameClient::onConnect(const ServerConnectedHandler_t conn_handler, void *arg)
     {
         _server_connected_handler = conn_handler;
         _server_connected_arg = arg;
     }
 
-    void GameClient::onDisconnect(const ServerDisconnHandler disconn_handler, void *arg)
+    void GameClient::onDisconnect(const ServerDisconnHandler_t disconn_handler, void *arg)
     {
         _server_disconn_handler = disconn_handler;
         _server_disconn_arg = arg;
