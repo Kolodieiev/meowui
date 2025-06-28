@@ -29,6 +29,10 @@ namespace meow
 #endif // GT911_DRIVER
 #endif // TOUCHSCREEN_SUPPORT
 
+#ifdef EXT_INPUT
+                _ext_input.init();
+#endif // EXT_INPUT
+
                 _buttons = BUTTONS;
         }
 
@@ -36,17 +40,24 @@ namespace meow
         {
 #ifdef TOUCHSCREEN_SUPPORT
                 _touchscreen->update();
-#endif
+#endif // TOUCHSCREEN_SUPPORT
+
+#ifdef EXT_INPUT
+                _ext_input.update();
 
                 for (auto &&btn : _buttons)
+                        btn.second->_extUpdate(_ext_input.getBtnState(btn.first));
+#else
+                for (auto &&btn : _buttons)
                         btn.second->_update();
+#endif // EXT_INPUT
         }
 
         void Input::reset()
         {
 #ifdef TOUCHSCREEN_SUPPORT
                 _touchscreen->reset();
-#endif
+#endif // TOUCHSCREEN_SUPPORT
 
                 for (auto &&btn : _buttons)
                         btn.second->reset();

@@ -9,16 +9,17 @@ namespace meow
     public:
         /**
          * @brief Створює новий об'єкт віртуального піна.
-         * 
+         *
          * @param btn Номер фізичного піна, до якого цей об'єкт буде прив'язано
-         * @param is_touch Вказує спосіб ініціалізації піна. 
-         * Якщо true - пін буде ініціалізовано як сенсорний датчик. 
+         * @param is_touch Вказує спосіб ініціалізації піна.
+         * Якщо true - пін буде ініціалізовано як сенсорний датчик.
          * Якщо false - пін буде ініціалізовано як тактову кнопку.
          */
         Button(uint8_t btn, bool is_touch);
 
         void lock(unsigned long lock_duration);
         void _update();
+        void _extUpdate(bool is_holded);
         void reset();
 
         uint8_t getID() const { return _btn_id; }
@@ -35,20 +36,21 @@ namespace meow
         void disable();
 
     private:
-        const uint8_t _btn_id;
-        const bool _is_touch;
-        int8_t _pad;
-        //
-        bool _is_locked{false};
         unsigned long _lock_time{0};
         unsigned long _lock_duration{0};
-        //
-        bool _is_touched{false};
         unsigned long _hold_duration{0};
         //
+        const uint8_t _btn_id;
+        int8_t _pad;
+        //
+        const bool _is_touch;
+        bool _is_locked{false};
+        bool _is_touched{false};
         bool _is_holded{false};
         bool _is_pressed{false};
         bool _is_released{false};
         bool _is_enabled;
+
+        void updateSelfState();
     };
 }

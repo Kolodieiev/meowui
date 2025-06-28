@@ -62,6 +62,28 @@ namespace meow
 #endif
         }
 
+        updateSelfState();
+    }
+
+    void Button::_extUpdate(bool is_holded)
+    {
+        if (!_is_enabled)
+            return;
+
+        if (_is_locked)
+        {
+            if (millis() - _lock_time < _lock_duration)
+                return;
+            _is_locked = false;
+        }
+
+        _is_holded = is_holded;
+
+        updateSelfState();
+    }
+
+    void Button::updateSelfState()
+    {
         if (!_is_holded)
         {
             if (_is_touched)

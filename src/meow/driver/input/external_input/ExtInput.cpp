@@ -1,0 +1,37 @@
+#pragma GCC optimize("O3")
+#include "ExtInput.h"
+
+#ifdef EXT_INPUT
+
+namespace meow
+{
+    void ExtInput::init()
+    {
+        _i2c.begin();
+    }
+
+    void ExtInput::update()
+    {
+        if (!_i2c.isInited())
+            return;
+
+        EXT_I2C_CMD cmd = I2C_CMD_BTNS_STATE;
+        _i2c.write(EXT_INPUT_ADDR, &cmd, sizeof(cmd));
+        vTaskDelay(1 / portTICK_PERIOD_MS);
+        _i2c.read(EXT_INPUT_ADDR, _buttons_state, EXT_INPUT_B_NUM);
+    }
+
+    bool ExtInput::getBtnState(uint8_t btn_pos)
+    {
+        uint8_t byte_index = btn_pos / 8;
+
+        if (byte_index != 0 && byte_index - 1 > EXT_INPUT_B_NUM)
+            return false;
+
+        uint8_t bit_mask = 1 << (btn_pos % 8);
+
+        return (_buttons_state[byte_index] & bit_mask) != 0;
+    }
+}
+
+#endif // EXT_INPUT

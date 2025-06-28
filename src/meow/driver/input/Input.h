@@ -2,10 +2,10 @@
 #pragma GCC optimize("O3")
 
 #include <Arduino.h>
-
 #include "meowui_setup/input_setup.h"
 
 #include "Button.h"
+#include "external_input/ExtInput.h"
 #include "ITouchscreen.h"
 #include <unordered_map>
 
@@ -117,6 +117,10 @@ namespace meow
 
     private:
         std::unordered_map<BtnID, Button *> _buttons;
+
+#ifdef EXT_INPUT
+        ExtInput _ext_input;
+#endif
 
 #ifdef TOUCHSCREEN_SUPPORT
         ITouchscreen *_touchscreen{nullptr};
