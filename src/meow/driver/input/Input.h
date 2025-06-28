@@ -17,7 +17,13 @@ namespace meow
         Input();
 
         /**
-         * @brief Оновлює стан вводу. Не потрібно викликати метод самостійно
+         * @brief Ініціалізує драйвер вводу відповідно до налаштувань. Не потрібно викликати метод самостійно.
+         *
+         */
+        void _init();
+
+        /**
+         * @brief Оновлює стан вводу. Не потрібно викликати метод самостійно.
          *
          */
         void _update();
@@ -110,7 +116,7 @@ namespace meow
 #endif
 
     private:
-        std::unordered_map<BtnID, Button *> _buttons = BUTTONS;
+        std::unordered_map<BtnID, Button *> _buttons;
 
 #ifdef TOUCHSCREEN_SUPPORT
         ITouchscreen *_touchscreen{nullptr};

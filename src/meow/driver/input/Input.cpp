@@ -16,7 +16,9 @@ const char STR_UNKNOWN_PIN[] = "Незареєстрована віртуаль�
 
 namespace meow
 {
-        Input::Input()
+        Input::Input() {}
+
+        void Input::_init()
         {
 #ifdef TOUCHSCREEN_SUPPORT
 #ifdef GT911_DRIVER
@@ -25,8 +27,9 @@ namespace meow
                 gt->begin(TOUCH_SDA_PIN, TOUCH_SCL_PIN, TOUCH_INT_PIN, TOUCH_RST_PIN, TOUCH_WIDTH, TOUCH_HEIGHT);
                 _touchscreen = gt;
 #endif // GT911_DRIVER
-
 #endif // TOUCHSCREEN_SUPPORT
+
+                _buttons = BUTTONS;
         }
 
         void Input::_update()

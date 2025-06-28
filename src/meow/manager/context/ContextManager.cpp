@@ -14,6 +14,7 @@ namespace meow
 #ifdef GRAPHICS_ENABLED
         _display.init();
 #endif
+        _input._init();
 
         IContext *context = new START_CONTEXT();
 
