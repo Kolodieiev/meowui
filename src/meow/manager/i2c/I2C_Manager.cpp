@@ -2,7 +2,6 @@
 
 #include "I2C_Manager.h"
 #include <Wire.h>
-#include "meowui_setup/i2c_setup.h"
 
 namespace meow
 {
@@ -47,7 +46,7 @@ namespace meow
 
     bool I2C_Manager::hasConnect(uint8_t addr) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
 
         Wire.beginTransmission(addr);
@@ -62,7 +61,7 @@ namespace meow
 
     bool I2C_Manager::write(uint8_t addr, const void *data_buff, size_t data_size) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
 
         Wire.beginTransmission(addr);
@@ -72,7 +71,7 @@ namespace meow
 
     bool I2C_Manager::writeRegister(uint8_t addr, uint8_t reg, const void *data_buff, size_t data_size) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
 
         Wire.beginTransmission(addr);
@@ -83,21 +82,21 @@ namespace meow
 
     bool I2C_Manager::send(uint8_t value) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
         return Wire.write(value) == 1;
     }
 
     bool I2C_Manager::send(const void *data_buff, size_t data_size) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
         return Wire.write(const_cast<uint8_t *>(static_cast<const uint8_t *>(data_buff)), data_size) == data_size;
     }
 
     bool I2C_Manager::readRegister(uint8_t addr, uint8_t reg, void *out_data_buff, uint8_t data_size) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
 
         Wire.beginTransmission(addr);
@@ -110,7 +109,7 @@ namespace meow
 
     bool I2C_Manager::read(uint8_t addr, void *out_data_buff, uint8_t data_size) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
 
         if (Wire.requestFrom(addr, data_size) != data_size)
@@ -133,7 +132,7 @@ namespace meow
 
     bool I2C_Manager::receive(void *out_data_buff) const
     {
-        if (!checkInit())
+        if (!isInited())
             return false;
 
         unsigned long start_time = millis();
@@ -153,7 +152,7 @@ namespace meow
 
     void I2C_Manager::beginTransmission(uint8_t addr) const
     {
-        if (!checkInit())
+        if (!isInited())
             return;
 
         Wire.beginTransmission(addr);
@@ -164,7 +163,7 @@ namespace meow
         return !Wire.endTransmission();
     }
 
-    bool I2C_Manager::checkInit() const
+    bool I2C_Manager::isInited() const
     {
         if (!_is_inited)
         {

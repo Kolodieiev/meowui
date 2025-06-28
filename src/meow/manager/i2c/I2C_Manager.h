@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include "meowui_setup/i2c_setup.h"
 
 namespace meow
 {
@@ -128,8 +129,13 @@ namespace meow
          */
         bool receive(void *out_data_buff) const;
 
-    private:
-        bool checkInit() const;
+        /**
+         * @brief Повертає стан ініціалізації шини I2C.
+         *
+         * @return true - Якщо шина була ініціалізована.
+         * @return false - Інакше.
+         */
+        bool isInited() const;
 
     private:
         static bool _is_inited;
