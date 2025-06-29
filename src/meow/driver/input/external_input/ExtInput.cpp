@@ -25,7 +25,7 @@ namespace meow
     {
         uint8_t byte_index = btn_pos / 8;
 
-        if (byte_index != 0 && byte_index - 1 > EXT_INPUT_B_NUM)
+        if (byte_index != 0 && byte_index >= EXT_INPUT_B_NUM)
             return false;
 
         uint8_t bit_mask = 1 << (7 - (btn_pos % 8));
