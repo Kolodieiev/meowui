@@ -35,6 +35,19 @@ namespace meow
 {
     enum BtnID : uint8_t
     {
+        // BTN_UP = 0,
+        // BTN_DOWN = 1,
+        // BTN_LEFT = 2,
+        // BTN_RIGHT = 3,
+
+        // BTN_D = 4,
+        // BTN_A = 5,
+        // BTN_C = 6,
+        // BTN_B = 7,
+
+        // BTN_SAVE = 8, // START
+        // BTN_EXIT = 9, // SELECT
+
         BTN_UP = 38,
         BTN_LEFT = 39,
         BTN_RIGHT = 40,
