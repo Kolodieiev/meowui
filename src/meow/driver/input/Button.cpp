@@ -123,6 +123,7 @@ namespace meow
     {
         _is_enabled = true;
 
+#ifndef EXT_INPUT
         if (!_is_touch)
         {
             pinMode(_btn_id, INPUT_PULLUP);
@@ -132,6 +133,7 @@ namespace meow
             touchRead(_btn_id); // init channel
             _pad = digitalPinToTouchChannel(_btn_id);
         }
+#endif
     }
 
     void Button::disable()

@@ -16,9 +16,17 @@ namespace meow
             return;
 
         EXT_I2C_CMD cmd = I2C_CMD_BTNS_STATE;
-        _i2c.write(EXT_INPUT_ADDR, &cmd, sizeof(cmd));
-        vTaskDelay(1 / portTICK_PERIOD_MS);
-        _i2c.read(EXT_INPUT_ADDR, _buttons_state, EXT_INPUT_B_NUM);
+        if (_i2c.write(EXT_INPUT_ADDR, &cmd, sizeof(cmd)))
+        {
+            vTaskDelay(1 / portTICK_PERIOD_MS);
+            if (_i2c.read(EXT_INPUT_ADDR, _buttons_state, EXT_INPUT_B_NUM))
+                return;
+        }
+
+        for (size_t i = 0; i < EXT_INPUT_B_NUM; ++i)
+            _buttons_state[i] = 0;
+
+        log_e("Пристрій вводу не відповідає коректно на I2C команди");
     }
 
     bool ExtInput::getBtnState(uint8_t btn_pos)
