@@ -220,7 +220,7 @@ namespace meow
     {
         _cur_brightness = value;
         ledcAttach(BACKLIGHT_PIN, PWM_FREQ, PWM_RESOLUTION);
-        ledcWrite(PWM_CHANEL, value);
+        ledcWrite(BACKLIGHT_PIN, value);
     }
 #endif
 
