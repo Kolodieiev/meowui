@@ -54,7 +54,7 @@ namespace meow
         bool success = !Wire.endTransmission();
 
         if (!success)
-            log_e("Відсутнє з'єднання з пристроєм: %u", addr);
+            log_e("Відсутнє з'єднання з I2C-пристроєм за адресою: 0x%X", addr);
 
         return success;
     }
