@@ -435,6 +435,7 @@ namespace meow
     void FileManager::rmTask(void *params)
     {
         FileManager *instance = static_cast<FileManager *>(params);
+        instance->_is_working = true;
         instance->rm();
     }
 
@@ -456,7 +457,6 @@ namespace meow
 
         if (result == pdPASS)
         {
-            _is_working = true;
             log_i("rmTask is working now");
             return true;
         }
@@ -606,6 +606,7 @@ namespace meow
     void FileManager::copyFileTask(void *params)
     {
         FileManager *instance = static_cast<FileManager *>(params);
+        instance->_is_working = true;
         instance->copyFile();
     }
 
@@ -636,7 +637,6 @@ namespace meow
 
         if (result == pdPASS)
         {
-            _is_working = true;
             log_i("copyFileTask is working now");
             return true;
         }
