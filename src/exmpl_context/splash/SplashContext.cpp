@@ -20,6 +20,10 @@ SplashContext::SplashContext()
 {
     pinMode(SLEEP_PIN, OUTPUT);
     digitalWrite(SLEEP_PIN, HIGH);
+    pinMode(SD_PIN_CS, OUTPUT);
+    digitalWrite(SD_PIN_CS, HIGH);
+    pinMode(TFT_CS, OUTPUT);
+    digitalWrite(TFT_CS, HIGH);
 
     _start_time = millis();
 
