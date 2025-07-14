@@ -83,6 +83,9 @@ namespace meow
 
         void Input::enableBtn(BtnID btn_id)
         {
+#ifdef EXT_INPUT
+                _ext_input.enableBtn(btn_id);
+#else
                 try
                 {
                         _buttons.at(btn_id)->enable();
@@ -91,10 +94,14 @@ namespace meow
                 {
                         log_e("%s", STR_UNKNOWN_PIN);
                 }
+#endif // EXT_INPUT
         }
 
         void Input::disableBtn(BtnID btn_id)
         {
+#ifdef EXT_INPUT
+                _ext_input.disableBtn(btn_id);
+#else
                 try
                 {
                         _buttons.at(btn_id)->disable();
@@ -103,6 +110,7 @@ namespace meow
                 {
                         log_e("%s", STR_UNKNOWN_PIN);
                 }
+#endif // EXT_INPUT
         }
 
         bool Input::isHolded(BtnID btn_id) const

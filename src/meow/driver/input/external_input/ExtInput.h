@@ -21,10 +21,14 @@ namespace meow
         void init();
         void update();
         bool getBtnState(uint8_t btn_pos);
+        void enableBtn(uint8_t btn_pos);
+        void disableBtn(uint8_t btn_pos);
 
     private:
         I2C_Manager _i2c;
         uint8_t _buttons_state[EXT_INPUT_B_NUM]{0};
+
+        void sendBtnCmd(const void *buff, size_t buff_size);
     };
 }
 

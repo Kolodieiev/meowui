@@ -3,6 +3,8 @@
 
 #ifdef EXT_INPUT
 
+#define RESP_PREP_TIME 1
+
 namespace meow
 {
     void ExtInput::init()
@@ -15,10 +17,10 @@ namespace meow
         if (!_i2c.isInited())
             return;
 
-        EXT_I2C_CMD cmd = I2C_CMD_BTNS_STATE;
+        ExtI2CMD_t cmd = I2C_CMD_BTNS_STATE;
         if (_i2c.write(EXT_INPUT_ADDR, &cmd, sizeof(cmd)))
         {
-            vTaskDelay(1 / portTICK_PERIOD_MS);
+            vTaskDelay(RESP_PREP_TIME / portTICK_PERIOD_MS);
             if (_i2c.read(EXT_INPUT_ADDR, _buttons_state, EXT_INPUT_B_NUM))
                 return;
         }
@@ -39,6 +41,24 @@ namespace meow
         uint8_t bit_mask = 1 << (7 - (btn_pos % 8));
 
         return (_buttons_state[byte_index] & bit_mask) != 0;
+    }
+
+    void ExtInput::enableBtn(uint8_t btn_pos)
+    {
+        uint8_t cmd_buff[2] = {I2C_CMD_ON_BTN, btn_pos};
+        sendBtnCmd(cmd_buff, sizeof(cmd_buff));
+    }
+
+    void ExtInput::disableBtn(uint8_t btn_pos)
+    {
+        uint8_t cmd_buff[2] = {I2C_CMD_OFF_BTN, btn_pos};
+        sendBtnCmd(cmd_buff, sizeof(cmd_buff));
+    }
+
+    void ExtInput::sendBtnCmd(const void *buff, size_t buff_size)
+    {
+        if (!_i2c.write(EXT_INPUT_ADDR, buff, buff_size))
+            log_e("Пристрій вводу не відповідає коректно на I2C команди");
     }
 }
 
