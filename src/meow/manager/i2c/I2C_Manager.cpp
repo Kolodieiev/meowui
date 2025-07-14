@@ -9,26 +9,25 @@ namespace meow
 
     bool I2C_Manager::begin(I2C_MODE mode, uint8_t slave_addr, void (*receive_callback)(int), void (*request_callback)())
     {
+        if (_is_inited)
+            return true;
+
         if (mode == I2C_MODE_MASTER)
         {
-            if (!_is_inited)
-                _is_inited = Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
+            _is_inited = Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
         }
         else
         {
-            if (!_is_inited)
+            if (!receive_callback || !request_callback)
             {
-                if (!receive_callback || !request_callback)
-                {
-                    log_e("Відсутні обробники подій для режиму I2C_MODE_SLAVE");
-                    esp_restart();
-                }
-
-                _is_inited = Wire.begin(slave_addr, PIN_I2C_SDA, PIN_I2C_SCL, 0);
-
-                Wire.onReceive(receive_callback);
-                Wire.onRequest(request_callback);
+                log_e("Відсутні обробники подій для режиму I2C_MODE_SLAVE");
+                esp_restart();
             }
+
+            _is_inited = Wire.begin(slave_addr, PIN_I2C_SDA, PIN_I2C_SCL, 0);
+
+            Wire.onReceive(receive_callback);
+            Wire.onRequest(request_callback);
         }
 
         if (!_is_inited)
