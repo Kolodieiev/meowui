@@ -11,7 +11,7 @@
 
 PrefSelectContext::PrefSelectContext()
 {
-    if (!_settings.isMounted())
+    if (!_sd.isMounted())
     {
         showSDErrTmpl();
         return;

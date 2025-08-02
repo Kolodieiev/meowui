@@ -23,7 +23,7 @@ const char STR_WIFI_SUBDIR[] = "wifi";
 
 WiFiContext::WiFiContext()
 {
-    if (!_settings.isMounted())
+    if (!_sd.isMounted())
     {
         showSDErrTmpl();
         return;

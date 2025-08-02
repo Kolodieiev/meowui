@@ -34,13 +34,10 @@ SplashContext::SplashContext()
     //
     uint16_t y_pos{TFT_CUTOUT};
 
-    SD_Manager &sd = SD_Manager::getInst();
+    SPI_Manager::initBus(SD_SPI_BUS, SD_PIN_SCLK, SD_PIN_MISO, SD_PIN_MOSI);
+    _sd.mount(meow::SPI_Manager::getSpi4Bus(SD_SPI_BUS));
 
-    SPI_Manager spi_mngr;
-    spi_mngr.initBus(SD_SPI_BUS, SD_PIN_SCLK, SD_PIN_MISO, SD_PIN_MOSI);
-
-    sd.setup(SD_PIN_CS, spi_mngr.getSpi4Bus(SD_SPI_BUS), SD_FREQUENCY, SD_MOUNTPOINT, SD_MAX_FILES);
-    if (sd.mount())
+    if (_sd.isMounted())
         addLabel(DISPLAY_PADDING, y_pos, STR_SUCCSESS, TFT_GREEN);
     else
         addLabel(DISPLAY_PADDING, y_pos, STR_FAIL, TFT_RED);

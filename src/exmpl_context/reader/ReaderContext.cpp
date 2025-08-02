@@ -262,7 +262,7 @@ ReaderContext::ReaderContext()
     EmptyLayout *layout = creator.getEmptyLayout();
     setLayout(layout);
 
-    if (!_fs.isMounted())
+    if (!_sd.isMounted())
     {
         showSDErrTmpl();
         return;

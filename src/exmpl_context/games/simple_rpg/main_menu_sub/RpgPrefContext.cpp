@@ -38,8 +38,7 @@ namespace simple_rpg
         EmptyLayout *layout = creator.getEmptyLayout();
         setLayout(layout);
 
-        SettingsManager settings;
-        if (!settings.isMounted()) // Якщо карту пам'яті не примонтовано
+        if (!_sd.isMounted()) // Якщо карту пам'яті не примонтовано
         {
             showSDErrTmpl(); // Виводимо шаблон з повідомлення про помилку
             return;
