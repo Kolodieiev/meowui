@@ -26,7 +26,7 @@ const char STR_SD_CREATE_DIR[] = "mkDir";
 
 int lua_sd_is_mounted(lua_State *L)
 {
-    lua_pushboolean(L, meow::_fs.isMounted());
+    lua_pushboolean(L, meow::_sd.isMounted());
     return 1;
 }
 

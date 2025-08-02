@@ -25,7 +25,7 @@ namespace meow
         if (_server_dir.isEmpty())
             _server_dir = "/";
 
-        if (!_fs.isMounted())
+        if (!_sd.isMounted())
             return false;
 
         if (!_fs.dirExist(_server_dir.c_str()))
