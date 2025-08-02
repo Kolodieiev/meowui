@@ -5,8 +5,6 @@
 
 namespace meow
 {
-    bool I2C_Manager::_is_inited = false;
-
     bool I2C_Manager::begin(I2C_MODE mode, uint8_t slave_addr, void (*receive_callback)(int), void (*request_callback)())
     {
         if (_is_inited)
@@ -172,4 +170,6 @@ namespace meow
 
         return true;
     }
+
+    I2C_Manager _i2c;
 }

@@ -137,7 +137,21 @@ namespace meow
          */
         bool isInited() const;
 
+        I2C_Manager() {}
+
+        I2C_Manager(const I2C_Manager &) = delete;
+        I2C_Manager &operator=(const I2C_Manager &) = delete;
+
+        I2C_Manager(I2C_Manager &&) = delete;
+        I2C_Manager &operator=(I2C_Manager &&) = delete;
+
     private:
-        static bool _is_inited;
+        bool _is_inited = false;
     };
+
+    /**
+     * @brief Глобальний об'єкт-обгортка для роботи з шиною I2C.
+     *
+     */
+    extern I2C_Manager _i2c;
 }
