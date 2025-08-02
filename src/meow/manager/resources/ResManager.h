@@ -67,8 +67,12 @@ namespace meow
          */
         void clearWavRes();
 
-    private:
-    
+        ResManager() {}
+        ResManager(const ResManager &) = delete;
+        ResManager &operator=(const ResManager &) = delete;
+        ResManager(ResManager &&) = delete;
+        ResManager &operator=(ResManager &&) = delete;
+
     private:
         std::unordered_map<uint16_t, AudioData> _wav_res;
         std::unordered_map<uint16_t, ImgData> _bmp_res;

@@ -178,6 +178,12 @@ namespace meow
          */
         bool isBusy() const { return _is_busy; }
 
+        WiFiManager() {}
+        WiFiManager(const WiFiManager &) = delete;
+        WiFiManager &operator=(const WiFiManager &) = delete;
+        WiFiManager(WiFiManager &&) = delete;
+        WiFiManager &operator=(WiFiManager &&) = delete;
+
     private:
         void callConnDoneHandler();
         void callScanDoneHandler();

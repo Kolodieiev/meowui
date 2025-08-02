@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <cstring>
 #include <Stream.h>
+#include "../sd/SD_Manager.h"
 
 namespace meow
 {
@@ -104,14 +105,6 @@ namespace meow
     class FileManager
     {
     public:
-        /**
-         * @brief Перевіряє чи примонтовано карту пам'яті. Якщо карту не примонтовано, буде виконана одна спроба монтування.
-         *
-         * @return true - якщо карта примонтована.
-         * @return false - якщо карта не примонтована.
-         */
-        bool isMounted();
-
         /**
          * @brief Записує в out_path повний шлях до path, з урахуванням точки монтування.
          *
@@ -387,6 +380,13 @@ namespace meow
          */
         bool lastTaskResult() const { return _last_task_result; }
 
+        FileManager() {}
+        FileManager(const FileManager &) = delete;
+        FileManager &operator=(const FileManager &) = delete;
+
+        FileManager(FileManager &&) = delete;
+        FileManager &operator=(FileManager &&) = delete;
+
     private:
         enum IndexMode : uint8_t
         {
@@ -430,7 +430,7 @@ namespace meow
     };
 
     /**
-     * @brief Глобальний об'єкт-обгортка для роботи з картою пам'яті.
+     * @brief Глобальний об'єкт-обгортка для роботи з файловою системою на карті пам'яті.
      *
      */
     extern FileManager _fs;
