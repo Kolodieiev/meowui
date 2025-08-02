@@ -55,7 +55,6 @@ namespace meow
         }
 
         _rend_buf_ptr = &_renderer_buf;
-
 #else
         log_e("Розкоментуйте відповідний прапор в налаштуваннях драйвера графіки");
         esp_restart();
