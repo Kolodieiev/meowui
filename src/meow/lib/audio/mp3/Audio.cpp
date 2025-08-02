@@ -213,7 +213,8 @@ Audio::Audio() {
 Audio::~Audio() {
     setDefaults();
     _i2s_out.deinit();
-    free(m_outBuff);      
+    free(m_outBuff);
+          
     vSemaphoreDelete(mutex_audio);
 }
 // clang-format on
