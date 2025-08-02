@@ -12,8 +12,6 @@ namespace meow
     class SettingsManager : private FileManager
     {
     public:
-        using FileManager::isMounted;
-
         /**
          * @brief Зберігає налаштування до бінарного файлу.
          *

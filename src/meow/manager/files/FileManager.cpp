@@ -2,7 +2,6 @@
 #include "meowui_setup/sd_setup.h"
 #include "FileManager.h"
 #include <cctype>
-#include "../sd/SD_Manager.h"
 #include "esp_task_wdt.h"
 #include <errno.h>
 #include <sys/stat.h>
@@ -10,19 +9,6 @@
 
 namespace meow
 {
-    bool FileManager::isMounted()
-    {
-        bool result = true;
-
-        if (!SD_Manager::getInst().mount())
-        {
-            log_e("Карту пам'яті не примонтовано");
-            result = false;
-        }
-
-        return result;
-    }
-
     void FileManager::makeFullPath(String &out_path, const char *path)
     {
         out_path = "";
