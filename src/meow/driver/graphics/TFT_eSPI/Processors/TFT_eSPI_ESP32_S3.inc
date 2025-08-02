@@ -942,7 +942,7 @@ bool TFT_eSPI::initDMA(bool ctrl_cs)
 ** Function name:           deInitDMA
 ** Description:             Disconnect the DMA engine from SPI
 ***************************************************************************************/
-void TFT_eSPI::deInitDMA(void) // TODO
+void TFT_eSPI::deInitDMA(void)
 {
   if (!DMA_Enabled)
     return;
