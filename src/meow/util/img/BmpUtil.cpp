@@ -36,7 +36,6 @@ namespace meow
 
         uint16_t width = static_cast<uint16_t>(bmp_header.width);
         uint16_t height = static_cast<uint16_t>(std::abs(bmp_header.height));
-
         //
         size_t data_size = static_cast<size_t>(width * height * 2);
         //
