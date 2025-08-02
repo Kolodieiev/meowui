@@ -133,6 +133,16 @@ namespace meow
 
         i2s_channel_disable(_i2s_tx_handle);
         i2s_del_channel(_i2s_tx_handle);
+
+        pinMode(PIN_I2S_OUT_BCLK, OUTPUT);
+        digitalWrite(PIN_I2S_OUT_BCLK, HIGH);
+
+        pinMode(PIN_I2S_OUT_LRC, OUTPUT);
+        digitalWrite(PIN_I2S_OUT_LRC, HIGH);
+
+        pinMode(PIN_I2S_OUT_DOUT, OUTPUT);
+        digitalWrite(PIN_I2S_OUT_DOUT, HIGH);
+
         _is_inited = false;
     }
 
