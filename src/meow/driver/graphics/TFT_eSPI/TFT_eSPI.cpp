@@ -550,7 +550,6 @@ void TFT_eSPI::begin(uint8_t tc)
  init(tc);
 }
 
-
 /***************************************************************************************
 ** Function name:           init (tc is tab colour for ST7735 displays only)
 ** Description:             Reset, then initialise the TFT display registers
@@ -579,19 +578,11 @@ void TFT_eSPI::init(uint8_t tc)
     sclkpinmask = (uint32_t) digitalPinToBitMask(TFT_SCLK);
   #endif
 
-
-  spi_mngr.initBus(SPI_BUS_NUM); // This will set HMISO to input
-  spi = *spi_mngr.getSpi4Bus(SPI_BUS_NUM);
+  spi = *meow::SPI_Manager::getSpi4Bus(SPI_BUS_NUM);
 
 #else
   #if !defined(TFT_PARALLEL_8_BIT) && !defined(RP2040_PIO_INTERFACE)
-    meow::SPI_Manager spi_mngr;
-    #if defined (TFT_MOSI) && !defined (TFT_SPI_OVERLAP)
-      spi_mngr.initBus(SPI_BUS_NUM, TFT_SCLK, TFT_MISO, TFT_MOSI);
-    #else
-      spi_mngr.initBus(SPI_BUS_NUM);
-    #endif
-      spi = *spi_mngr.getSpi4Bus(SPI_BUS_NUM);
+      spi = *meow::SPI_Manager::getSpi4Bus(SPI_BUS_NUM);
   #endif
 #endif
     lockTransaction = false;
@@ -723,20 +714,7 @@ void TFT_eSPI::init(uint8_t tc)
 
   setRotation(rotation);
 
-#if defined (TFT_BL) && defined (TFT_BACKLIGHT_ON)
-  if (TFT_BL >= 0) {
-    pinMode(TFT_BL, OUTPUT);
-    digitalWrite(TFT_BL, TFT_BACKLIGHT_ON);
-  }
-#else
-  #if defined (TFT_BL) && defined (M5STACK)
-    // Turn on the back-light LED
-    if (TFT_BL >= 0) {
-      pinMode(TFT_BL, OUTPUT);
-      digitalWrite(TFT_BL, HIGH);
-    }
-  #endif
-#endif
+  vTaskDelay(10 / portTICK_PERIOD_MS);
 }
 
 
@@ -5288,3 +5266,5 @@ SPIClass& TFT_eSPI::getSPIinstance(void)
 #endif
 
 #include "./TFT_eSprite.h"
+#include "TFT_eSPI.h"
+

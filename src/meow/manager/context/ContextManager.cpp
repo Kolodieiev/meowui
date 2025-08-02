@@ -1,5 +1,7 @@
 #pragma GCC optimize("O3")
 #include "ContextManager.h"
+#include "meowui_setup/display_setup.h"
+#include "meow/manager/spi/SPI_Manager.h"
 #include "../../ui/context/IContext.h"
 
 #include "meowui_setup/context_id.h"
@@ -12,6 +14,7 @@ namespace meow
     void ContextManager::run()
     {
 #ifdef GRAPHICS_ENABLED
+        SPI_Manager::initBus(HSPI, TFT_SCLK, TFT_MISO, TFT_MOSI);
         _display.init();
 #endif
         _input._init();
