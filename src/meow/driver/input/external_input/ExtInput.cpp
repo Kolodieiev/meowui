@@ -1,5 +1,6 @@
 #pragma GCC optimize("O3")
 #include "ExtInput.h"
+#include "meow/manager/coprocessor/CoprocessorManager.h"
 
 #ifdef EXT_INPUT
 
@@ -9,26 +10,21 @@ namespace meow
 {
     void ExtInput::init()
     {
-        _i2c.begin();
+        _ccpu.connect();
     }
 
     void ExtInput::update()
     {
-        if (!_i2c.isInited())
+        CoprocessorCMD_t cmd = CCPU_CMD_GET_BTNS_STATE;
+
+        if (!_ccpu.sendCmd(&cmd, sizeof(cmd), RESP_PREP_TIME))
             return;
 
-        ExtI2CMD_t cmd = I2C_CMD_BTNS_STATE;
-        if (_i2c.write(EXT_INPUT_ADDR, &cmd, sizeof(cmd)))
+        if (!_ccpu.readData(_buttons_state, EXT_INPUT_B_NUM))
         {
-            vTaskDelay(RESP_PREP_TIME / portTICK_PERIOD_MS);
-            if (_i2c.read(EXT_INPUT_ADDR, _buttons_state, EXT_INPUT_B_NUM))
-                return;
+            for (size_t i = 0; i < EXT_INPUT_B_NUM; ++i)
+                _buttons_state[i] = 0;
         }
-
-        for (size_t i = 0; i < EXT_INPUT_B_NUM; ++i)
-            _buttons_state[i] = 0;
-
-        log_e("Пристрій вводу не відповідає коректно на I2C команди");
     }
 
     bool ExtInput::getBtnState(uint8_t btn_pos)
@@ -45,20 +41,14 @@ namespace meow
 
     void ExtInput::enableBtn(uint8_t btn_pos)
     {
-        uint8_t cmd_buff[2] = {I2C_CMD_ON_BTN, btn_pos};
-        sendBtnCmd(cmd_buff, sizeof(cmd_buff));
+        uint8_t cmd_data[2] = {CCPU_CMD_BTN_ON, btn_pos};
+        _ccpu.sendCmd(cmd_data, sizeof(cmd_data));
     }
 
     void ExtInput::disableBtn(uint8_t btn_pos)
     {
-        uint8_t cmd_buff[2] = {I2C_CMD_OFF_BTN, btn_pos};
-        sendBtnCmd(cmd_buff, sizeof(cmd_buff));
-    }
-
-    void ExtInput::sendBtnCmd(const void *buff, size_t buff_size)
-    {
-        if (!_i2c.write(EXT_INPUT_ADDR, buff, buff_size))
-            log_e("Пристрій вводу не відповідає коректно на I2C команди");
+        uint8_t cmd_data[2] = {CCPU_CMD_BTN_OFF, btn_pos};
+        _ccpu.sendCmd(cmd_data, sizeof(cmd_data));
     }
 }
 
