@@ -19,7 +19,7 @@ namespace meow
         if (path.isEmpty())
             return false;
 
-        return writeFile(path.c_str(), value, strlen(value));
+        return _fs.writeFile(path.c_str(), value, strlen(value));
     }
 
     String SettingsManager::get(const char *pref_name, const char *subdir)
@@ -35,7 +35,7 @@ namespace meow
         if (path.isEmpty())
             return emptyString;
 
-        size_t file_size = getFileSize(path.c_str());
+        size_t file_size = _fs.getFileSize(path.c_str());
 
         if (file_size == 0)
             return emptyString;
@@ -48,7 +48,7 @@ namespace meow
             return emptyString;
         }
 
-        size_t bytes_read = readFile(path.c_str(), buffer, file_size);
+        size_t bytes_read = _fs.readFile(path.c_str(), buffer, file_size);
         buffer[bytes_read] = '\0';
 
         String ret;
@@ -67,15 +67,15 @@ namespace meow
             return emptyString;
         }
 
-        if (!dirExist(DATA_ROOT))
-            if (!createDir(DATA_ROOT))
+        if (!_fs.dirExist(DATA_ROOT))
+            if (!_fs.createDir(DATA_ROOT))
             {
                 log_e("Помилка створення %s", DATA_ROOT);
                 return emptyString;
             }
 
-        if (!dirExist(PREF_ROOT))
-            if (!createDir(PREF_ROOT))
+        if (!_fs.dirExist(PREF_ROOT))
+            if (!_fs.createDir(PREF_ROOT))
             {
                 log_e("Помилка створення %s", PREF_ROOT);
                 return emptyString;
@@ -88,8 +88,8 @@ namespace meow
         {
             path += subdir;
 
-            if (!dirExist(path.c_str()))
-                if (!createDir(path.c_str()))
+            if (!_fs.dirExist(path.c_str()))
+                if (!_fs.createDir(path.c_str()))
                 {
                     log_e("Помилка створення %s", PREF_ROOT);
                     return emptyString;

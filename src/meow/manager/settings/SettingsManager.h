@@ -9,7 +9,7 @@ namespace meow
      * Бінарні файли з налаштуваннями зберігаються у папці "/.data/preferences"
      *
      */
-    class SettingsManager : private FileManager
+    class SettingsManager
     {
     public:
         /**
@@ -21,7 +21,7 @@ namespace meow
          * @return true - якщо операція виконана успішно.
          * @return false - якщо операція завершилася невдачею.
          */
-        bool set(const char *pref_name, const char *value, const char *subdir = "");
+        static bool set(const char *pref_name, const char *value, const char *subdir = "");
 
         /**
          * @brief Читає налаштування з бінарного файлу.
@@ -30,7 +30,7 @@ namespace meow
          * @param subdir Ім'я підкаталогу з налаштуваннями.
          * @return String - Рядок, що містить дані налаштування, або порожній рядок, якщо файл з налаштуванням не вдалося прочитати.
          */
-        String get(const char *pref_name, const char *subdir = "");
+        static String get(const char *pref_name, const char *subdir = "");
 
         /**
          * @brief Повертає повний шлях до файла в каталозі налаштувань.
@@ -40,6 +40,6 @@ namespace meow
          * @param subdir Ім'я підкаталогу з налаштуваннями.
          * @return String - Рядок, що містить повний шлях до файла, або порожній рядок, у разі помилки.
          */
-        String getSettingsFilePath(const char *pref_name, const char *subdir = "");
+        static String getSettingsFilePath(const char *pref_name, const char *subdir = "");
     };
 }
