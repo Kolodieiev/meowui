@@ -1,8 +1,5 @@
 #include "MenuContext.h"
 
-#include "../resources/color.h"
-#include "../resources/string.h"
-#include "../resources/const.h"
 //
 #include "./res/headphones.h"
 #include "./res/joystick.h"

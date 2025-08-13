@@ -4,9 +4,6 @@
 
 #include "../WidgetCreator.h"
 
-#include "../resources/string.h"
-#include "../resources/color.h"
-#include "../resources/const.h"
 
 PrefBrightContext::PrefBrightContext()
 {

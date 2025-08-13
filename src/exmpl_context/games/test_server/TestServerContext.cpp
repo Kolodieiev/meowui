@@ -4,10 +4,6 @@
 #include "./SceneID.h"
 #include "./scene/MainScene.h"
 
-#include "../../resources/color.h"
-#include "../../resources/string.h"
-#include "../../resources/const.h"
-
 #include "../common_res/btn_back/btn_back_normal.h"
 #include "../common_res/btn_back/btn_back_hover.h"
 
@@ -29,17 +25,6 @@ const char STR_WANTS_TO_JOIN[] = " хоче приєднатися";
 
 const char STR_WAITING_GAME[] = "Очікуйте запуск гри";
 const char STR_DISCONNECTED[] = "Від'єднано від сервера";
-//
-const char STR_TEST_GAME_NICK[] = "test_game_nick";
-const char STR_TEST_GAME_C_PWD[] = "test_game_c_pwd";
-const char STR_TEST_GAME_S_PWD[] = "test_game_s_pwd";
-const char STR_TEST_GAME_S_NAME[] = "test_game_s_name";
-const char STR_NICKNAME[] = "Нікнейм";
-const char STR_ENTER_NICK[] = "Введіть нікнейм";
-const char STR_SERV_NAME[] = "Назва сервера";
-const char STR_ENTER_SERV_NAME[] = "Введіть назву сервера";
-const char STR_SERV_PWD[] = "Пароль від сервера";
-const char STR_ENTER_SERV_PWD[] = "Введіть пароль від сервера";
 //
 const char STR_CONT_DISC_CLIENT[] = "Відключити клієнта";
 const char STR_CONT_OPEN_LOBBY[] = "Відкрити лоббі";

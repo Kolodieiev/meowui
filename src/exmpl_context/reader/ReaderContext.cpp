@@ -3,10 +3,6 @@
 
 #include "../WidgetCreator.h"
 
-#include "../resources/string.h"
-#include "../resources/color.h"
-#include "../resources/const.h"
-
 const char STR_BOOK_DIR_PREF[] = "book_dir";
 const char STR_BOOK_NAME_PREF[] = "book_name";
 const char STR_READ_POS_PREF[] = "read_pos";

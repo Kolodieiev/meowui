@@ -4,10 +4,6 @@
 #include "./SceneID.h"
 #include "scene/SokobanScene.h"
 
-#include "../../resources/color.h"
-#include "../../resources/string.h"
-#include "../../resources/const.h"
-
 namespace sokoban
 {
     SokobanContext::SokobanContext()

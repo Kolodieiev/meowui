@@ -1,8 +1,6 @@
 #include "HomeContext.h"
 //
-#include "../resources/color.h"
-#include "../resources/const.h"
-#include "../resources/string.h"
+
 #include "../resources/ico/battery.h"
 #include "./res/wall.h"
 //

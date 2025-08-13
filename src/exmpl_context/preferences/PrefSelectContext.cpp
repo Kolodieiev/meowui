@@ -1,8 +1,5 @@
 #include "PrefSelectContext.h"
 
-#include "../resources/string.h"
-#include "../resources/color.h"
-#include "../resources/const.h"
 
 #include "../WidgetCreator.h"
 

@@ -1,8 +1,4 @@
 #include "GamesListContext.h"
-#include "../resources/color.h"
-#include "../resources/string.h"
-#include "../resources/const.h"
-
 #include "../WidgetCreator.h"
 #include "meow/ui/widget/layout/EmptyLayout.h"
 #include "meow/ui/widget/menu/item/MenuItem.h"

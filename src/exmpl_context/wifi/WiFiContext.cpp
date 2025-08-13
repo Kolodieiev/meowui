@@ -1,8 +1,6 @@
 #include "WiFiContext.h"
 //
-#include "../resources/color.h"
-#include "../resources/const.h"
-#include "../resources/string.h"
+
 #include "./res/ico_connect.h"
 
 #include "../WidgetCreator.h"

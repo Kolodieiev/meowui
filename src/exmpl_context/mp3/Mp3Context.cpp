@@ -2,9 +2,7 @@
 
 #include "Mp3Context.h"
 
-#include "../resources/color.h"
-#include "../resources/string.h"
-#include "../resources/const.h"
+
 
 #include "./res/play.h"
 #include "./res/pause.h"

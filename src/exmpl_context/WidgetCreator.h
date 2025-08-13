@@ -6,6 +6,10 @@
 #pragma once
 #include <Arduino.h>
 #include "meow/driver/graphics/GraphicsDriver.h"
+#include "resources/string.h"
+#include "resources/color.h"
+#include "resources/kb_btn_id.h"
+#include "resources/const.h"
 
 #include "meow/ui/widget/layout/EmptyLayout.h"
 #include "meow/ui/widget/text/Label.h"

@@ -3,10 +3,6 @@
 
 #include "../WidgetCreator.h"
 
-#include "../resources/string.h"
-#include "../resources/color.h"
-#include "../resources/const.h"
-
 bool PrefFileServerContext::loop()
 {
     return true;

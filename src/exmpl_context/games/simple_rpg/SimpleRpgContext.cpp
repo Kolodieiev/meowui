@@ -7,7 +7,6 @@
 #include "../../resources/color.h"
 #include "../../resources/const.h"
 #include "../../resources/string.h"
-#include "./res/string.h"
 // Заголовкові файли ігрових сцен
 #include "./scene/OpenWorldScene.h"
 #include "./scene/CaveScene.h"

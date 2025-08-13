@@ -7,10 +7,6 @@
 #include "../WidgetCreator.h"
 #include "meow/ui/widget/image/Image.h"
 
-#include "../resources/const.h"
-#include "../resources/color.h"
-#include "../resources/string.h"
-
 #include "meowui_setup/sd_setup.h"
 
 #define LBL_X_OFFSET 70

@@ -3,10 +3,6 @@
 #include "../WidgetCreator.h"
 #include "meow/ui/widget/spinbox/SpinBox.h"
 
-#include "../resources/string.h"
-#include "../resources/color.h"
-#include "../resources/const.h"
-
 PrefWatchContext::PrefWatchContext()
 {
     WidgetCreator creator;

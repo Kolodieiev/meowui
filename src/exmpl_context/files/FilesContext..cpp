@@ -9,9 +9,7 @@
 
 #include "../WidgetCreator.h"
 
-#include "../resources/color.h"
-#include "../resources/string.h"
-#include "../resources/const.h"
+
 #include "./res/folder.h"
 #include "./res/lua.h"
 
