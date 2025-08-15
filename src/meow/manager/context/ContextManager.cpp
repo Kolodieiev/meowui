@@ -25,19 +25,23 @@ namespace meow
         while (1)
         {
             if (!context->isReleased())
+            {
                 context->tick();
+            }
             else
             {
                 ContextID next_context_id = context->getNextContextID();
-
                 delete context;
 
-                switch (next_context_id)
+                auto it = _context_id_map.find(next_context_id);
+                if (it == _context_id_map.end())
                 {
-                    SCREEN_CASES
-                default:
-                    log_e("Некоректний context_id: %u", next_context_id);
+                    log_e("Невідомий ідентифікатор контексту: %u", next_context_id);
                     esp_restart();
+                }
+                else
+                {
+                    context = it->second();
                 }
             }
         }
