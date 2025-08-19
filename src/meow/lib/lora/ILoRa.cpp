@@ -6,6 +6,8 @@
 #define CONFIG_BAUD_RATE 9600UL
 #define NORMAL_BAUD_RATE 115200UL
 
+#define LORA_BUSY_TIMEOUT 1000UL
+
 namespace meow
 {
     ILoRa::ILoRa(AirDataRate min_data_rate, AirDataRate max_data_rate, uint8_t max_chann)
@@ -145,7 +147,9 @@ namespace meow
 
     void ILoRa::waitWhileBusy()
     {
-        while (isBusy())
+        unsigned long busy_ts = millis();
+
+        while (isBusy() && millis() - busy_ts < LORA_BUSY_TIMEOUT)
         {
             vTaskDelay(1 / portTICK_PERIOD_MS);
         }
