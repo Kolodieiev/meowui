@@ -11,9 +11,9 @@ namespace meow
         virtual ~LRE32() override {}
 
     protected:
-        virtual void configShadowReg() override;
-        virtual bool writeRegisters(bool temporary) override;
-        virtual bool readRegisters() override;
+        virtual void configShadowReg() final override;
+        virtual bool writeRegisters(bool temporary) final override;
+        virtual bool readRegisters() final override;
 
     private:
         struct REG_HEAD
