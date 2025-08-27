@@ -96,26 +96,23 @@ namespace meow
 
         if (only_left_chan)
         {
-            int16_t buffer_copy[buff_len];
+            int16_t buffer_copy[buff_len * 2];
             int16_t *dst = buffer_copy;
 
-            size_t num_real_mono_samples = buff_len / 2;
-            for (size_t i = 0; i < num_real_mono_samples; ++i)
+            for (size_t i = 0; i < buff_len; ++i)
             {
-                int16_t mono_sample = *buffer;
-                *dst++ = mono_sample;
-                *dst++ = mono_sample;
-                buffer += 2;
+                *dst++ = buffer[i];
+                *dst++ = buffer[i];
             }
 
-            i2s_channel_write(_i2s_tx_handle, buffer_copy, buff_len * sizeof(int16_t), &bytes_written, portMAX_DELAY);
+            i2s_channel_write(_i2s_tx_handle, buffer_copy, buff_len * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
         }
         else
         {
             i2s_channel_write(_i2s_tx_handle, buffer, buff_len * sizeof(int16_t), &bytes_written, portMAX_DELAY);
         }
 
-        return bytes_written;
+        return bytes_written / sizeof(int16_t);
     }
 
     bool I2SOutManager::isInited() const
