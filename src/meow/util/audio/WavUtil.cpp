@@ -1,17 +1,19 @@
 #pragma GCC optimize("O3")
 #include "WavUtil.h"
+#include "../../manager/files/FileManager.h"
+
 namespace meow
 {
     AudioData WavUtil::loadWav(const char *path_to_wav)
     {
         AudioData wav_data;
 
-        if (!_file_mngr.fileExist(path_to_wav))
+        if (!_fs.fileExist(path_to_wav))
             return wav_data;
 
         WavHeader header;
 
-        _file_mngr.readFile(path_to_wav, &header, HEADER_SIZE);
+        _fs.readFile(path_to_wav, &header, sizeof(WavHeader));
 
         if (!validateHeader(header))
         {
@@ -32,7 +34,7 @@ namespace meow
             return wav_data;
         }
 
-        size_t bytes_read = _file_mngr.readFile(path_to_wav, data, header.data_size, HEADER_SIZE);
+        size_t bytes_read = _fs.readFile(path_to_wav, data, header.data_size, sizeof(WavHeader));
 
         if (bytes_read != header.data_size)
         {
