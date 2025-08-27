@@ -11,10 +11,12 @@ namespace meow
          * @brief Ініціалізує 1-ший канал на шині I2S в режимі ввводу.
          *
          * @param sample_rate Кількість вибірок за секунду.
+         * @param has_interleaving Прапор, який вказує на формат даних, що повертає мікрофон.
+         * Якщо false - семпли з мікрофону для одного каналу йдуть один за одним. Інакше - семпли чергуються для кожного каналу.
          * @return true - Якщо ініціалізацію виконано успішно.
          * @return false - Інакше.
          */
-        bool init(uint32_t sample_rate = 16000ul);
+        bool init(uint32_t sample_rate = 16000ul, bool has_interleaving = false);
 
         /**
          * @brief Деініціалізує ініціалізований раніше канал на шині I2S.
@@ -73,6 +75,8 @@ namespace meow
         i2s_std_config_t _i2s_rx_std_cfg{};
         i2s_chan_config_t _i2s_chan_cfg{};
         i2s_chan_handle_t _i2s_rx_handle{};
+
+        bool _has_interleaving{false};
     };
 
     /**

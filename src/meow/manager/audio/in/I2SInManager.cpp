@@ -7,10 +7,12 @@ namespace meow
 {
     bool I2SInManager::_is_inited{false};
 
-    bool I2SInManager::init(uint32_t sample_rate)
+    bool I2SInManager::init(uint32_t sample_rate, bool has_interleaving)
     {
         if (_is_inited)
             return true;
+
+        _has_interleaving = has_interleaving;
 
         bool result = false;
 
@@ -123,6 +125,9 @@ namespace meow
         if (buff_len & 1)
             --buff_len;
 
+        if (_has_interleaving)
+            buff_len *= 2;
+
         size_t bytes_to_read = buff_len * sizeof(int32_t);
         int32_t raw_buffer[buff_len];
         size_t bytes_read = 0;
@@ -131,8 +136,18 @@ namespace meow
 
         size_t samples_read = bytes_read / sizeof(int32_t);
 
-        for (size_t i = 0; i < samples_read; i += 2)
-            out_buffer[i] = raw_buffer[i] >> 12;
+        if (_has_interleaving)
+        {
+            samples_read /= 2;
+
+            for (size_t i = 0; i < samples_read; ++i)
+                out_buffer[i] = raw_buffer[i * 2] >> 12;
+        }
+        else
+        {
+            for (size_t i = 0; i < samples_read; ++i)
+                out_buffer[i] = raw_buffer[i] >> 12;
+        }
 
         return samples_read;
     }
