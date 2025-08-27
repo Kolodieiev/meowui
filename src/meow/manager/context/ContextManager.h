@@ -7,8 +7,5 @@ namespace meow
     {
     public:
         void run();
-
     };
-
-    extern ContextManager MEOW;
 }

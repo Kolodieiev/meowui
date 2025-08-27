@@ -1,14 +1,10 @@
 #include <Arduino.h>
-#include "meow/manager/context/ContextManager.h"
-
-void guiTask(void *params)
-{
-    meow::MEOW.run();
-}
+#include "meow/Meowui.h"
 
 void setup()
 {
-    xTaskCreatePinnedToCore(guiTask, "guiTask", (1024 / 2) * 50, NULL, 10, NULL, 1);
+    // Запустити виконання Meowui.
+    meow::MEOW.begin(80);
 }
 
 void loop()

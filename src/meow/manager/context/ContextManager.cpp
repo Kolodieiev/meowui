@@ -9,8 +9,6 @@
 
 namespace meow
 {
-    ContextManager MEOW;
-
     void ContextManager::run()
     {
 #ifdef GRAPHICS_ENABLED
