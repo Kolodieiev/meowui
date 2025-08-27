@@ -4,13 +4,12 @@
 
 void downsampleX2(const int16_t *in_buff, int16_t *out_buff, size_t in_size);
 void upsampleX2(const int16_t *in_buff, int16_t *out_buff, size_t in_size);
-void volume(int16_t *in_buff, size_t in_size, int16_t gain);
-
+void volume(int16_t *in_buff, size_t in_size, int16_t gain_db);
 
 class HighPassFilter
 {
 public:
-    void init(float cutoff_freq, uint32_t sample_rate);
+    HighPassFilter(float cutoff_freq = 200.0f, uint32_t sample_rate = 16000);
     void filter(int16_t *buffer, size_t buffer_size);
 
 private:
@@ -18,12 +17,17 @@ private:
     float a0{0}, a1{0}, a2{0}, b1{0}, b2{0};
 };
 
-class AutoGainControl
+class SimpleAGC
 {
 public:
-    void filter(int16_t *buffer, size_t buff_size, int16_t max_gain_db);
+    SimpleAGC(float target_dB = -7.0f, float attack_rate = 0.2f, float release_rate = 0.1f)
+        : _target_level(target_dB), _attack(attack_rate), _release(release_rate), _gain(1.0f) {}
+
+    void process(int16_t *buffer, size_t size);
 
 private:
-    float MAX_16BIT_LVL = 32767.0f;
-    float curr_gain = 1.0f;
+    float _target_level; // Цільовий рівень в dB
+    float _attack;       // Швидкість зменшення гейну
+    float _release;      // Швидкість збільшення гейну
+    float _gain;         // Поточний коефіцієнт гейну
 };
