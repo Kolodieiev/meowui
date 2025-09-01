@@ -149,7 +149,7 @@ namespace test_server
         if (_context_id != ID_CONT_WIFI_LIST)
             return;
 
-        IWidget *w_lbl = getLayout()->findWidgetByID(ID_CONTEXT_LBL);
+        IWidget *w_lbl = getLayout()->getWidgetByID(ID_CONTEXT_LBL);
         if (!w_lbl)
             return;
 
@@ -515,7 +515,7 @@ namespace test_server
         if (_context_id != ID_CONT_CONN_TO_AP)
             return;
 
-        IWidget *widget = getLayout()->findWidgetByID(ID_CONTEXT_LBL);
+        IWidget *widget = getLayout()->getWidgetByID(ID_CONTEXT_LBL);
 
         if (!widget)
             return;
@@ -570,7 +570,7 @@ namespace test_server
     {
         if (_context_id == ID_CONT_CONN_TO_AP)
         {
-            IWidget *widget = getLayout()->findWidgetByID(ID_CONTEXT_LBL);
+            IWidget *widget = getLayout()->getWidgetByID(ID_CONTEXT_LBL);
 
             if (!widget)
                 return;

@@ -68,7 +68,7 @@ namespace meow
         return false;
     }
 
-    IWidget *IWidgetContainer::findWidgetByID(uint16_t widget_ID) const
+    IWidget *IWidgetContainer::getWidgetByID(uint16_t widget_ID) const
     {
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 

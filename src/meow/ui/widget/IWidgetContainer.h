@@ -48,7 +48,7 @@ namespace meow
          * @return IWidget* - Вказівник на віджет у разі успіху операції.
          * @return nullptr - Інкаше.
          */
-        IWidget *findWidgetByID(uint16_t widget_ID) const;
+        IWidget *getWidgetByID(uint16_t widget_ID) const;
 
         /*!
          * @brief

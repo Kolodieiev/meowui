@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_iwidget_cont.h"
 #include "./lua_iwidget.h"
 #include "meow/ui/widget/IWidgetContainer.h"
@@ -38,20 +39,20 @@ int lua_cont_delete_widget_by_id(lua_State *L)
     return 1;
 }
 
-int lua_cont_find_widget_by_id(lua_State *L)
+int lua_cont_get_widget_by_id(lua_State *L)
 {
     IWidgetContainer *container = *(IWidgetContainer **)lua_touserdata(L, 1);
     uint16_t id = luaL_checkinteger(L, 2);
-    IWidget *widget = container->findWidgetByID(id);
+    IWidget *widget = container->getWidgetByID(id);
     lua_push_widget_or_nil(L, widget);
     return 1;
 }
 
-int lua_cont_find_widget_by_indx(lua_State *L)
+int lua_cont_get_widget_by_indx(lua_State *L)
 {
     IWidgetContainer *container = *(IWidgetContainer **)lua_touserdata(L, 1);
     uint16_t indx = luaL_checkinteger(L, 2);
-    IWidget *widget = container->findWidgetByID(indx);
+    IWidget *widget = container->getWidgetByIndx(indx);
     lua_push_widget_or_nil(L, widget);
     return 1;
 }
@@ -100,8 +101,8 @@ int lua_cont_disable(lua_State *L)
 const struct luaL_Reg TYPE_METH_IWIDGET_CONT[] = {
     {"addWidget", lua_cont_add_widget},
     {"delWidgetByID", lua_cont_delete_widget_by_id},
-    {"findWidgetByID", lua_cont_find_widget_by_id},
-    {"getWidgetByIndx", lua_cont_find_widget_by_indx},
+    {"getWidgetByID", lua_cont_get_widget_by_id},
+    {"getWidgetByIndx", lua_cont_get_widget_by_indx},
     {"getWidgetByCoords", lua_cont_get_widget_by_coords},
     {"delWidgets", lua_cont_delete_widgets},
     {"getSize", lua_cont_get_size},
