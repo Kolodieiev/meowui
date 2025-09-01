@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "custom_type_initializer.h"
 #include <vector>
 #include <unordered_map>
@@ -8,8 +9,10 @@
 #include "./type/widget/lua_label.h"
 #include "./type/widget/lua_image.h"
 #include "./type/widget/lua_menu.h"
+#include "./type/widget/lua_spinbox.h"
 #include "./type/widget/lua_menu_item.h"
 #include "./type/widget/lua_toggle_item.h"
+#include "./type/widget/lua_spin_item.h"
 #include "./type/widget/lua_toggle_switch.h"
 #include "./type/widget/lua_progress.h"
 
