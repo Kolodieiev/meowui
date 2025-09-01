@@ -122,3 +122,16 @@ void SimpleAGC::process(int16_t *buffer, size_t size)
             buffer[i] = static_cast<int16_t>(temp);
     }
 }
+
+#define MIN_AGC_DB -15.0f
+#define MAX_AGC_DB 0.0f
+
+void SimpleAGC::setTargetDB(float target_dB)
+{
+    if (target_dB < MIN_AGC_DB)
+        target_dB = MIN_AGC_DB;
+    else if (target_dB > MAX_AGC_DB)
+        target_dB = MAX_AGC_DB;
+
+    _target_level = target_dB;
+}

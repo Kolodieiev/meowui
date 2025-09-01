@@ -24,6 +24,7 @@ public:
         : _target_level(target_dB), _attack(attack_rate), _release(release_rate), _gain(1.0f) {}
 
     void process(int16_t *buffer, size_t size);
+    void setTargetDB(float target_dB = -7.0f);
 
 private:
     float _target_level; // Цільовий рівень в dB
