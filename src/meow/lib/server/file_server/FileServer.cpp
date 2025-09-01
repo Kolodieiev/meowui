@@ -253,15 +253,15 @@ namespace meow
                 return;
             }
 
-            _last_delay_time = millis();
+            _last_delay_ts = millis();
         }
         else if (uploadfile.status == UPLOAD_FILE_WRITE)
         {
             _fs.writeToFile(in_file, static_cast<const void *>(uploadfile.buf), uploadfile.currentSize);
-            if (millis() - _last_delay_time > 1000)
+            if (millis() - _last_delay_ts > 1000)
             {
                 vTaskDelay(1 / portTICK_PERIOD_MS);
-                _last_delay_time = millis();
+                _last_delay_ts = millis();
             }
         }
         else if (uploadfile.status == UPLOAD_FILE_END || uploadfile.status == UPLOAD_FILE_ABORTED)

@@ -92,7 +92,7 @@ namespace meow
         FILE *in_file{nullptr};
         WebServer *_server = nullptr;
 
-        unsigned long _last_delay_time = 0;
+        unsigned long _last_delay_ts = 0;
 
         ServerMode _server_mode{SERVER_MODE_RECEIVE};
         //
