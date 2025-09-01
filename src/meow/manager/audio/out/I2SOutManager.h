@@ -67,7 +67,7 @@ namespace meow
          * @param only_left_chan Прапор, який вказує на тип аудіоданих у буфері.
          * Якщо true - дані перед відтворенням будуть розширені по схемі left_chann -> stereo.
          * Якщо false - дані будуть відтворені в стерео режимі як є.
-         * @return size_t - Кількість успішно скопійованих семплів.
+         * @return size_t - Кількість успішно скопійованих байтів.
          */
         size_t write(const int16_t *buffer, size_t buff_len, bool only_left_chan = false);
 

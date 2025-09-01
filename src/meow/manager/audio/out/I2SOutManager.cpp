@@ -112,7 +112,7 @@ namespace meow
             i2s_channel_write(_i2s_tx_handle, buffer, buff_len * sizeof(int16_t), &bytes_written, portMAX_DELAY);
         }
 
-        return bytes_written / sizeof(int16_t);
+        return bytes_written;
     }
 
     bool I2SOutManager::isInited() const
