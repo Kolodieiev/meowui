@@ -38,7 +38,7 @@ namespace meow
         static constexpr TypeID staticType() { return TypeID::TYPE_ID_TOGGLE_ITEM; }
 
         /**
-         * @brief Встановлює вказівник на віджет ToggleSwitch, що буде відображатися віджеті елемента списку.
+         * @brief Встановлює вказівник на віджет ToggleSwitch, що буде відображатися у віджеті елемента списку.
          * ToggleSwitch буде видалено автоматично разом з віджетом.
          * Для кожного елемента списку повинен використовуватися власний ToggleSwitch.
          *
@@ -54,16 +54,16 @@ namespace meow
         ToggleSwitch *getToggle() const { return _toggle; }
 
         /**
-         * @brief Встановлює стан ToggleSwitch у "Ввімкнений".
+         * @brief Встановлює стан ToggleSwitch.
          *
          */
-        void on();
+        void setOn(bool state);
 
         /**
-         * @brief Встановлює стан ToggleSwitch у "Вимкнений".
+         * @brief Змінює стан ToggleSwitch на протилежний від поточного.
          *
          */
-        void off();
+        void toggle();
 
         /**
          * @brief Повертає значення прапору, що вказує на поточний стан ToggleSwitch.

@@ -1,6 +1,5 @@
 #include "PrefSelectContext.h"
 
-
 #include "../WidgetCreator.h"
 
 #include "meow/ui/widget/toggle/ToggleSwitch.h"
@@ -52,9 +51,9 @@ PrefSelectContext::PrefSelectContext()
     SettingsManager pref;
     String mono_mode = pref.get(STR_PREF_MONO_AUDIO);
     if (mono_mode == "" || mono_mode == "0")
-        toggle_mono->off();
+        toggle_mono->setOn(false);
     else
-        toggle_mono->on();
+        toggle_mono->setOn(true);
     //
     MenuItem *watch_item = creator.getMenuItem(ITEM_ID_WATCH);
     _menu->addItem(watch_item);
@@ -145,12 +144,12 @@ void PrefSelectContext::ok()
         if (force_mono)
         {
             if (_settings.set(STR_PREF_MONO_AUDIO, "0"))
-                toggle->off();
+                toggle->setOn(false);
         }
         else
         {
             if (_settings.set(STR_PREF_MONO_AUDIO, "1"))
-                toggle->on();
+                toggle->setOn(true);
         }
     }
     else if (id == ITEM_ID_WATCH)

@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_toggle_switch.h"
 #include "./lua_iwidget.h"
 #include "meow/plugin/lua/res/lua_strs.h"
@@ -36,17 +37,18 @@ int lua_toggle_switch_is_on(lua_State *L)
     return 1;
 }
 
-int lua_toggle_switch_on(lua_State *L)
+int lua_toggle_set_on(lua_State *L)
 {
     ToggleSwitch *toggle_switch = *(ToggleSwitch **)lua_touserdata(L, 1);
-    toggle_switch->on();
+    bool state = lua_toboolean(L, 2);
+    toggle_switch->setOn(state);
     return 0;
 }
 
-int lua_toggle_switch_off(lua_State *L)
+int lua_toggle_toggle(lua_State *L)
 {
     ToggleSwitch *toggle_switch = *(ToggleSwitch **)lua_touserdata(L, 1);
-    toggle_switch->off();
+    toggle_switch->toggle();
     return 0;
 }
 
@@ -88,8 +90,8 @@ int lua_toggle_switch_set_orientation(lua_State *L)
 
 const struct luaL_Reg TYPE_METH_TOGGLE_SWITCH[] = {
     {"isOn", lua_toggle_switch_is_on},
-    {"on", lua_toggle_switch_on},
-    {"off", lua_toggle_switch_off},
+    {"setOn", lua_toggle_set_on},
+    {"toggle", lua_toggle_toggle},
     {"setLeverColor", lua_toggle_switch_set_lever_color},
     {"setOnColor", lua_toggle_switch_set_on_color},
     {"setOffColor", lua_toggle_switch_set_off_color},

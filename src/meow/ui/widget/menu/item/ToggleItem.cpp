@@ -1,6 +1,6 @@
 #pragma GCC optimize("O3")
-
 #include "ToggleItem.h"
+
 namespace meow
 {
     ToggleItem::ToggleItem(uint16_t widget_ID) : MenuItem(widget_ID, TYPE_ID_TOGGLE_ITEM)
@@ -19,10 +19,8 @@ namespace meow
         {
             if (_img)
                 _img->onDraw();
-            if (_label)
-                _label->onDraw();
-            if (_toggle)
-                _toggle->onDraw();
+            _label->onDraw();
+            _toggle->onDraw();
             return;
         }
 
@@ -92,11 +90,8 @@ namespace meow
             if (_img)
                 cln->setImg(_img->clone(_img->getID()));
 
-            if (_label)
-                cln->setLbl(_label->clone(_label->getID()));
-
-            if (_toggle)
-                cln->setToggle(_toggle->clone(_toggle->getID()));
+            cln->setLbl(_label->clone(_label->getID()));
+            cln->setToggle(_toggle->clone(_toggle->getID()));
 
             return cln;
         }
@@ -116,11 +111,11 @@ namespace meow
             esp_restart();
         }
 
-        if (togg_switch_ptr != _toggle)
-        {
-            delete _toggle;
-            _toggle = togg_switch_ptr;
-        }
+        if (togg_switch_ptr == _toggle)
+            return;
+
+        delete _toggle;
+        _toggle = togg_switch_ptr;
 
         _is_changed = true;
 
@@ -128,23 +123,18 @@ namespace meow
         _toggle->setChangingBorder(false);
     }
 
-    void ToggleItem::on()
+    void ToggleItem::setOn(bool state)
     {
-        if (_toggle)
-            _toggle->on();
+        _toggle->setOn(state);
     }
 
-    void ToggleItem::off()
+    void ToggleItem::toggle()
     {
-        if (_toggle)
-            _toggle->off();
+        _toggle->toggle();
     }
 
     bool ToggleItem::isOn() const
     {
-        if (!_toggle)
-            return false;
-
         return _toggle->isOn();
     }
 }

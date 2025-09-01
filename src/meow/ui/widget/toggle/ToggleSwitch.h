@@ -42,35 +42,24 @@ namespace meow
         bool isOn() const { return _is_on; }
 
         /**
-         * @brief Встановлює стан перемикача у "Ввімкнений".
+         * @brief Встановлює стан перемикача.
          *
+         * @param state true - Перемикач увімкнуто. false - перемикач вимкнуто.
          */
-        void on()
-        {
-            _is_on = true;
-            _is_changed = true;
-        }
+        void setOn(bool state);
 
         /**
-         * @brief Встановлює стан перемикача у "Вимкнутий".
+         * @brief Змінює стан перемикача на протилежний від поточного.
          *
          */
-        void off()
-        {
-            _is_on = false;
-            _is_changed = true;
-        }
+        void toggle();
 
         /**
          * @brief Встановлює колір важелю.
          *
          * @param color
          */
-        void setLeverColor(uint16_t color)
-        {
-            _lever_color = color;
-            _is_changed = true;
-        }
+        void setLeverColor(uint16_t color);
 
         /**
          * @brief Повертає значення кольору важелю.
@@ -102,11 +91,7 @@ namespace meow
          *
          * @param color
          */
-        void setOffColor(uint16_t color)
-        {
-            _off_color = color;
-            _is_changed = true;
-        }
+        void setOffColor(uint16_t color);
 
         /**
          * @brief Повертає значення кольору фону перемикача у стані "Вимкнений".
@@ -120,11 +105,7 @@ namespace meow
          *
          * @param orientation Може мати значення: HORIZONTAL / VERTICAL.
          */
-        void setOrientation(Orientation orientation)
-        {
-            _orientation = orientation;
-            _is_changed = true;
-        }
+        void setOrientation(Orientation orientation);
 
         /**
          * @brief Повертає значення орієнтації відображення перемикача.

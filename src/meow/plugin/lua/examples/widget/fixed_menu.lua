@@ -119,10 +119,6 @@ function ok_handler()
     if item_id == SIMPLE_ITEM_ID then
         showToast("Натиснуто ОК")
     elseif item_id == TOGGLE_ITEM_ID then
-        if toggle_item:isOn() then
-            toggle_item:off()
-        else
-            toggle_item:on()
-        end
+        toggle_item:toggle() 
     end
 end

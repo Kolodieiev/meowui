@@ -2,6 +2,36 @@
 
 namespace meow
 {
+    void ToggleSwitch::setOrientation(Orientation orientation)
+    {
+        _orientation = orientation;
+        _is_changed = true;
+    }
+
+    void ToggleSwitch::setOffColor(uint16_t color)
+    {
+        _off_color = color;
+        _is_changed = true;
+    }
+
+    void ToggleSwitch::setLeverColor(uint16_t color)
+    {
+        _lever_color = color;
+        _is_changed = true;
+    }
+
+    void ToggleSwitch::setOn(bool state)
+    {
+        _is_on = state;
+        _is_changed = true;
+    }
+
+    void ToggleSwitch::toggle()
+    {
+        _is_on = !_is_on;
+        _is_changed = true;
+    }
+
     void ToggleSwitch::onDraw()
     {
         if (_is_changed)

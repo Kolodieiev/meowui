@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_toggle_item.h"
 #include "./lua_menu_item.h"
 #include "./lua_toggle_switch.h"
@@ -50,17 +51,18 @@ int lua_toggle_item_get_toggle(lua_State *L)
     return 1;
 }
 
-int lua_toggle_item_on(lua_State *L)
+int lua_toggle_item_set_on(lua_State *L)
 {
     ToggleItem *toggle_item = *(ToggleItem **)lua_touserdata(L, 1);
-    toggle_item->on();
+    bool state = lua_toboolean(L, 2);
+    toggle_item->setOn(state);
     return 0;
 }
 
-int lua_toggle_item_off(lua_State *L)
+int lua_toggle_item_toggle(lua_State *L)
 {
     ToggleItem *toggle_item = *(ToggleItem **)lua_touserdata(L, 1);
-    toggle_item->off();
+    toggle_item->toggle();
     return 0;
 }
 
@@ -74,8 +76,8 @@ int lua_toggle_item_is_on(lua_State *L)
 const struct luaL_Reg TYPE_METH_TOGGLE_ITEM[] = {
     {"setToggle", lua_toggle_item_set_toggle},
     {"getToggle", lua_toggle_item_get_toggle},
-    {"on", lua_toggle_item_on},
-    {"off", lua_toggle_item_off},
+    {"setOn", lua_toggle_item_set_on},
+    {"toggle", lua_toggle_item_toggle},
     {"isOn", lua_toggle_item_is_on},
     {STR_LUA_WIDGET_CLONE, lua_toggle_item_clone},
     {nullptr, nullptr},

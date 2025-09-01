@@ -145,12 +145,12 @@ void WiFiContext::showMainTmpl()
     if (_wifi.isEnabled())
     {
         addCurrNetItem();
-        wifi_state_toggle->on();
+        wifi_state_toggle->setOn(true);
         loadNetsList();
     }
     else
     {
-        wifi_state_toggle->off();
+        wifi_state_toggle->setOn(false);
     }
 }
 
@@ -261,7 +261,7 @@ void WiFiContext::ok()
         if (item_id == ID_ITEM_WIFI_STATE)
         {
 
-            ToggleItem *wifi_state_item = _main_menu->findWidgetByID(ID_ITEM_WIFI_STATE)->castTo<ToggleItem>();
+            ToggleItem *wifi_state_item = _main_menu->getWidgetByID(ID_ITEM_WIFI_STATE)->castTo<ToggleItem>();
             bool was_enabled = _wifi.isEnabled();
 
             if (!_wifi.toggle())
@@ -276,7 +276,7 @@ void WiFiContext::ok()
                 }
                 else
                 {
-                    wifi_state_item->off();
+                    wifi_state_item->setOn(false);
                     ToggleItem *temp_toggle = wifi_state_item->clone(ID_ITEM_WIFI_STATE);
                     _main_menu->delWidgets();
                     _main_menu->addItem(temp_toggle);
@@ -284,7 +284,7 @@ void WiFiContext::ok()
             }
             else
             {
-                wifi_state_item->on();
+                wifi_state_item->setOn(true);
                 loadNetsList();
             }
         }
@@ -300,7 +300,7 @@ void WiFiContext::ok()
         if (ctx_item_id == ID_ITEM_DISCONN)
         {
             _wifi.disconnect();
-            ToggleItem *wifi_state_item = _main_menu->findWidgetByID(ID_ITEM_WIFI_STATE)->castTo<ToggleItem>();
+            ToggleItem *wifi_state_item = _main_menu->getWidgetByID(ID_ITEM_WIFI_STATE)->castTo<ToggleItem>();
             ToggleItem *temp_toggle = wifi_state_item->clone(ID_ITEM_WIFI_STATE);
             _main_menu->delWidgets();
             _main_menu->addItem(temp_toggle);
@@ -465,7 +465,7 @@ void WiFiContext::updateNetList(bool no_scan)
 
     WidgetCreator creator;
 
-    ToggleItem *wifi_state_item = _main_menu->findWidgetByID(ID_ITEM_WIFI_STATE)->castTo<ToggleItem>();
+    ToggleItem *wifi_state_item = _main_menu->getWidgetByID(ID_ITEM_WIFI_STATE)->castTo<ToggleItem>();
     ToggleItem *temp_toggle = wifi_state_item->clone(ID_ITEM_WIFI_STATE);
     _main_menu->delWidgets();
     _main_menu->addItem(temp_toggle);
