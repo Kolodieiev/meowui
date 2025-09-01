@@ -34,14 +34,14 @@ namespace meow
         static constexpr TypeID staticType() { return TypeID::TYPE_ID_SPINBOX; }
 
         /**
-         * @brief Збільшує значення, що зберігається у віджеті на 1, якщо можливо.
+         * @brief Збільшує значення, що зберігається у віджеті на величину кроку, якщо можливо.
          * Якщо значення вже досягло заданого максимуму, відбувається перехід на мінімальне.
          *
          */
         void up();
 
         /**
-         * @brief Зменшує значення, що зберігається у віджеті на 1, якщо можливо.
+         * @brief Зменшує значення, що зберігається у віджеті на величину кроку, якщо можливо.
          * Якщо значення вже досягло заданого мінімуму, відбувається перехід на максимальне.
          *
          */
@@ -105,12 +105,27 @@ namespace meow
          */
         SpinType getType() const { return _spin_type; }
 
+        /**
+         * @brief Встановлює значення кроку, на яке буде змінюватися поточне значення SpinBox-у.
+         *
+         * @param step
+         */
+        void setStep(float step);
+
+        /**
+         * @brief Повертає значення кроку, на яке буде змінюватися поточне значення SpinBox-у.
+         *
+         * @return float
+         */
+        float getStep() const { return _step; }
+
     private:
         using Label::initWidthToFit;
         using Label::isTicker;
         using Label::isTickerInFocus;
         using Label::setAlign;
         using Label::setGravity;
+        using Label::setMultiline;
         using Label::setTicker;
         using Label::setTickerInFocus;
         using Label::updateWidthToFit;
@@ -121,6 +136,7 @@ namespace meow
         float _min = 0.0f;
         float _max = 0.0f;
         float _value = 0.0f;
+        float _step = 0.0f;
 
         SpinType _spin_type = TYPE_INT;
     };

@@ -52,6 +52,7 @@ namespace meow
             cln->_min = _min;
             cln->_max = _max;
             cln->_value = _value;
+            cln->_step = _step;
             cln->_spin_type = _spin_type;
 
             return cln;
@@ -73,7 +74,6 @@ namespace meow
         }
 
         setSpinValToDraw();
-        _is_changed = true;
     }
 
     void SpinBox::setMax(float max)
@@ -85,7 +85,6 @@ namespace meow
         }
 
         setSpinValToDraw();
-        _is_changed = true;
     }
 
     void SpinBox::setValue(float value)
@@ -103,39 +102,45 @@ namespace meow
     void SpinBox::setType(SpinType spin_type)
     {
         _spin_type = spin_type;
-        _is_changed = true;
         setSpinValToDraw();
+    }
+
+    void SpinBox::setStep(float step)
+    {
+        _step = std::abs(step);
+        _is_changed = true;
     }
 
     void SpinBox::setSpinValToDraw()
     {
         if (_spin_type == TYPE_INT)
         {
-            uint64_t temp = _value;
+            int64_t temp = _value;
             setText(String(temp));
         }
         else
+        {
             setText(String(_value));
+        }
     }
 
     void SpinBox::up()
     {
-        if (_value < _max)
-            _value++;
-        else
+        if (_value + _step > _max)
             _value = _min;
+        else
+            _value += _step;
 
         setSpinValToDraw();
     }
 
     void SpinBox::down()
     {
-        if (_value > _min)
-            _value--;
-        else
+        if (_value - _step < _min)
             _value = _max;
+        else
+            _value -= _step;
 
         setSpinValToDraw();
     }
-
 }
