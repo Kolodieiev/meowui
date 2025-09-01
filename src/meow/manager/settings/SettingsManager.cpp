@@ -67,37 +67,24 @@ namespace meow
             return emptyString;
         }
 
-        if (!_fs.dirExist(DATA_ROOT))
-            if (!_fs.createDir(DATA_ROOT))
-            {
-                log_e("Помилка створення %s", DATA_ROOT);
-                return emptyString;
-            }
+        if (!_fs.dirExist(DATA_ROOT, true) && !_fs.createDir(DATA_ROOT))
+            return emptyString;
 
-        if (!_fs.dirExist(PREF_ROOT))
-            if (!_fs.createDir(PREF_ROOT))
-            {
-                log_e("Помилка створення %s", PREF_ROOT);
-                return emptyString;
-            }
+        if (!_fs.dirExist(PREF_ROOT, true) && !_fs.createDir(PREF_ROOT))
+            return emptyString;
 
         String path = PREF_ROOT;
-        path += "/";
 
         if (std::strcmp(subdir, ""))
         {
+            path += "/";
             path += subdir;
 
-            if (!_fs.dirExist(path.c_str()))
-                if (!_fs.createDir(path.c_str()))
-                {
-                    log_e("Помилка створення %s", PREF_ROOT);
-                    return emptyString;
-                }
-
-            path += "/";
+            if (!_fs.dirExist(path.c_str()) && !_fs.createDir(path.c_str()))
+                return emptyString;
         }
 
+        path += "/";
         path += pref_name;
 
         return path;
