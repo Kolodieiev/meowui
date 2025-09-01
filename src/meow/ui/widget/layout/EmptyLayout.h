@@ -9,7 +9,7 @@ namespace meow
   class EmptyLayout : public IWidgetContainer
   {
   public:
-    explicit EmptyLayout(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
+    explicit EmptyLayout(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_EMPTY_LAYOUT);
     virtual ~EmptyLayout();
 
     /**

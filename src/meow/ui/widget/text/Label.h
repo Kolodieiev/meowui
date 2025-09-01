@@ -11,7 +11,7 @@ namespace meow
     class Label : public IWidget
     {
     public:
-        explicit Label(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
+        explicit Label(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_LABEL);
         virtual ~Label() {};
 
         /**

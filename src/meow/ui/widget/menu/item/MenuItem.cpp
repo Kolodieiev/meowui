@@ -5,8 +5,7 @@
 
 namespace meow
 {
-    MenuItem::MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID,
-                                                                              type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_MENU_ITEM : type_ID)
+    MenuItem::MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidget(widget_ID, type_ID)
     {
         setLbl(new Label(1));
     }
@@ -32,8 +31,7 @@ namespace meow
         {
             if (_img)
                 _img->onDraw();
-            if (_label)
-                _label->onDraw();
+            _label->onDraw();
             return;
         }
 
@@ -99,9 +97,7 @@ namespace meow
 
             if (_img)
                 cln->setImg(_img->clone(_img->getID()));
-
-            if (_label)
-                cln->setLbl(_label->clone(_label->getID()));
+            cln->setLbl(_label->clone(_label->getID()));
 
             return cln;
         }
@@ -115,11 +111,11 @@ namespace meow
 
     void MenuItem::setImg(Image *img_ptr)
     {
-        if (img_ptr != _img)
-        {
-            delete _img;
-            _img = img_ptr;
-        }
+        if (img_ptr == _img)
+            return;
+
+        delete _img;
+        _img = img_ptr;
 
         _is_changed = true;
     }
@@ -132,11 +128,11 @@ namespace meow
             esp_restart();
         }
 
-        if (lbl_ptr != _label)
-        {
-            delete _label;
-            _label = lbl_ptr;
-        }
+        if (lbl_ptr == _label)
+            return;
+
+        delete _label;
+        _label = lbl_ptr;
 
         _is_changed = true;
 

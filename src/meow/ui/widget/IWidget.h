@@ -12,13 +12,13 @@ namespace meow
     public:
         enum TypeID : uint8_t
         {
-            TYPE_ID_UNKNOWN = 0,
-            TYPE_ID_IMAGE,
+            TYPE_ID_IMAGE = 0,
             TYPE_ID_KEYBOARD,
             TYPE_ID_KB_ROW,
             TYPE_ID_EMPTY_LAYOUT,
             TYPE_ID_MENU_ITEM,
             TYPE_ID_TOGGLE_ITEM,
+            TYPE_ID_SPIN_ITEM,
             TYPE_ID_DYN_MENU,
             TYPE_ID_FIX_MENU,
             TYPE_ID_NAVBAR,

@@ -11,7 +11,7 @@ namespace meow
     class MenuItem : public IWidget
     {
     public:
-        explicit MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_UNKNOWN);
+        explicit MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_MENU_ITEM);
         virtual ~MenuItem();
 
         /**

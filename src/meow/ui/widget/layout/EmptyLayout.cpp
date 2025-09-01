@@ -4,8 +4,7 @@
 
 namespace meow
 {
-    EmptyLayout::EmptyLayout(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidgetContainer(widget_ID,
-                                                                                             type_ID == TYPE_ID_UNKNOWN ? TYPE_ID_EMPTY_LAYOUT : type_ID)
+    EmptyLayout::EmptyLayout(uint16_t widget_ID, IWidget::TypeID type_ID) : IWidgetContainer(widget_ID, type_ID)
     {
     }
 
@@ -71,7 +70,7 @@ namespace meow
             cln->_old_back_color = _old_back_color;
             cln->_parent = _parent;
 
-            for (const auto &widget_ptr : _widgets)  // cppcheck-suppress constVariableReference
+            for (const auto &widget_ptr : _widgets) // cppcheck-suppress constVariableReference
                 cln->addWidget(widget_ptr->clone(widget_ptr->getID()));
 
             xSemaphoreGive(_widg_mutex);
