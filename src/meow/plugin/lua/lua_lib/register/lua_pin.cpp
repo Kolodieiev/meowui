@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_pin.h"
 #include <Arduino.h>
 

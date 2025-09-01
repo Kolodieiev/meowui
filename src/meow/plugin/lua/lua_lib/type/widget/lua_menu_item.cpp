@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_menu_item.h"
 #include "./lua_iwidget.h"
 #include "./lua_image.h"

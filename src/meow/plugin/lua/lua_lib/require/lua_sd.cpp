@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_sd.h"
 #include <Arduino.h>
 #include "meow/manager/files/FileManager.h"

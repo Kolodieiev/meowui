@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_progress.h"
 #include "meow/ui/widget/progress/ProgressBar.h"
 #include "./lua_iwidget.h"

@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_iwidget.h"
 #include "meow/ui/widget/IWidget.h"
 #include "meow/plugin/lua/res/lua_strs.h"

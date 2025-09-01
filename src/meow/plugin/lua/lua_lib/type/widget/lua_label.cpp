@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_label.h"
 #include "meow/ui/widget/text/Label.h"
 #include "meow/ui/widget/image/Image.h"

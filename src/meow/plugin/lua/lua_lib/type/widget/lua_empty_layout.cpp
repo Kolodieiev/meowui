@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_empty_layout.h"
 #include "meow/ui/widget/layout/EmptyLayout.h"
 #include "./lua_iwidget_cont.h"

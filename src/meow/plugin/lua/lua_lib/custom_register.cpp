@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "custom_register.h"
 //
 #include "./register/lua_mcu.h"

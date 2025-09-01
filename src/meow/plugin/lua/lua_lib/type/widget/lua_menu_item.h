@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #pragma once
 #include "meow/plugin/lua/lua.h"
 

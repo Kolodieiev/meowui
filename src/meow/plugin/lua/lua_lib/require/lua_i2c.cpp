@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_i2c.h"
 
 const struct luaL_Reg LIB_I2C[] = {

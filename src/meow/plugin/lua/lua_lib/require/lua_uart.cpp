@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_uart.h"
 
 const struct luaL_Reg LIB_UART[] = {

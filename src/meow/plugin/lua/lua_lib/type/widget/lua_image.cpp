@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_image.h"
 #include "meow/ui/widget/image/Image.h"
 #include "meow/manager/resources/ResManager.h"

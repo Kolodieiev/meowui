@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_helper.h"
 
 const char STR_INCORRECT_ARGS_NUMBER_BTW[] = "Некоректна кількість аргументів. Очікується [%s], отримано %d";

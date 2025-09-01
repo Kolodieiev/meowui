@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "custom_searcher.h"
 #include <Arduino.h>
 //

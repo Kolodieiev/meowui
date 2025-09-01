@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_menu.h"
 #include "meow/ui/widget/menu/FixedMenu.h"
 #include "./lua_iwidget_cont.h"

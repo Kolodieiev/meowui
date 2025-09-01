@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_pwm.h"
 #include <Arduino.h>
 #include "esp32-hal-ledc.h"

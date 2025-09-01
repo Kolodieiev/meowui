@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #pragma once
 #include <Arduino.h>
 #include "meow/ui/context/IContext.h"

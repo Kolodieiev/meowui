@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "LuaContext.h"
 #include "esp_heap_caps.h"
 #include "meow/ui/widget/layout/EmptyLayout.h"

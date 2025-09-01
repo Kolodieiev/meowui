@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include "lua_net.h"
 
 const struct luaL_Reg LIB_NET[] = {
