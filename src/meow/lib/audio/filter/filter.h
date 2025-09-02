@@ -9,8 +9,9 @@ void volume(int16_t *in_buff, size_t in_size, int16_t gain_db);
 class HighPassFilter
 {
 public:
-    HighPassFilter(float cutoff_freq = 200.0f, uint32_t sample_rate = 16000);
+    HighPassFilter();
     void filter(int16_t *buffer, size_t buffer_size);
+    void init(float cutoff_freq = 200.0f, uint32_t sample_rate = 16000);
 
 private:
     float x1 = 0.0f, x2 = 0.0f, y1 = 0.0f, y2 = 0.0f;

@@ -41,7 +41,12 @@ void volume(int16_t *in_buff, size_t in_size, int16_t gain_db)
     }
 }
 
-HighPassFilter::HighPassFilter(float cutoff_freq, uint32_t sample_rate)
+HighPassFilter::HighPassFilter()
+{
+    init();
+}
+
+void HighPassFilter::init(float cutoff_freq, uint32_t sample_rate)
 {
     float omega = 2.0f * M_PI * cutoff_freq / sample_rate;
     float cos_omega = cosf(omega);
