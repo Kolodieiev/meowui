@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include "../IWidget.h"
-#include <SD.h>
 
 namespace meow
 {
