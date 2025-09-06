@@ -67,6 +67,25 @@ namespace meow
             return emptyString;
         }
 
+        String path = getSettingsDirPath(subdir);
+
+        if (path.isEmpty())
+            return emptyString;
+
+        path += "/";
+        path += pref_name;
+
+        return path;
+    }
+
+    String SettingsManager::getSettingsDirPath(const char *sub_dir_name)
+    {
+        if (!sub_dir_name)
+        {
+            log_e("Некоректний аргумент");
+            return emptyString;
+        }
+
         if (!_fs.dirExist(DATA_ROOT, true) && !_fs.createDir(DATA_ROOT))
             return emptyString;
 
@@ -75,17 +94,14 @@ namespace meow
 
         String path = PREF_ROOT;
 
-        if (std::strcmp(subdir, ""))
+        if (std::strcmp(sub_dir_name, ""))
         {
             path += "/";
-            path += subdir;
+            path += sub_dir_name;
 
             if (!_fs.dirExist(path.c_str()) && !_fs.createDir(path.c_str()))
                 return emptyString;
         }
-
-        path += "/";
-        path += pref_name;
 
         return path;
     }

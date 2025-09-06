@@ -43,6 +43,14 @@ namespace meow
         static String getSettingsFilePath(const char *pref_name, const char *subdir = "");
 
         /**
+         * @brief Повертає повний шлях до каталогу налаштувань.
+         *
+         * @param sub_dir_name Ім'я підкаталогу в каталозі налаштувань, якщо потрібно.
+         * @return String - Рядок, що містить повний шлях до каталогу, або порожній рядок, у разі помилки.
+         */
+        static String getSettingsDirPath(const char *sub_dir_name = "");
+
+        /**
          * @brief Завантажує структуру налаштувань з карти пам'яті.
          *
          * @param out_data_struct Вказівник на пам'ять, куди будуть записані дані з файлу.
