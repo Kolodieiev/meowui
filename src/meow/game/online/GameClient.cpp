@@ -1,6 +1,6 @@
 #pragma GCC optimize("O3")
 #include "GameClient.h"
-#include "meow/manager/wifi/WiFiManager.h"
+#include "meow/manager/WiFiManager.h"
 
 namespace meow
 {

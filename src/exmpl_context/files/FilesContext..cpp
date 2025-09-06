@@ -2,7 +2,7 @@
 #include "FilesContext.h"
 
 #include "meow/lib/qr/QR_Gen.h"
-#include "meow/manager/settings/SettingsManager.h"
+#include "meow/manager/SettingsManager.h"
 //
 #include "meow/ui/widget/progress/ProgressBar.h"
 #include "meow/ui/widget/menu/item/MenuItem.h"

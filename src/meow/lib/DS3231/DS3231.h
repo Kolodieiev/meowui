@@ -3,7 +3,7 @@
 
 #include "./DS3231DateTime.h"
 #include "./DS3231ComnConst.h"
-#include "../../manager/i2c/I2C_Manager.h"
+#include "meow/manager/I2C_Manager.h"
 
 namespace meow
 {

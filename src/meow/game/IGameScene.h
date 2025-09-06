@@ -8,7 +8,7 @@
 #include "meow/driver/graphics/GraphicsDriver.h"
 #include "meow/driver/input/Input.h"
 #include "meow/lib/audio/wav/WavManager.h"
-#include "meow/manager/resources/ResManager.h"
+#include "meow/manager/ResManager.h"
 
 //
 #include "./IGameUI.h"

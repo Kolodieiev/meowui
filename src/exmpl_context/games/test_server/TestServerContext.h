@@ -8,7 +8,7 @@
 #include "meow/game/IGameScene.h"
 #include "meow/game/online/GameServer.h"
 #include "meow/game/online/GameClient.h"
-#include "meow/manager/wifi/WiFiManager.h"
+#include "meow/manager/WiFiManager.h"
 #include "meow/ui/widget/keyboard/Keyboard.h"
 #include "meow/ui/widget/text/TextBox.h"
 

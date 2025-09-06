@@ -1,8 +1,8 @@
 #pragma GCC optimize("O3")
 #include "FileServer.h"
 #include "./tmpl_html.cpp"
-#include "meow/manager/wifi/WiFiManager.h"
-#include "meow/manager/files/FileManager.h"
+#include "meow/manager/WiFiManager.h"
+#include "meow/manager/FileManager.h"
 
 
 namespace meow

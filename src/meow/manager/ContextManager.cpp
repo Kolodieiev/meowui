@@ -1,8 +1,8 @@
 #pragma GCC optimize("O3")
 #include "ContextManager.h"
 #include "meowui_setup/display_setup.h"
-#include "meow/manager/spi/SPI_Manager.h"
-#include "../../ui/context/IContext.h"
+#include "meow/manager/SPI_Manager.h"
+#include "meow/ui/context/IContext.h"
 
 #include "meowui_setup/context_id.h"
 #include "meowui_setup/ui_setup.h"

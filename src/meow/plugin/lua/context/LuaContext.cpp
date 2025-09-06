@@ -9,7 +9,7 @@
 
 #include "../lua_lib/type/widget/lua_iwidget_cont.h"
 
-#include "meow/manager/resources/ResManager.h"
+#include "meow/manager/ResManager.h"
 #include "meow/plugin/lua/lua_lib/helper/lua_helper.h"
 
 const char STR_NOTIFICATION[] = "Повідомлення";

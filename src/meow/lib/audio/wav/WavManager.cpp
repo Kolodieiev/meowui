@@ -1,5 +1,5 @@
 #include "WavManager.h"
-#include "meow/manager/audio/out/I2SOutManager.h"
+#include "meow/manager/I2SOutManager.h"
 
 namespace meow
 {

@@ -14,7 +14,7 @@
 #include "../WidgetCreator.h"
 #include "meow/ui/widget/layout/EmptyLayout.h"
 
-#include "meow/manager/sd/SD_Manager.h"
+#include "meow/manager/SD_Manager.h"
 
 const char STR_PLAYLIST_PREF[] = "Playlist";
 const char STR_TRACK_NAME_PREF[] = "TrackName";

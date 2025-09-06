@@ -1,5 +1,5 @@
 #pragma once
-#include "../../driver/graphics/GraphicsDriver.h"
+#include "meow/driver/graphics/GraphicsDriver.h"
 
 namespace meow
 {

@@ -1,5 +1,5 @@
 #include "AnalogMicrophone.h"
-#include "meow/manager/wifi/WiFiManager.h"
+#include "meow/manager/WiFiManager.h"
 
 #define ADC_DMA_BUFFER_FACTOR 2
 

@@ -1,6 +1,6 @@
 #pragma GCC optimize("O3")
 #include "ExtInput.h"
-#include "meow/manager/coprocessor/CoprocessorManager.h"
+#include "meow/manager/CoprocessorManager.h"
 
 #ifdef EXT_INPUT
 

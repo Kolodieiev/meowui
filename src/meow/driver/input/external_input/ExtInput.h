@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include "meowui_setup/input_setup.h"
-#include "meow/manager/coprocessor/CoprocessorManager.h"
+#include "meow/manager/CoprocessorManager.h"
 
 #ifdef EXT_INPUT
 #if !defined(EXT_INPUT_B_NUM) || (EXT_INPUT_B_NUM < 1)

@@ -1,7 +1,7 @@
 #include "FirmwareContext.h"
 #include "Update.h"
 
-#include "meow/manager/files/FileManager.h"
+#include "meow/manager/FileManager.h"
 
 #include "../WidgetCreator.h"
 

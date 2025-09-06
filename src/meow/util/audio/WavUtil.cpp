@@ -1,6 +1,6 @@
 #pragma GCC optimize("O3")
 #include "WavUtil.h"
-#include "../../manager/files/FileManager.h"
+#include "meow/manager/FileManager.h"
 
 namespace meow
 {

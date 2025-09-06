@@ -1,7 +1,7 @@
 #pragma GCC optimize("O3")
 #include "lua_image.h"
 #include "meow/ui/widget/image/Image.h"
-#include "meow/manager/resources/ResManager.h"
+#include "meow/manager/ResManager.h"
 #include "./lua_iwidget.h"
 #include "meow/plugin/lua/res/lua_strs.h"
 

@@ -1,7 +1,7 @@
 #pragma GCC optimize("O3")
 #include "lua_sd.h"
 #include <Arduino.h>
-#include "meow/manager/files/FileManager.h"
+#include "meow/manager/FileManager.h"
 #include "meow/plugin/lua/res/lua_strs.h"
 
 const char STR_FILE_TYPE[] = "FILE*";

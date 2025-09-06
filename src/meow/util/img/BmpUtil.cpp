@@ -1,6 +1,6 @@
 #pragma GCC optimize("O3")
 #include "BmpUtil.h"
-#include "meow/manager/files/FileManager.h"
+#include "meow/manager/FileManager.h"
 
 namespace meow
 {

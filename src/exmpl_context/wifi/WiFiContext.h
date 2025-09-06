@@ -1,8 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
-#include "meow/manager/settings/SettingsManager.h"
-#include "meow/manager/wifi/WiFiManager.h"
+#include "meow/manager/SettingsManager.h"
+#include "meow/manager/WiFiManager.h"
 
 #include "meow/ui/context/IContext.h"
 #include "meow/ui/widget/text/Label.h"

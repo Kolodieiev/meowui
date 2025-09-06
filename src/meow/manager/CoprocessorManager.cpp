@@ -1,5 +1,5 @@
 #include "CoprocessorManager.h"
-#include "meow/manager/i2c/I2C_Manager.h"
+#include "meow/manager/I2C_Manager.h"
 
 namespace meow
 {

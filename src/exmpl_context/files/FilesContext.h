@@ -2,7 +2,7 @@
 #pragma GCC optimize("O3")
 #include <Arduino.h>
 #include "meow/ui/context/IContext.h"
-#include "meow/manager/files/FileManager.h"
+#include "meow/manager/FileManager.h"
 #include "meow/lib/server/file_server/FileServer.h"
 //
 #include "meow/plugin/lua/context/LuaContext.h"

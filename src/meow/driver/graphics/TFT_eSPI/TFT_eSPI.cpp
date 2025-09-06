@@ -14,7 +14,7 @@
  ****************************************************/
 #pragma GCC optimize("O3")
 #include "./TFT_eSPI.h"
-#include "meow/manager/spi/SPI_Manager.h"
+#include "meow/manager/SPI_Manager.h"
 
 #if defined(CONFIG_IDF_TARGET_ESP32S3)
     #include "Processors/TFT_eSPI_ESP32_S3.inc"

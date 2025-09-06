@@ -1,5 +1,5 @@
 #include "Meowui.h"
-#include "meow/manager/context/ContextManager.h"
+#include "meow/manager/ContextManager.h"
 
 namespace meow
 {

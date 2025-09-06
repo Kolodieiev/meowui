@@ -1,5 +1,5 @@
 #include "RpgPrefContext.h"
-#include "meow/manager/settings/SettingsManager.h"
+#include "meow/manager/SettingsManager.h"
 
 #include "../../../WidgetCreator.h"
 
