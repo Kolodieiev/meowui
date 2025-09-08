@@ -171,14 +171,21 @@ namespace meow
          */
         bool isInited() const { return _is_inited; }
 
-         /**
-          * @brief Записує усі налаштування модуля в його тимчасові регістри.
-          * 
-          * @param temporary Прапор, який вказує на спосіб запису налаштувань. Тимчасово до вимкнення живлення - true(default), або зберегти в памя'ть модуля - false.
-          * @return true - В разі успіху запису.
-          * @return false - Інакше.
-          */
+        /**
+         * @brief Записує усі налаштування модуля в його тимчасові регістри.
+         *
+         * @param temporary Прапор, який вказує на спосіб запису налаштувань. Тимчасово до вимкнення живлення - true(default), або зберегти в памя'ть модуля - false.
+         * @return true - В разі успіху запису.
+         * @return false - Інакше.
+         */
         bool writeSettings(bool temporary = true);
+
+        /**
+         * @brief Повертає кількість каналів, що доступні для поточного об'єкту LoRa.
+         *
+         * @return uint8_t
+         */
+        uint8_t getMaxChann() const { return _max_chann; }
 
     protected:
         bool isBusy();
