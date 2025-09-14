@@ -1,5 +1,8 @@
 *
 
+!partitions.csv
+!platformio.ini
+
 !.gitignore
 !.gitattributes
 !README.md
