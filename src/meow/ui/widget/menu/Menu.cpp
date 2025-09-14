@@ -55,7 +55,7 @@ namespace meow
         if (_widgets.empty())
             return emptyString;
 
-        const MenuItem *item = _widgets[_cur_focus_pos]->castTo<MenuItem>();
+        MenuItem *item = static_cast<MenuItem *>(_widgets[_cur_focus_pos]);
         return item->getText();
     }
 
