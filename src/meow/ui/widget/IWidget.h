@@ -19,6 +19,7 @@ namespace meow
             TYPE_ID_MENU_ITEM,
             TYPE_ID_TOGGLE_ITEM,
             TYPE_ID_SPIN_ITEM,
+            TYPE_ID_COMBO_ITEM,
             TYPE_ID_DYN_MENU,
             TYPE_ID_FIX_MENU,
             TYPE_ID_NAVBAR,
