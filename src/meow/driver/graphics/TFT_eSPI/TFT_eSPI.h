@@ -172,7 +172,7 @@ const PROGMEM fontinfo fontdata[] = {
 #define TFT_OLIVE 0x7BE0                    /* 128, 128,   0 */
 #define TFT_LIGHTGREY 0xD69A                /* 211, 211, 211 */
 #define TFT_LIME 0xA7E0                     
-#define TFT_DARKGREY 0x7BEF                 /* 128, 128, 128 */
+#define TFT_DARKGREY 0x3186                 
 #define TFT_BLUE 0x001F                     /*   0,   0, 255 */
 #define TFT_GREEN 0x07E0                    /*   0, 255,   0 */
 #define TFT_CYAN 0x07FF                     /*   0, 255, 255 */
