@@ -1,5 +1,5 @@
 #pragma GCC optimize("O3")
-#include "HashUtil.h"
+#include "hash_util.h"
 
 #include "spi_flash_mmap.h"
 #include "esp_system.h"
@@ -8,7 +8,7 @@
 
 namespace meow
 {
-    bool HashUtil::calcFirmwareMD5(uint8_t *out_buff) const
+    bool calcFirmwareMD5(uint8_t *out_buff)
     {
         const esp_partition_t *running_partition = esp_ota_get_running_partition();
         spi_flash_mmap_handle_t handle;
@@ -33,10 +33,9 @@ namespace meow
         return true;
     }
 
-    void HashUtil::printMD5(const uint8_t *out_buff) const
+    void printMD5(const uint8_t *out_buff)
     {
         for (size_t i = 0; i < 16; i++)
             log_i("%02x", out_buff[i]);
     }
-
-} // namespace meow
+}

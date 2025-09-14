@@ -14,18 +14,12 @@ namespace meow
     static_assert(VOLTAGE_SAMP_NUM != 0, "VOLTAGE_SAMP_NUM must not be 0");
     static_assert(PIN_VOLT_MEASH < 60 && PIN_VOLT_MEASH > 0, "PIN_VOLT_MEASH must be 60 > PIN_VOLT_MEASH > 0");
 
-    class BatteryUtil
-    {
-    public:
-        /**
-         * @brief Зчитує напругу на акумуляторі, відповідно до вказаних налаштувань.
-         *
-         * @return float
-         */
-        static float readVoltVal();
-
-    private:
-    };
+    /**
+     * @brief Зчитує напругу на акумуляторі, відповідно до вказаних налаштувань.
+     *
+     * @return float
+     */
+    float readBattVoltage();
 
 #endif // HAS_BATTERY
 }

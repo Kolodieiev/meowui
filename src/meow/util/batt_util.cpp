@@ -1,10 +1,10 @@
-#include "BatteryUtil.h"
+#include "batt_util.h"
 
 namespace meow
 {
 #ifdef HAS_BATTERY
 
-    float BatteryUtil::readVoltVal()
+    float readBattVoltage()
     {
         float bat_voltage = 0.0f;
 
