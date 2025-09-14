@@ -5,7 +5,6 @@
 #include "esp_task_wdt.h"
 #include <errno.h>
 #include <sys/stat.h>
-#include "meow/util/memory/mem_util.h"
 
 namespace meow
 {
@@ -650,7 +649,7 @@ namespace meow
         }
 
         out_vec.clear();
-        out_vec.reserve(10);
+        out_vec.reserve(40);
 
         dirent *dir_entry{nullptr};
         String file_name;
