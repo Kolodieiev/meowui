@@ -13,7 +13,7 @@
 #include "Audio.h"
 #include "mp3_decoder/mp3_decoder.h"
 #include "meow/manager/FileManager.h"
-#include "meow/util/memory/mem_util.h"
+#include "meow/util/mem_util.h"
 #include "meow/manager/I2SOutManager.h"
 
 using namespace meow;
