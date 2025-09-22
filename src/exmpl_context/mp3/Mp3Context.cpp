@@ -502,7 +502,7 @@ void Mp3Context::right()
 
 bool Mp3Context::playNext()
 {
-    if (_track_pos >= _tracks.size())
+    if (_track_pos >= _tracks.size() - 1)
         return false;
 
     _track_name = _tracks[_track_pos + 1].getName();
