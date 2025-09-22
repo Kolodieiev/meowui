@@ -665,7 +665,7 @@ namespace meow
 
             filename = dir_entry->d_name;
 
-            if (filename == "." || filename == "..")
+            if (filename.equals(".") || filename.equals(".."))
                 continue;
 
             uint8_t entr_type = getEntryType(full_path.c_str(), dir_entry);
