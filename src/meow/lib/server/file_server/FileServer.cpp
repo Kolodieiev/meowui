@@ -225,30 +225,30 @@ namespace meow
 
         if (uploadfile.status == UPLOAD_FILE_START)
         {
-            String file_name = _server_dir;
-            file_name += "/";
-            file_name += uploadfile.filename;
+            String filename = _server_dir;
+            filename += "/";
+            filename += uploadfile.filename;
 
-            log_i("Запит на створення файлу %s", file_name.c_str());
+            log_i("Запит на створення файлу %s", filename.c_str());
 
             _fs.closeFile(in_file);
 
-            if (_fs.exists(file_name.c_str(), true))
+            if (_fs.exists(filename.c_str(), true))
             {
-                String temp_name = file_name;
+                String temp_name = filename;
                 temp_name += "_copy";
 
                 while (_fs.fileExist(temp_name.c_str(), true))
                     temp_name += "_copy";
 
-                file_name = temp_name;
+                filename = temp_name;
             }
 
-            in_file = _fs.openFile(file_name.c_str(), "ab");
+            in_file = _fs.openFile(filename.c_str(), "ab");
 
             if (!in_file)
             {
-                log_e("Не можу відкрити файл %s на запис", file_name.c_str());
+                log_e("Не можу відкрити файл %s на запис", filename.c_str());
                 _server->send(500, "text/html", "");
                 return;
             }

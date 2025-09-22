@@ -78,9 +78,9 @@ namespace meow
         return path;
     }
 
-    String SettingsManager::getSettingsDirPath(const char *sub_dir_name)
+    String SettingsManager::getSettingsDirPath(const char *sub_dirname)
     {
-        if (!sub_dir_name)
+        if (!sub_dirname)
         {
             log_e("Некоректний аргумент");
             return emptyString;
@@ -94,10 +94,10 @@ namespace meow
 
         String path = PREF_ROOT;
 
-        if (std::strcmp(sub_dir_name, ""))
+        if (std::strcmp(sub_dirname, ""))
         {
             path += "/";
-            path += sub_dir_name;
+            path += sub_dirname;
 
             if (!_fs.dirExist(path.c_str()) && !_fs.createDir(path.c_str()))
                 return emptyString;
@@ -106,9 +106,9 @@ namespace meow
         return path;
     }
 
-    bool SettingsManager::load(void *out_data_struct, size_t data_struct_size, const char *data_file_name, const char *data_dir_name)
+    bool SettingsManager::load(void *out_data_struct, size_t data_struct_size, const char *data_filename, const char *data_dirname)
     {
-        String sets_path = SettingsManager::getSettingsFilePath(data_file_name, data_dir_name);
+        String sets_path = SettingsManager::getSettingsFilePath(data_filename, data_dirname);
 
         if (sets_path.isEmpty())
             return false;
@@ -119,9 +119,9 @@ namespace meow
         return _fs.readFile(sets_path.c_str(), out_data_struct, data_struct_size) == data_struct_size;
     }
 
-    bool SettingsManager::save(const void *data_struct, size_t data_struct_size, const char *data_file_name, const char *data_dir_name)
+    bool SettingsManager::save(const void *data_struct, size_t data_struct_size, const char *data_filename, const char *data_dirname)
     {
-        String sets_path = SettingsManager::getSettingsFilePath(data_file_name, data_dir_name);
+        String sets_path = SettingsManager::getSettingsFilePath(data_filename, data_dirname);
 
         if (sets_path.isEmpty())
             return false;

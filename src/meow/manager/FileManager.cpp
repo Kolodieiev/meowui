@@ -652,7 +652,7 @@ namespace meow
         out_vec.reserve(40);
 
         dirent *dir_entry{nullptr};
-        String file_name;
+        String filename;
         bool is_dir;
 
         unsigned long last_delay_time = millis();
@@ -663,9 +663,9 @@ namespace meow
             if (!dir_entry)
                 break;
 
-            file_name = dir_entry->d_name;
+            filename = dir_entry->d_name;
 
-            if (file_name == "." || file_name == "..")
+            if (filename == "." || filename == "..")
                 continue;
 
             uint8_t entr_type = getEntryType(full_path.c_str(), dir_entry);
@@ -681,21 +681,21 @@ namespace meow
             {
             case INDX_MODE_DIR:
                 if (is_dir)
-                    out_vec.emplace_back(file_name, true);
+                    out_vec.emplace_back(filename, true);
                 break;
             case INDX_MODE_FILES:
                 if (!is_dir)
-                    out_vec.emplace_back(file_name, false);
+                    out_vec.emplace_back(filename, false);
                 break;
             case INDX_MODE_FILES_EXT:
-                if (!is_dir && file_name.endsWith(file_ext))
-                    out_vec.emplace_back(file_name, false);
+                if (!is_dir && filename.endsWith(file_ext))
+                    out_vec.emplace_back(filename, false);
                 break;
             case INDX_MODE_ALL:
                 if (is_dir)
-                    out_vec.emplace_back(file_name, true);
+                    out_vec.emplace_back(filename, true);
                 else
-                    out_vec.emplace_back(file_name, false);
+                    out_vec.emplace_back(filename, false);
                 break;
             }
 
