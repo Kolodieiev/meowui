@@ -36,7 +36,7 @@ namespace meow
         return true;
     }
 
-    bool WiFiManager::createAP(String &ssid, String &pwd, uint8_t max_connection, uint8_t wifi_chan, bool is_hidden)
+    bool WiFiManager::createAP(const String &ssid, const String &pwd, uint8_t max_connection, uint8_t wifi_chan, bool is_hidden)
     {
         if (_is_busy)
         {

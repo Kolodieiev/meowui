@@ -6,7 +6,7 @@
 
 namespace meow
 {
-    const char STR_ERR_ROUTER_NOT_CONNECTED[] = "Не підключено до маршрутизатора";
+    const char STR_ROUTER_NOT_CONNECTED[] = "Не підключено до маршрутизатора";
 
     typedef std::function<void(void *arg, wl_status_t conn_status)> WiFiConnectDoneHandler;
     typedef std::function<void(void *arg)> WiFiScanDoneHandler;
@@ -46,7 +46,7 @@ namespace meow
          * @return true - Якщо точка доступу створена успішно.
          * @return false - Інакше.
          */
-        bool createAP(String &ssid, String &pwd, uint8_t max_connection = 1, uint8_t wifi_chan = 1, bool is_hidden = false);
+        bool createAP(const String &ssid, const String &pwd, uint8_t max_connection = 1, uint8_t wifi_chan = 1, bool is_hidden = false);
 
         /**
          * @brief Встановлює обробник події, який буде викликано після завершення спроби підключення до точки доступу.
