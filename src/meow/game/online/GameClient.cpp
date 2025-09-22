@@ -38,7 +38,7 @@ namespace meow
 
         if (!_wifi.isConnected())
         {
-            log_e("%s", STR_ERR_ROUTER_NOT_CONNECTED);
+            log_e("%s", STR_ROUTER_NOT_CONNECTED);
             return false;
         }
 
