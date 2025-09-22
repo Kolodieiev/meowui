@@ -4,7 +4,6 @@
 #include "meow/manager/WiFiManager.h"
 #include "meow/manager/FileManager.h"
 
-
 namespace meow
 {
     FileServer::~FileServer()
@@ -12,52 +11,48 @@ namespace meow
         stop();
     }
 
-    bool FileServer::begin(const char *server_dir, ServerMode mode)
+    bool FileServer::begin(const char *server_path, ServerMode mode)
     {
         if (_is_working)
             return false;
 
-        _server_dir = server_dir;
-
-        if (!_server_dir.equals("/") && _server_dir.endsWith("/"))
-            _server_dir.remove(1, -1);
-
-        if (_server_dir.isEmpty())
-            _server_dir = "/";
+        _server_path = server_path;
+        _server_mode = mode;
 
         if (!_sd.isMounted())
             return false;
 
-        if (!_fs.dirExist(_server_dir.c_str()))
+        if (_server_mode != SERVER_MODE_SEND_FILE)
+        {
+            if (!_server_path.equals("/") && _server_path.endsWith("/"))
+                _server_path.remove(1, -1);
+
+            if (_server_path.isEmpty())
+                _server_path = "/";
+
+            if (!_fs.dirExist(_server_path.c_str()))
+                return false;
+        }
+        else if (!_fs.fileExist(_server_path.c_str()))
             return false;
 
         _server_ip = "http://";
 
         if (!_wifi.isConnected())
         {
+            log_i("%s", STR_ROUTER_NOT_CONNECTED);
+            log_i("Створюю власну AP");
+
             if (_ssid.isEmpty())
             {
-                log_e("%s", STR_ERR_ROUTER_NOT_CONNECTED);
+                log_e("Не вказано SSID");
                 return false;
             }
-            else
-            {
-                _wifi.tryConnectTo(_ssid, _pwd);
-                vTaskDelay(3000 / portTICK_PERIOD_MS);
-            }
 
-            if (!_wifi.isConnected())
-            {
-                log_e("Помилка підключення. Створюю власну AP");
-                if (!_wifi.createAP(_ssid, _pwd, 1))
-                    return false;
+            if (!_wifi.createAP(_ssid, _pwd, 1))
+                return false;
 
-                _server_ip += _wifi.getAPIP();
-            }
-            else
-            {
-                _server_ip += _wifi.getLocalIP();
-            }
+            _server_ip += _wifi.getAPIP();
         }
         else
         {
@@ -66,21 +61,12 @@ namespace meow
 
         log_i("File server addr: %s", _server_ip.c_str());
 
-        _server_mode = mode;
-
         BaseType_t result = xTaskCreatePinnedToCore(startWebServer, "fileServerTask", (1024 / 2) * 20, this, 10, NULL, 1);
 
         if (result == pdPASS)
         {
             _is_working = true;
-
             log_i("File server is working now");
-
-            if (_server_mode == SERVER_MODE_RECEIVE)
-                log_i("mode == SERVER_MODE_RECEIVE");
-            else
-                log_i("mode == SERVER_MODE_SEND");
-
             return true;
         }
         else
@@ -128,21 +114,25 @@ namespace meow
             _server->on("/upload", HTTP_POST, []() {}, [this]()
                         { this->handleFile(); });
         }
-        else
+        else if (_server_mode == SERVER_MODE_SEND)
         {
             _server->on("/", HTTP_GET, [this]()
                         { this->handleSend(); });
+        }
+        else
+        {
+            _server->on("/", HTTP_GET, [this]()
+                        { this->handleSendFile(); });
         }
 
         _server->onNotFound([this]()
                             { this->handle404(); });
 
-
         _server->begin();
 
         // cppcheck-suppress-begin knownConditionTrueFalse
-        _must_work = true; 
-        while (_must_work) 
+        _must_work = true;
+        while (_must_work)
         {
             _server->handleClient();
             vTaskDelay(1 / portTICK_PERIOD_MS);
@@ -166,14 +156,16 @@ namespace meow
     {
         if (_server->args() > 0)
         {
-            String path = _server_dir;
+            String path = _server_path;
             path += "/";
             path += _server->arg(0);
 
             FILE *file = _fs.openFile(path.c_str(), "rb");
 
-            if (!file || !_fs.fileExist(path.c_str()))
+            if (!file)
+            {
                 handle404();
+            }
             else
             {
                 size_t f_size = _fs.getFileSize(path.c_str());
@@ -189,9 +181,9 @@ namespace meow
         // Якщо відсутні параметри, відобразити список файлів в директорії
         else
         {
-            if (!_fs.dirExist(_server_dir.c_str()))
+            if (!_fs.dirExist(_server_path.c_str()))
             {
-                log_e("Помилка відкриття директорії %s", _server_dir.c_str());
+                log_e("Помилка відкриття директорії %s", _server_path.c_str());
                 _server->send(500, "text/html", "");
                 return;
             }
@@ -201,7 +193,7 @@ namespace meow
             html += MID_HTML;
 
             std::vector<FileInfo> f_infos;
-            _fs.indexFiles(f_infos, _server_dir.c_str());
+            _fs.indexFiles(f_infos, _server_path.c_str());
 
             for (auto &info : f_infos)
             {
@@ -218,6 +210,31 @@ namespace meow
         }
     }
 
+    void FileServer::handleSendFile()
+    {
+        FILE *file = _fs.openFile(_server_path.c_str(), "rb");
+
+        if (!file)
+        {
+            handle404();
+        }
+        else
+        {
+            size_t f_size = _fs.getFileSize(_server_path.c_str());
+
+            int pos = _server_path.lastIndexOf('/');
+            String filename = (pos == -1) ? _server_path : _server_path.substring(pos + 1);
+
+            FileStream f_stream(file, filename.c_str(), f_size);
+
+            _server->sendHeader("Content-Type", "application/force-download");
+            _server->sendHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+            _server->sendHeader("Content-Transfer-Encoding", "binary");
+            _server->sendHeader("Cache-Control", "no-cache");
+            _server->streamFile(f_stream, "application/octet-stream");
+        }
+    }
+
     void FileServer::handleFile()
     {
         HTTPUpload &uploadfile = _server->upload();
@@ -225,7 +242,7 @@ namespace meow
 
         if (uploadfile.status == UPLOAD_FILE_START)
         {
-            String filename = _server_dir;
+            String filename = _server_path;
             filename += "/";
             filename += uploadfile.filename;
 
