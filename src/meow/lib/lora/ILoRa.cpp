@@ -46,12 +46,11 @@ namespace meow
 
     bool ILoRa::writeSettings(bool temporary)
     {
-        if (!isInited())
+        if (!_is_inited)
             return false;
 
-        Mode prev_mode = getMode();
-
         setMode(MODE_NORMAL);
+        flushBuffer();
         setMode(MODE_CONFIG);
 
         configShadowReg();
@@ -62,10 +61,6 @@ namespace meow
             return false;
         }
 
-        if (prev_mode != MODE_CONFIG)
-            setMode(MODE_NORMAL);
-
-        flushBuffer();
         log_i("Налаштування збережено");
         return true;
     }
@@ -177,7 +172,7 @@ namespace meow
 
     void ILoRa::writePacket(const uint8_t *buff)
     {
-        if (!isInited())
+        if (!_is_inited)
             return;
 
         waitWhileBusy();
