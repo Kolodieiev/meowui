@@ -17,7 +17,7 @@ namespace meow
             return _is_connected;
         }
 
-        log_e("З'єднання з копроцесором встановлено");
+        log_i("З'єднання з копроцесором встановлено");
 
         _is_connected = true;
         return _is_connected;
