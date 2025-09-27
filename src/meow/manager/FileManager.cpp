@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+#define IDLE_WD_GUARD_TIME 250U
+
 namespace meow
 {
     void FileManager::makeFullPath(String &out_path, const char *path)
@@ -224,14 +226,14 @@ namespace meow
         size_t full_blocks = len / opt_size;
         size_t remaining_bytes = len % opt_size;
 
-        unsigned long last_delay_time = millis();
+        unsigned long ts = millis();
         for (size_t i = 0; i < full_blocks; ++i)
         {
             total_written += fwrite(static_cast<const uint8_t *>(buffer) + total_written, opt_size, 1, file) * opt_size;
-            if (millis() - last_delay_time > 1000)
+            if (millis() - ts > IDLE_WD_GUARD_TIME)
             {
                 vTaskDelay(1 / portTICK_PERIOD_MS);
-                last_delay_time = millis();
+                ts = millis();
             }
         }
 
@@ -438,7 +440,7 @@ namespace meow
         _rm_path = path;
         _is_canceled = false;
 
-        BaseType_t result = xTaskCreatePinnedToCore(rmTask, "rmTask", TASK_SIZE, this, 10, &_task_handler, 1);
+        BaseType_t result = xTaskCreatePinnedToCore(rmTask, "rmTask", TASK_SIZE, this, 10, &_task_handler, 0);
 
         if (result == pdPASS)
         {
@@ -545,8 +547,6 @@ namespace meow
 
             size_t writed_bytes_counter{0};
             size_t bytes_read;
-
-            unsigned long last_delay_time = millis();
             size_t byte_aval = 0;
 
             while (!_is_canceled && (byte_aval = available(o_f, file_size)) > 0)
@@ -558,12 +558,6 @@ namespace meow
                 //
                 writed_bytes_counter += writeOptimal(n_f, buffer, bytes_read);
                 _copy_progress = ((float)writed_bytes_counter / file_size) * 100;
-
-                if (millis() - last_delay_time > 1000)
-                {
-                    vTaskDelay(1 / portTICK_PERIOD_MS);
-                    last_delay_time = millis();
-                }
             }
         }
         else
@@ -618,7 +612,7 @@ namespace meow
         _is_canceled = false;
         _copy_progress = 0;
 
-        BaseType_t result = xTaskCreatePinnedToCore(copyFileTask, "copyFileTask", TASK_SIZE, this, 10, &_task_handler, 1);
+        BaseType_t result = xTaskCreatePinnedToCore(copyFileTask, "copyFileTask", TASK_SIZE, this, 10, &_task_handler, 0);
 
         if (result == pdPASS)
         {
@@ -655,7 +649,7 @@ namespace meow
         String filename;
         bool is_dir;
 
-        unsigned long last_delay_time = millis();
+        unsigned long ts = millis();
 
         while (1)
         {
@@ -699,10 +693,10 @@ namespace meow
                 break;
             }
 
-            if (millis() - last_delay_time > 1000)
+            if (millis() - ts > IDLE_WD_GUARD_TIME)
             {
                 vTaskDelay(1 / portTICK_PERIOD_MS);
-                last_delay_time = millis();
+                ts = millis();
             }
         }
 
