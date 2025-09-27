@@ -7,6 +7,8 @@
 #include "meowui_setup/context_id.h"
 #include "meowui_setup/ui_setup.h"
 
+#define WD_GUARD_TIME 1000UL
+
 namespace meow
 {
     void ContextManager::run()
@@ -19,7 +21,7 @@ namespace meow
 
         IContext *context = new START_CONTEXT();
 
-        // Основний цикл GUI.
+        unsigned long ts = millis();
         while (1)
         {
             if (!context->isReleased())
@@ -41,6 +43,12 @@ namespace meow
                 {
                     context = it->second();
                 }
+            }
+
+            if (millis() - ts > WD_GUARD_TIME)
+            {
+                vTaskDelay(1 / portTICK_PERIOD_MS);
+                ts = millis();
             }
         }
     }
