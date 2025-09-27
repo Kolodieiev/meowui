@@ -1,8 +1,7 @@
 #include "ILoRa.h"
 #define MAX_RESP_WAIT_TIME_MS 250UL
-#define PACKET_SENDING_DELAY 3U
+#define PACKET_SEND_DELAY 3U
 #define PACKET_RECEIVE_DELAY 5U
-#define MAX_PACKET_LEN 58U
 #define CONFIG_BAUD_RATE 9600UL
 #define NORMAL_BAUD_RATE 115200UL
 
@@ -10,10 +9,11 @@
 
 namespace meow
 {
-    ILoRa::ILoRa(AirDataRate min_data_rate, AirDataRate max_data_rate, uint8_t max_chann)
-        : _min_air_data_rate{min_data_rate},
-          _max_air_data_rate{max_data_rate},
-          _max_chann{max_chann}
+    ILoRa::ILoRa(AirDataRate min_data_rate, AirDataRate max_data_rate, uint16_t max_pack_len, uint8_t max_chann)
+        : MIN_AIR_DATA_RATE{min_data_rate},
+          MAX_AIR_DATA_RATE{max_data_rate},
+          MAX_PACK_LEN{max_pack_len},
+          MAX_CHANN_VAL{max_chann}
     {
     }
 
@@ -74,7 +74,7 @@ namespace meow
 
     void ILoRa::setPackLen(uint8_t len)
     {
-        if (len == 0 || len > MAX_PACKET_LEN)
+        if (len == 0 || len > MAX_PACK_LEN)
         {
             log_e("Некоректний розмір пакета: %u", len);
             esp_restart();
@@ -127,17 +127,17 @@ namespace meow
 
     void ILoRa::setAirDataRate(AirDataRate rate)
     {
-        if (rate < _min_air_data_rate)
-            _air_data_rate = _min_air_data_rate;
-        else if (rate > _max_air_data_rate)
-            _air_data_rate = _max_air_data_rate;
+        if (rate < MIN_AIR_DATA_RATE)
+            _air_data_rate = MIN_AIR_DATA_RATE;
+        else if (rate > MAX_AIR_DATA_RATE)
+            _air_data_rate = MAX_AIR_DATA_RATE;
         else
             _air_data_rate = rate;
     }
 
     void ILoRa::setChannel(uint8_t channel)
     {
-        channel > _max_chann ? _channel = _max_chann : _channel = channel;
+        channel > MAX_CHANN_VAL ? _channel = MAX_CHANN_VAL : _channel = channel;
     }
 
     void ILoRa::waitWhileBusy()
@@ -177,7 +177,6 @@ namespace meow
 
         waitWhileBusy();
         Serial1.write(buff, _packet_len);
-        vTaskDelay(PACKET_SENDING_DELAY / portTICK_PERIOD_MS);
     }
 
     bool ILoRa::readPack(uint8_t *out_buff)
