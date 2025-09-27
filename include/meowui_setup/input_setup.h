@@ -86,7 +86,7 @@ namespace meow
 #define BTN_TOUCH_TRESHOLD 65
 #endif
 
-#define PRESS_DURATION (unsigned long)1500 // Час, після спливання якого дія вважається утримуваною.
+#define PRESS_DURATION (unsigned long)1000 // Час, після спливання якого кнопка вважається утримуваною.
 
 #define PRESS_LOCK (unsigned long)700
 #define CLICK_LOCK (unsigned long)250
