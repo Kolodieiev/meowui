@@ -163,16 +163,16 @@ const PROGMEM fontinfo fontdata[] = {
 **                         Section 6: Colour enumeration
 ***************************************************************************************/
 // Default color definitions
-#define TFT_BLACK 0x0000                    /*   0,   0,   0 */
-#define TFT_NAVY 0x000F                     /*   0,   0, 128 */
-#define TFT_DARKGREEN 0x03E0                /*   0, 128,   0 */
-#define TFT_DARKCYAN 0x03EF                 /*   0, 128, 128 */
-#define TFT_MAROON 0x7800                   /* 128,   0,   0 */
-#define TFT_PURPLE 0x780F                   /* 128,   0, 128 */
-#define TFT_OLIVE 0x7BE0                    /* 128, 128,   0 */
-#define TFT_LIGHTGREY 0xD69A                /* 211, 211, 211 */
-#define TFT_LIME 0xA7E0                     
-#define TFT_DARKGREY 0x3186                 
+#define TFT_BLACK 0x0000     /*   0,   0,   0 */
+#define TFT_NAVY 0x000F      /*   0,   0, 128 */
+#define TFT_DARKGREEN 0x03E0 /*   0, 128,   0 */
+#define TFT_DARKCYAN 0x03EF  /*   0, 128, 128 */
+#define TFT_MAROON 0x7800    /* 128,   0,   0 */
+#define TFT_PURPLE 0x780F    /* 128,   0, 128 */
+#define TFT_OLIVE 0x7BE0     /* 128, 128,   0 */
+#define TFT_LIGHTGREY 0xD69A /* 211, 211, 211 */
+#define TFT_LIME 0xA7E0
+#define TFT_DARKGREY 0x3186
 #define TFT_BLUE 0x001F                     /*   0,   0, 255 */
 #define TFT_GREEN 0x07E0                    /*   0, 255,   0 */
 #define TFT_CYAN 0x07FF                     /*   0, 255, 255 */
@@ -261,7 +261,7 @@ const uint16_t default_4bit_palette[] PROGMEM = {
 typedef uint16_t (*getColorCallback)(uint16_t x, uint16_t y);
 
 // Class functions and variables
-class TFT_eSPI : public Print
+class TFT_eSPI
 {
   friend class TFT_eSprite; // Sprite class has access to protected members
 
@@ -513,12 +513,7 @@ public:
       fontHeight(void);         // Returns pixel width of string in current font
 
   // Used by library and Smooth font class to extract Unicode point codes from a UTF8 encoded string
-  uint16_t decodeUTF8(uint8_t *buf, uint16_t *index, uint16_t remaining),
-      decodeUTF8(uint8_t c);
-
-  // Support function to UTF8 decode and draw characters piped through print stream
-  size_t write(uint8_t);
-  // size_t   write(const uint8_t *buf, size_t len);
+  uint32_t decodeUTF8(const uint8_t *buf, uint16_t &byte_pos, uint16_t remaining);
 
   // Used by Smooth font class to fetch a pixel colour for the anti-aliasing
   void setCallback(getColorCallback getCol);

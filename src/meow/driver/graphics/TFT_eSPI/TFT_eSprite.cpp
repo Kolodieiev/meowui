@@ -2917,7 +2917,7 @@ void TFT_eSprite::printToSprite(char *cbuffer, uint16_t len) // String string)
     bool first = true;
     while (n < len)
     {
-      uint16_t unicode = decodeUTF8((uint8_t *)cbuffer, &n, len - n);
+      uint16_t unicode = decodeUTF8((uint8_t *)cbuffer, n, len - n);
       if (getUnicodeIndex(unicode, &index))
       {
         if (first)
@@ -2945,7 +2945,7 @@ void TFT_eSprite::printToSprite(char *cbuffer, uint16_t len) // String string)
 
   while (n < len)
   {
-    uint16_t unicode = decodeUTF8((uint8_t *)cbuffer, &n, len - n);
+    uint16_t unicode = decodeUTF8((uint8_t *)cbuffer, n, len - n);
     // Serial.print("Decoded Unicode = 0x");Serial.println(unicode,HEX);
     // Serial.print("n = ");Serial.println(n);
     drawGlyph(unicode);

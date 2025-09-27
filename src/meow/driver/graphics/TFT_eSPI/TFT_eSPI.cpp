@@ -4594,83 +4594,50 @@ uint8_t TFT_eSPI::getAttribute(uint8_t attr_id) {
     return false;
 }
 
-/***************************************************************************************
-** Function name:           decodeUTF8
-** Description:             Serial UTF-8 decoder with fall-back to extended ASCII
-*************************************************************************************x*/
-uint16_t TFT_eSPI::decodeUTF8(uint8_t c)
+uint32_t TFT_eSPI::decodeUTF8(const uint8_t *buf, uint16_t &byte_pos, uint16_t remaining)
 {
-  if (!_utf8) return c;
+  uint32_t codepoint = 0;
 
-  // 7 bit Unicode Code Point
-  if ((c & 0x80) == 0x00) {
-    decoderState = 0;
-    return c;
+  if ((buf[byte_pos] & 0x80) == 0x00)
+  {
+      // 1-byte sequence
+      codepoint = buf[byte_pos];
+      ++byte_pos;
   }
-
-  if (decoderState == 0) {
-    // 11 bit Unicode Code Point
-    if ((c & 0xE0) == 0xC0) {
-      decoderBuffer = ((c & 0x1F)<<6);
-      decoderState = 1;
-      return 0;
-    }
-    // 16 bit Unicode Code Point
-    if ((c & 0xF0) == 0xE0) {
-      decoderBuffer = ((c & 0x0F)<<12);
-      decoderState = 2;
-      return 0;
-    }
-    // 21 bit Unicode  Code Point not supported so fall-back to extended ASCII
-    // if ((c & 0xF8) == 0xF0) return c;
+  else if ((buf[byte_pos] & 0xE0) == 0xC0 && remaining > 1)
+  {
+      // 2-byte sequence
+      codepoint = (buf[byte_pos] & 0x1F) << 6;
+      ++byte_pos;
+      codepoint |= (buf[byte_pos] & 0x3F);
+      ++byte_pos;
   }
-  else {
-    if (decoderState == 2) {
-      decoderBuffer |= ((c & 0x3F)<<6);
-      decoderState--;
-      return 0;
-    }
-    else {
-      decoderBuffer |= (c & 0x3F);
-      decoderState = 0;
-      return decoderBuffer;
-    }
+  else if ((buf[byte_pos] & 0xF0) == 0xE0 && remaining > 2)
+  {
+      // 3-byte sequence
+      codepoint = (buf[byte_pos] & 0x0F) << 12;
+      ++byte_pos;
+      codepoint |= (buf[byte_pos] & 0x3F) << 6;
+      ++byte_pos;
+      codepoint |= (buf[byte_pos] & 0x3F);
+      ++byte_pos;
   }
-
-  decoderState = 0;
-
-  return c; // fall-back to extended ASCII
-}
-
-
-/***************************************************************************************
-** Function name:           decodeUTF8
-** Description:             Line buffer UTF-8 decoder with fall-back to extended ASCII
-*************************************************************************************x*/
-uint16_t TFT_eSPI::decodeUTF8(uint8_t *buf, uint16_t *index, uint16_t remaining)
-{
-  uint16_t c = buf[(*index)++];
-  //Serial.print("Byte from string = 0x"); Serial.println(c, HEX);
-
-  if (!_utf8) return c;
-
-  // 7 bit Unicode
-  if ((c & 0x80) == 0x00) return c;
-
-  // 11 bit Unicode
-  if (((c & 0xE0) == 0xC0) && (remaining > 1))
-    return ((c & 0x1F)<<6) | (buf[(*index)++]&0x3F);
-
-  // 16 bit Unicode
-  if (((c & 0xF0) == 0xE0) && (remaining > 2)) {
-    c = ((c & 0x0F)<<12) | ((buf[(*index)++]&0x3F)<<6);
-    return  c | ((buf[(*index)++]&0x3F));
+  else if ((buf[byte_pos] & 0xF8) == 0xF0 && remaining > 3)
+  {
+      // 4-byte sequence
+      codepoint = (buf[byte_pos] & 0x07) << 18;
+      ++byte_pos;
+      codepoint |= (buf[byte_pos] & 0x3F) << 12;
+      ++byte_pos;
+      codepoint |= (buf[byte_pos] & 0x3F) << 6;
+      ++byte_pos;
+      codepoint |= (buf[byte_pos] & 0x3F);
+      ++byte_pos;
   }
+  else
+      ++byte_pos;
 
-  // 21 bit Unicode not supported so fall-back to extended ASCII
-  // if ((c & 0xF8) == 0xF0) return c;
-
-  return c; // fall-back to extended ASCII
+  return codepoint;
 }
 
 
@@ -4728,85 +4695,6 @@ uint32_t TFT_eSPI::alphaBlend24(uint8_t alpha, uint32_t fgc, uint32_t bgc, uint8
   xxb += ((fgc & 0xFF0000) - xxb) * alpha >> 8;
   return (rxx & 0xFF0000) | (xgx & 0x00FF00) | (xxb & 0x0000FF);
 }
-
-/***************************************************************************************
-** Function name:           write
-** Description:             draw characters piped through serial stream
-***************************************************************************************/
-/* // Not all processors support buffered write
-#ifndef ARDUINO_ARCH_ESP8266 // Avoid ESP8266 board package bug
-size_t TFT_eSPI::write(const uint8_t *buf, size_t len)
-{
-  inTransaction = true;
-
-  uint8_t *lbuf = (uint8_t *)buf;
-  while(*lbuf !=0 && len--) write(*lbuf++);
-
-  inTransaction = lockTransaction;
-  end_tft_write();
-  return 1;
-}
-#endif
-*/
-/***************************************************************************************
-** Function name:           write
-** Description:             draw characters piped through serial stream
-***************************************************************************************/
-size_t TFT_eSPI::write(uint8_t utf8)
-{
-  if (_vpOoB) return 1;
-
-  uint16_t uniCode = decodeUTF8(utf8);
-
-  if (!uniCode) return 1;
-
-  if (utf8 == '\r') return 1;
-
-  if (uniCode == '\n') uniCode+=22; // Make it a valid space character to stop errors
-
-  uint16_t cwidth = 0;
-  uint16_t cheight = 0;
-
-
-  if (textfont == 2) {
-	   
-    if ((uniCode > 127 && uniCode < 1025) || uniCode > 1169) return 1;
- 
-    cwidth = pgm_read_byte(widtbl_f2 + uniCode-32);
-    cheight = chr_hgt_font2;
-                                // Font 2 is rendered in whole byte widths so we must allow for this
-    cwidth = (cwidth + 6) / 8;  // Width in whole bytes for font 2, should be + 7 but must allow for font width change
-    cwidth = cwidth * 8;        // Width converted back to pixels
-  }
-  else if (textfont == 4) {
-
-    if ((uniCode > 127 && uniCode < 1025) || uniCode > 1169) return 1;
-
-    cwidth = pgm_read_byte(widtbl_f4 + uniCode-32);
-    cheight = chr_hgt_font4;
-    cwidth = (cwidth + 6) / 8;  
-    cwidth = cwidth * 8;       
-
-  }else if (textfont==1) return 1;
-
-  cheight = cheight * textsize;
-
-  if (utf8 == '\n') {
-    cursor_y += cheight;
-    cursor_x  = 0;
-  }
-  else {
-    if (textwrapX && (cursor_x + cwidth * textsize > width())) {
-      cursor_y += cheight;
-      cursor_x = 0;
-    }
-    if (textwrapY && (cursor_y >= (int32_t) height())) cursor_y = 0;
-    cursor_x += drawChar(uniCode, cursor_x, cursor_y, textfont);
-  }
-
-  return 1;
-}
-
 
 /***************************************************************************************
 ** Function name:           drawChar
@@ -5072,13 +4960,12 @@ int16_t TFT_eSPI::drawString(const char *string, int32_t poX, int32_t poY, uint8
   uint16_t n = 0;
 
     while (n < len) {
-      uint16_t uniCode = decodeUTF8((uint8_t*)string, &n, len - n);
+      uint16_t uniCode = decodeUTF8((uint8_t*)string, n, len - n);
       sumX += drawChar(uniCode, poX+sumX, poY, font);
     }
 
 return sumX;
 }
-
 
 /***************************************************************************************
 ** Function name:           drawCentreString (deprecated, use setTextDatum())
