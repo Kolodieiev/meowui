@@ -94,7 +94,11 @@ namespace meow
 
         size_t bytes_written{0};
 
-        if (only_left_chan)
+        if (!only_left_chan)
+        {
+            i2s_channel_write(_i2s_tx_handle, buffer, buff_len * sizeof(int16_t), &bytes_written, portMAX_DELAY);
+        }
+        else
         {
             int16_t buffer_copy[buff_len * 2];
             int16_t *dst = buffer_copy;
@@ -106,10 +110,6 @@ namespace meow
             }
 
             i2s_channel_write(_i2s_tx_handle, buffer_copy, buff_len * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
-        }
-        else
-        {
-            i2s_channel_write(_i2s_tx_handle, buffer, buff_len * sizeof(int16_t), &bytes_written, portMAX_DELAY);
         }
 
         return bytes_written;
