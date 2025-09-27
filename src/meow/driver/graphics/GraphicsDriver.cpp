@@ -7,16 +7,18 @@
 namespace meow
 {
 #ifdef DOUBLE_BUFFERRING
-    volatile xSemaphoreHandle GraphicsDriver::_sync_mutex;
-    volatile bool GraphicsDriver::_has_frame{false};
-    volatile bool GraphicsDriver::_take_screenshot{false};
 
-    TFT_eSprite *GraphicsDriver::_rend_buf_ptr;
+#ifdef ENABLE_SCREENSHOTER
+    void GraphicsDriver::takeScreenshot()
+    {
+        _take_screenshot = true;
+    }
+#endif // ENABLE_SCREENSHOTER
 
     GraphicsDriver::GraphicsDriver()
     {
         _sync_mutex = xSemaphoreCreateMutex();
-        xTaskCreatePinnedToCore(displayRendererTask, "displayRendererTask", (1024 / 2) * 15, NULL, 10, NULL, 0);
+        xTaskCreatePinnedToCore(displayRendererTask, "dRend", 5 * 512, this, 11, nullptr, 0);
     }
 
     void GraphicsDriver::init()
@@ -54,16 +56,15 @@ namespace meow
             esp_restart();
         }
 
-        _rend_buf_ptr = &_renderer_buf;
 #else
-        log_e("Розкоментуйте відповідний прапор в налаштуваннях драйвера графіки");
+        log_e("Розкоментуй відповідний прапор в налаштуваннях драйвера графіки");
         esp_restart();
 #endif // GRAPHICS_ENABLED
     }
 
     void GraphicsDriver::pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint16_t *data)
     {
-        _is_buffer_changed = true;
+        _is_buff_changed = true;
         _flick_buf.setSwapBytes(true);
         _flick_buf.pushImage(x, y, w, h, data);
         _flick_buf.setSwapBytes(false);
@@ -71,22 +72,15 @@ namespace meow
 
     void GraphicsDriver::pushRotated(TFT_eSprite &sprite, uint16_t x_pivot, uint16_t y_pivot, int16_t angle, uint32_t transparent_color)
     {
-        _is_buffer_changed = true;
+        _is_buff_changed = true;
         _flick_buf.setPivot(x_pivot, y_pivot);
         sprite.pushRotated(&_flick_buf, angle, transparent_color);
         _flick_buf.setPivot(0, 0);
     }
 
-#ifdef ENABLE_SCREENSHOTER
-    void GraphicsDriver::takeScreenshot()
-    {
-        _take_screenshot = true;
-    }
-#endif
-
     void GraphicsDriver::_pushBuffer()
     {
-        if (_is_buffer_changed)
+        if (_is_buff_changed)
         {
 #ifdef SHOW_FPS
             if (millis() - _frame_timer < 1000)
@@ -107,63 +101,62 @@ namespace meow
             _flick_buf.setTextSize(1);
             _flick_buf.drawString(String(_frame_counter), fps_x_pos, 0);
 
-#endif
-            _is_buffer_changed = false;
+#endif // SHOW_FPS
+            _is_buff_changed = false;
 
             xSemaphoreTake(_sync_mutex, portMAX_DELAY);
+            _has_frame = true;
 #if defined(COLOR_16BIT)
             _flick_buf.fastCopy16(_renderer_buf);
 #else
             _flick_buf.fastCopy8(_renderer_buf);
 #endif
             xSemaphoreGive(_sync_mutex);
-
-            _has_frame = true;
         }
     }
 
     void GraphicsDriver::displayRendererTask(void *params)
     {
-        while (true)
-        {
-            if (_has_frame)
-            {
-                xSemaphoreTake(_sync_mutex, portMAX_DELAY);
+        GraphicsDriver &self = *static_cast<GraphicsDriver *>(params);
 
-                _has_frame = false;
-                _rend_buf_ptr->pushSprite(0, 0);
+        while (1)
+        {
+            if (self._has_frame)
+            {
+                xSemaphoreTake(self._sync_mutex, portMAX_DELAY);
+
+                self._has_frame = false;
+                self._renderer_buf.pushSprite(0, 0);
 
 #ifdef ENABLE_SCREENSHOTER
-                if (_take_screenshot)
+                if (self._take_screenshot)
                 {
-                    _take_screenshot = false;
+                    self._take_screenshot = false;
 
                     BmpUtil util;
                     BmpHeader header;
-                    header.width = _rend_buf_ptr->width();
-                    header.height = _rend_buf_ptr->height();
+                    header.width = self._rend_buf_ptr->width();
+                    header.height = self._rend_buf_ptr->height();
 
                     String path_to_bmp = "/screenshot_";
                     path_to_bmp += millis();
                     path_to_bmp += ".bmp";
 
-                    bool res = util.saveBmp(header, static_cast<uint16_t *>(_rend_buf_ptr->getPointer()), path_to_bmp.c_str());
+                    bool res = util.saveBmp(header, static_cast<uint16_t *>(self._rend_buf_ptr->getPointer()), path_to_bmp.c_str());
 
                     if (res)
                         log_i("Скріншот успішно збережено");
                     else
                         log_e("Помилка створення скріншоту");
                 }
-#endif
-
-                xSemaphoreGive(_sync_mutex);
+#endif // ENABLE_SCREENSHOTER
+                xSemaphoreGive(self._sync_mutex);
             }
-
-            delay(1);
+            vTaskDelay(1 / portTICK_PERIOD_MS);
         }
     }
 
-#else // not DOUBLE_BUFFERRING
+#else  // not DOUBLE_BUFFERRING
     GraphicsDriver::GraphicsDriver()
     {
     }
@@ -201,7 +194,7 @@ namespace meow
         _tft.pushImage(x, y, w, h, data, transparent);
         _tft.setSwapBytes(false);
     }
-#endif
+#endif // DOUBLE_BUFFERRING
 
 #ifdef BACKLIGHT_PIN
     void meow::GraphicsDriver::enableBackLight()
@@ -221,7 +214,7 @@ namespace meow
         ledcAttach(BACKLIGHT_PIN, PWM_FREQ, PWM_RESOLUTION);
         ledcWrite(BACKLIGHT_PIN, value);
     }
-#endif
+#endif // BACKLIGHT_PIN
 
     GraphicsDriver _display;
 }
