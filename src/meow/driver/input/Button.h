@@ -41,7 +41,6 @@ namespace meow
         unsigned long _hold_duration{0};
         //
         const uint8_t _btn_id;
-        int8_t _pad;
         //
         const bool _is_touch;
         bool _is_locked{false};
