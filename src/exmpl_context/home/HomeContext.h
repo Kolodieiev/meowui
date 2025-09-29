@@ -26,15 +26,11 @@ private:
         ID_DAY_LBL,
     };
 
-    const unsigned long UPD_DISPLAY_INTERVAL{5000};
-    const uint8_t PIN_VOLT_MEASH{18};
-    // const uint8_t PIN_VOLT_MEASH{17}; У виправленій схемі
+    void updateBatCap();
 
-    Image *_bat_ico;
-    uint16_t *_wallpaper_ptr{nullptr};
     unsigned long _upd_timer{0};
 
+    Image *_bat_ico{nullptr};
+    uint16_t *_wallpaper_ptr{nullptr};
     Label *_bat_cap_lbl{nullptr};
-
-    void updateBatCap();
 };

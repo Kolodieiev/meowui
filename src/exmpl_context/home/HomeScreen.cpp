@@ -9,6 +9,10 @@
 //
 #include "meow/util/img/BmpUtil.h"
 
+#define UPD_DISPLAY_INTERVAL 5000UL
+#define PIN_VOLT_MEASH 18
+// #define PIN_VOLT_MEASH 17 // У виправленій схемі
+
 HomeContext::HomeContext()
 {
     WidgetCreator creator;
