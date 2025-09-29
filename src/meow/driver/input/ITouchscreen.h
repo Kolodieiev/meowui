@@ -19,7 +19,7 @@ namespace meow
         virtual ~ITouchscreen() {}
 
         virtual void setRotation(uint8_t rotation) = 0;
-        virtual void _update() = 0;
+        virtual void __update() = 0;
 
         void reset();
 

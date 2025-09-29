@@ -18,7 +18,7 @@ namespace meow
 {
         Input::Input() {}
 
-        void Input::_init()
+        void Input::__init()
         {
 #ifdef TOUCHSCREEN_SUPPORT
 #ifdef GT911_DRIVER
@@ -36,7 +36,7 @@ namespace meow
                 _buttons = BUTTONS;
         }
 
-        void Input::_update()
+        void Input::__update()
         {
 #ifdef TOUCHSCREEN_SUPPORT
                 _touchscreen->update();
@@ -46,10 +46,10 @@ namespace meow
                 _ext_input.update();
 
                 for (auto &&btn : _buttons)
-                        btn.second->_extUpdate(_ext_input.getBtnState(btn.first));
+                        btn.second->__extUpdate(_ext_input.getBtnState(btn.first));
 #else
                 for (auto &&btn : _buttons)
-                        btn.second->_update();
+                        btn.second->__update();
 #endif // EXT_INPUT
         }
 
@@ -63,7 +63,7 @@ namespace meow
                         btn.second->reset();
         }
 
-        void Input::_printPinMode(BtnID pin_id)
+        void Input::__printPinMode(BtnID pin_id)
         {
                 if ((gpio_num_t)pin_id >= GPIO_NUM_MAX)
                 {

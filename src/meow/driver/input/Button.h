@@ -18,8 +18,8 @@ namespace meow
         Button(uint8_t btn, bool is_touch);
 
         void lock(unsigned long lock_duration);
-        void _update();
-        void _extUpdate(bool is_holded);
+        void __update();
+        void __extUpdate(bool is_holded);
         void reset();
 
         uint8_t getID() const { return _btn_id; }
@@ -51,6 +51,6 @@ namespace meow
         bool _is_released{false};
         bool _is_enabled;
 
-        void updateSelfState();
+        void updateState();
     };
 }

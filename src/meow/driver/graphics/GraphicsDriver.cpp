@@ -78,7 +78,7 @@ namespace meow
         _flick_buf.setPivot(0, 0);
     }
 
-    void GraphicsDriver::_pushBuffer()
+    void GraphicsDriver::__pushBuffer()
     {
         if (_is_buff_changed)
         {

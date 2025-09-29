@@ -20,13 +20,13 @@ namespace meow
          * @brief Ініціалізує драйвер вводу відповідно до налаштувань. Не потрібно викликати метод самостійно.
          *
          */
-        void _init();
+        void __init();
 
         /**
          * @brief Оновлює стан вводу. Не потрібно викликати метод самостійно.
          *
          */
-        void _update();
+        void __update();
 
         /**
          * @brief Скидає стан вводу. Метод викликається контекстом перед його першим оновленням, щоб уникнути захоплення стану вводу з попереднього контексту.
@@ -101,7 +101,7 @@ namespace meow
          *
          * @param pin_id Номер піна мікроконтролера.
          */
-        void _printPinMode(BtnID pin_id);
+        void __printPinMode(BtnID pin_id);
 
 #ifdef TOUCHSCREEN_SUPPORT
         bool isHolded() const { return _touchscreen->isHolded(); }

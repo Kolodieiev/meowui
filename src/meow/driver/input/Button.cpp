@@ -26,7 +26,7 @@ namespace meow
         _lock_time = millis();
     }
 
-    void Button::_update()
+    void Button::__update()
     {
         if (!_is_enabled)
             return;
@@ -63,10 +63,10 @@ namespace meow
 #endif
         }
 
-        updateSelfState();
+        updateState();
     }
 
-    void Button::_extUpdate(bool is_holded)
+    void Button::__extUpdate(bool is_holded)
     {
         if (!_is_enabled)
             return;
@@ -80,10 +80,10 @@ namespace meow
 
         _is_holded = is_holded;
 
-        updateSelfState();
+        updateState();
     }
 
-    void Button::updateSelfState()
+    void Button::updateState()
     {
         if (!_is_holded)
         {

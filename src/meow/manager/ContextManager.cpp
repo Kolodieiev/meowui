@@ -17,7 +17,7 @@ namespace meow
         SPI_Manager::initBus(HSPI, TFT_SCLK, TFT_MISO, TFT_MOSI);
         _display.init();
 #endif
-        _input._init();
+        _input.__init();
 
         IContext *context = new START_CONTEXT();
 

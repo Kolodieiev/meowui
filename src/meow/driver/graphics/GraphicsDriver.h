@@ -129,7 +129,7 @@ namespace meow
                 void pushRotated(TFT_eSprite &sprite, uint16_t x_pivot, uint16_t y_pivot, int16_t angle, uint32_t transparent_color);
 
                 // Не викликай цей метод самостійно
-                void _pushBuffer();
+                void __pushBuffer();
 
         private:
                 static void displayRendererTask(void *params);
