@@ -119,7 +119,7 @@ private:
     std::vector<FileInfo> _files;
     //
     LuaContext *_lua_context{nullptr};
-    Notification *_notification;
+    Notification *_notification{nullptr};
     //
     void showFilesTmpl();
     void showCopyingTmpl();
