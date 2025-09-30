@@ -699,9 +699,9 @@ bool TFT_eSprite::getRotatedBounds(TFT_eSprite *spr, int16_t angle, int16_t *min
   // Clip bounding box to Sprite boundaries
   // Clipping to a viewport will be done by destination Sprite pushImage function
   if (*min_x < 0)
-    min_x = 0;
+    *min_x = 0;
   if (*min_y < 0)
-    min_y = 0;
+    *min_y = 0;
   if (*max_x > spr->width())
     *max_x = spr->width();
   if (*max_y > spr->height())
@@ -2464,11 +2464,6 @@ void TFT_eSprite::drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uin
   } // End classic vs custom font
 #endif
 #else
-#ifndef LOAD_GFXFF
-  color = color;
-  bg = bg;
-  size = size;
-#endif
 #endif
 }
 
