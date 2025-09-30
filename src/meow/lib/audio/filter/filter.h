@@ -21,7 +21,7 @@ private:
 class SimpleAGC
 {
 public:
-    SimpleAGC(float target_dB = -7.0f, float attack_rate = 0.2f, float release_rate = 0.1f)
+    explicit SimpleAGC(float target_dB = -7.0f, float attack_rate = 0.2f, float release_rate = 0.1f)
         : _target_level(target_dB), _attack(attack_rate), _release(release_rate), _gain(1.0f) {}
 
     void process(int16_t *buffer, size_t size);

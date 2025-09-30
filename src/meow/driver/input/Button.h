@@ -10,12 +10,12 @@ namespace meow
         /**
          * @brief Створює новий об'єкт віртуального піна.
          *
-         * @param btn Номер фізичного піна, до якого цей об'єкт буде прив'язано
+         * @param btn_id Номер фізичного піна, до якого цей об'єкт буде прив'язано
          * @param is_touch Вказує спосіб ініціалізації піна.
          * Якщо true - пін буде ініціалізовано як сенсорний датчик.
          * Якщо false - пін буде ініціалізовано як тактову кнопку.
          */
-        Button(uint8_t btn, bool is_touch);
+        Button(uint8_t btn_id, bool is_touch);
 
         void lock(unsigned long lock_duration);
         void __update();
@@ -27,7 +27,7 @@ namespace meow
         bool isPressed() const { return _is_pressed; }
         bool isReleased() const { return _is_released; }
 
-        bool operator<(const Button &other)
+        bool operator<(const Button &other) const
         {
             return _btn_id < other.getID();
         }

@@ -36,11 +36,11 @@ namespace meow
         /**
          * @brief Встановлює віджети, які будуть відображатися на панелі навігації.
          *
-         * @param start Крайній лівий віджет.
+         * @param first Крайній лівий віджет.
          * @param middle Центральний віджет.
          * @param last Крайній правий віджет.
          */
-        void setWidgets(IWidget *start, IWidget *middle, IWidget *last);
+        void setWidgets(IWidget *first, IWidget *middle, IWidget *last);
 
     private:
         using IWidget::isTransparent;

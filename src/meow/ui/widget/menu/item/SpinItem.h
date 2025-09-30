@@ -6,11 +6,12 @@
 
 namespace meow
 {
+    // cppcheck-suppress duplInheritedMember
     class SpinItem : public MenuItem
     {
     public:
         explicit SpinItem(uint16_t widget_ID);
-        virtual ~SpinItem();
+        virtual ~SpinItem() override;
 
         /**
          * @brief Викликає процедуру малювання віджета на дисплей.

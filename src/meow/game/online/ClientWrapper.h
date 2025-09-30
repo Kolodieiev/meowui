@@ -97,13 +97,9 @@ namespace meow
 
     protected:
         IPAddress _remote_ip;
-
         String _name;
-
-        unsigned long _last_act_time;
-
-        uint16_t _port;
-
+        unsigned long _last_act_time{0};
+        uint16_t _port{0};
         bool _is_confirmed{false};
     };
 } // namespace meow

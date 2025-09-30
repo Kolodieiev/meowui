@@ -219,13 +219,13 @@ namespace meow
         uint16_t calcYStrOffset() const;
         uint32_t calcRealStrLen(const String &str) const;
         uint16_t getFitStr(String &ret_str, uint16_t start_pos = 0) const;
-        String getSubStr(const String &str, uint16_t from, uint16_t length) const;
+        String getSubStr(const String &str, uint16_t start, uint16_t length) const;
         uint16_t calcTextPixels(uint16_t char_pos = 0) const;
         uint16_t getCharPos(uint32_t unicode) const;
 
     private:
         uint16_t charPosToByte(const uint8_t *buf, uint16_t char_pos) const;
-        uint32_t utf8ToUnicode(const uint8_t *buf, uint16_t &char_pos, uint16_t remaining) const;
+        uint32_t utf8ToUnicode(const uint8_t *buf, uint16_t &byte_pos, uint16_t remaining) const;
 
     protected:
         String _text{""};

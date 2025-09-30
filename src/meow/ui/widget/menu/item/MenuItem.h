@@ -8,11 +8,12 @@
 
 namespace meow
 {
+    // cppcheck-suppress duplInheritedMember
     class MenuItem : public IWidget
     {
     public:
         explicit MenuItem(uint16_t widget_ID, IWidget::TypeID type_ID = TYPE_ID_MENU_ITEM);
-        virtual ~MenuItem();
+        virtual ~MenuItem() override;
 
         /**
          * @brief Викликає процедуру малювання віджета на дисплей.

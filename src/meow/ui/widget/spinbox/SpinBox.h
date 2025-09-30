@@ -14,7 +14,7 @@ namespace meow
             TYPE_FLOAT
         };
 
-        explicit SpinBox(uint16_t widget_id);
+        explicit SpinBox(uint16_t widget_ID);
         virtual ~SpinBox() {}
 
         /**

@@ -30,7 +30,7 @@ namespace meow
         return connect();
     }
 
-    bool CoprocessorManager::sendCmd(const void *cmd_data, size_t data_size, uint8_t resp_delay)
+    bool CoprocessorManager::sendCmd(const void *cmd_data, size_t data_size, uint8_t resp_delay) const
     {
         if (!_is_connected)
             return false;
@@ -45,7 +45,7 @@ namespace meow
         return true;
     }
 
-    bool CoprocessorManager::readData(void *out_buf, size_t data_size)
+    bool CoprocessorManager::readData(void *out_buf, size_t data_size) const
     {
         if (!_is_connected)
             return false;

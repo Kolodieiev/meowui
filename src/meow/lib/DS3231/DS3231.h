@@ -11,15 +11,15 @@ namespace meow
     {
     public:
         bool begin();
-        bool isDateTimeValid();
-        bool isRunning();
-        bool enable();
-        bool disable();
-        bool setDateTime(const DS3231DateTime &date_time);
-        bool connected() const;
-        DS3231DateTime getDateTime();
-        uint8_t dayOfWeek(uint16_t year, uint8_t month, uint8_t day_of_month);
-        DS3231DateTime compiledToDS3231DateTime(const char *date, const char *time);
+        bool isDateTimeValid() const;
+        bool isRunning() const;
+        bool enable() const;
+        bool disable() const;
+        bool setDateTime(const DS3231DateTime &date_time) const;
+        bool isConnected() const;
+        DS3231DateTime getDateTime() const;
+        uint8_t dayOfWeek(uint16_t year, uint8_t month, uint8_t day_of_month) const;
+        DS3231DateTime compiledToDS3231DateTime(const char *date, const char *time) const;
 
     private:
         const uint8_t REG_TIMEDATE{0x00};

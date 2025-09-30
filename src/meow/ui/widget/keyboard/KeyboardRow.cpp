@@ -37,8 +37,7 @@ namespace meow
             cln->_old_back_color = _old_back_color;
             cln->_parent = _parent;
 
-            // cppcheck-suppress constVariableReference
-            for (const auto &widget_ptr : _widgets)
+            for (const IWidget *widget_ptr : _widgets)
                 cln->addWidget(widget_ptr->clone(widget_ptr->getID()));
 
             xSemaphoreGive(_widg_mutex);

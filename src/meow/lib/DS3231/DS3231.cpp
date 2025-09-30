@@ -33,7 +33,7 @@ namespace meow
         return success;
     }
 
-    bool DS3231::isDateTimeValid()
+    bool DS3231::isDateTimeValid() const
     {
         uint8_t status_reg;
         if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_STATUS, &status_reg, sizeof(status_reg)))
@@ -42,7 +42,7 @@ namespace meow
         return !(status_reg & _BV(STS_BIT_OSF));
     }
 
-    bool DS3231::isRunning()
+    bool DS3231::isRunning() const
     {
         uint8_t ctrl_reg;
         if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg)))
@@ -51,7 +51,7 @@ namespace meow
         return !(ctrl_reg & _BV(CNTRL_BIT_EOSC));
     }
 
-    bool DS3231::enable()
+    bool DS3231::enable() const
     {
         uint8_t ctrl_reg;
         if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg)))
@@ -61,7 +61,7 @@ namespace meow
         return _i2c.writeRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg));
     }
 
-    bool DS3231::disable()
+    bool DS3231::disable() const
     {
         uint8_t ctrl_reg;
         if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg)))
@@ -71,7 +71,7 @@ namespace meow
         return _i2c.writeRegister(DS3231_ADDR, DS3231_REG_CTRL, &ctrl_reg, sizeof(ctrl_reg));
     }
 
-    bool DS3231::setDateTime(const DS3231DateTime &date_time)
+    bool DS3231::setDateTime(const DS3231DateTime &date_time) const
     {
         uint8_t status_reg;
         if (!_i2c.readRegister(DS3231_ADDR, DS3231_REG_STATUS, &status_reg, sizeof(status_reg)))
@@ -107,12 +107,12 @@ namespace meow
         return _i2c.write(DS3231_ADDR, buffer, 8);
     }
 
-    bool DS3231::connected() const
+    bool DS3231::isConnected() const
     {
         return _i2c.hasConnect(DS3231_ADDR);
     }
 
-    DS3231DateTime DS3231::getDateTime()
+    DS3231DateTime DS3231::getDateTime() const
     {
         DS3231DateTime dt{0, 0, 0, 0, 0, 0};
 
@@ -148,7 +148,7 @@ namespace meow
         return dt;
     }
 
-    uint8_t DS3231::dayOfWeek(uint16_t year, uint8_t month, uint8_t day_of_month)
+    uint8_t DS3231::dayOfWeek(uint16_t year, uint8_t month, uint8_t day_of_month) const
     {
         for (uint8_t indexMonth = 1; indexMonth < month; ++indexMonth)
             day_of_month += *(DAYS_IN_MONTH + indexMonth - 1);
@@ -161,7 +161,7 @@ namespace meow
         return (day_of_month + 6) % 7;
     }
 
-    DS3231DateTime DS3231::compiledToDS3231DateTime(const char *date, const char *time)
+    DS3231DateTime DS3231::compiledToDS3231DateTime(const char *date, const char *time) const
     {
         DS3231DateTime dt;
 

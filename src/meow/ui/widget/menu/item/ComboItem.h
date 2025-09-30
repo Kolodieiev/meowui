@@ -5,11 +5,12 @@
 
 namespace meow
 {
+    // cppcheck-suppress duplInheritedMember
     class ComboItem : public MenuItem
     {
     public:
         explicit ComboItem(uint16_t widget_ID);
-        virtual ~ComboItem();
+        virtual ~ComboItem() override;
 
         /**
          * @brief Повертає вказівник на глибоку копію віджета.

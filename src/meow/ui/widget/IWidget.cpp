@@ -222,7 +222,7 @@ namespace meow
         _is_changed = true;
     }
 
-    bool IWidget::hasIntersectWithCoords(uint16_t x, uint16_t y)
+    bool IWidget::hasIntersectWithCoords(uint16_t x, uint16_t y) const
     {
         if (_parent)
             return (x > _parent->getXPos() + _x_pos && x < _parent->getXPos() + _x_pos + _width) &&

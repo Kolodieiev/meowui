@@ -132,9 +132,9 @@ namespace meow
         _toast_label->setPos(getCenterX(_toast_label), D_HEIGHT - _toast_label->getHeight() - 15);
     }
 
-    void IContext::showNotification(Notification *notifaction)
+    void IContext::showNotification(Notification *notification)
     {
-        _notification = notifaction;
+        _notification = notification;
     }
 
     void IContext::hideNotification()

@@ -77,7 +77,7 @@ namespace meow
          * Після формування вектора, результат сканування очищується.
          *
          */
-        void getScanResult(std::vector<String> &out_vector);
+        void getScanResult(std::vector<String> &out_vector) const;
 
         /**
          * @brief Очищує результат попереднього сканування точок доступу.

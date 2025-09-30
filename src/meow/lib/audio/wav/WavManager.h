@@ -47,10 +47,8 @@ namespace meow
 
     private:
         std::unordered_map<uint16_t, WavTrack *> _mix;
-
-        uint64_t _track_id;
-
-        TaskHandle_t _task_handle = NULL;
+        uint64_t _track_id{0};
+        TaskHandle_t _task_handle{nullptr};
 
         struct TaskParams
         {

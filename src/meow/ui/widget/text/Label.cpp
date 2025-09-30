@@ -261,7 +261,7 @@ namespace meow
 
         uint32_t length{0};
 
-        for (const char c : str) // cppcheck-suppress useStlAlgorithm
+        for (const char c : str)
         {
             if ((c & 0xC0) != 0x80)
                 ++length;

@@ -207,7 +207,7 @@ namespace meow
          * @return true - Якщо пересікається.
          * @return false - Інакше.
          */
-        bool hasIntersectWithPoint(uint16_t x, uint16_t y, bool rigid_only = false);
+        bool hasIntersectWithPoint(uint16_t x, uint16_t y, bool rigid_only = false) const;
 
         /**
          * @brief Перевіряє чи пересікається об'єкт з заданим колом.
@@ -219,7 +219,7 @@ namespace meow
          * @return true - Якщо пересікається.
          * @return false - Інакше.
          */
-        bool hasIntersectWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only = false);
+        bool hasIntersectWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only = false) const;
 
         /**
          * @brief Перевіряє чи пересікається об'єкт з заданим прямокутником.
@@ -232,7 +232,7 @@ namespace meow
          * @return true - Якщо пересікається.
          * @return false - Інакше.
          */
-        bool hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only = false);
+        bool hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only = false) const;
 
         /**
          * @brief Перевіряє чи матиме тверде тіло об'єкта пересічення з будь-яким іншим твердим тілом під час кроку в задані координати.

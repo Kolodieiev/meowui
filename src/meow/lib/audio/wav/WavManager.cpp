@@ -15,16 +15,16 @@ namespace meow
             delete mix_it->second;
     }
 
-    uint16_t WavManager::addToMix(WavTrack *sound)
+    uint16_t WavManager::addToMix(WavTrack *track)
     {
-        if (!sound)
+        if (!track)
         {
-            log_e("Помилка. sound == null");
+            log_e("Track ptr не може бути null");
             esp_restart();
         }
 
         ++_track_id;
-        _mix.insert(std::pair<uint16_t, WavTrack *>(_track_id, sound));
+        _mix.insert(std::pair<uint16_t, WavTrack *>(_track_id, track));
         return _track_id;
     }
 

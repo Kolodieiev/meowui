@@ -276,7 +276,7 @@ namespace meow
     }
   }
 
-  bool IGameObject::hasIntersectWithPoint(uint16_t x, uint16_t y, bool rigid_only)
+  bool IGameObject::hasIntersectWithPoint(uint16_t x, uint16_t y, bool rigid_only) const
   {
     if (rigid_only)
     {
@@ -295,7 +295,7 @@ namespace meow
             y <= _y_global + _sprite.height - 1);
   }
 
-  bool IGameObject::hasIntersectWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only)
+  bool IGameObject::hasIntersectWithCircle(uint16_t x_mid, uint16_t y_mid, uint16_t radius, bool rigid_only) const
   {
     float half_body_w;
     float half_body_h;
@@ -335,7 +335,7 @@ namespace meow
     return dx * dx + dy * dy <= radius * radius;
   }
 
-  bool IGameObject::hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only)
+  bool IGameObject::hasIntersectWithRect(uint16_t x_start, uint16_t y_start, uint16_t rect_width, uint16_t rect_height, bool rigid_only) const
   {
     if (rigid_only)
     {
@@ -372,7 +372,7 @@ namespace meow
 
     for (auto it = _game_objs.begin(), last_it = _game_objs.end(); it != last_it; ++it)
     {
-      IGameObject * obj = it->second;
+      const IGameObject * obj = it->second;
 
       if (obj != this && obj->hasIntersectWithRect(x_to, y_to, body_w, body_h, true))
         return true;

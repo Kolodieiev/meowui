@@ -71,7 +71,7 @@ namespace meow
     class FileStream : public Stream
     {
     public:
-        FileStream(FILE *file, const char *name, size_t size) : _file(file), _name{name}, _size{size} {}
+        FileStream(FILE *file, const char *name, size_t size) : _name{name}, _file(file), _size{size} {}
         virtual ~FileStream()
         {
             if (_file)

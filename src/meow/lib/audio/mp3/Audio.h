@@ -24,24 +24,24 @@ class AudioBuffer
 {
 
 public:
-    AudioBuffer(size_t maxBlockSize = 0);      // constructor
-    ~AudioBuffer();                            // frees the buffer
-    size_t init();                             // set default values
-    bool isInitialized() { return m_f_init; }; //
-    int32_t getBufsize();                      //
-    void changeMaxBlockSize(uint16_t mbs);     // is default 1600 for mp3 and aac, set 16384 for FLAC
-    uint16_t getMaxBlockSize();                // returns maxBlockSize
-    size_t freeSpace();                        // number of free bytes to overwrite
-    size_t writeSpace();                       // space fom writepointer to bufferend
-    size_t bufferFilled();                     // returns the number of filled bytes
-    size_t getMaxAvailableBytes();             // max readable bytes in one block
-    void bytesWritten(size_t bw);              // update writepointer
-    void bytesWasRead(size_t br);              // update readpointer
-    uint8_t *getWritePtr();                    // returns the current writepointer
-    uint8_t *getReadPtr();                     // returns the current readpointer
-    uint32_t getWritePos();                    // write position relative to the beginning
-    uint32_t getReadPos();                     // read position relative to the beginning
-    void resetBuffer();                        // restore defaults
+    explicit AudioBuffer(size_t maxBlockSize = 0);   // constructor
+    ~AudioBuffer();                                  // frees the buffer
+    size_t init();                                   // set default values
+    bool isInitialized() const { return m_f_init; }; //
+    int32_t getBufsize();                            //
+    void changeMaxBlockSize(uint16_t mbs);           // is default 1600 for mp3 and aac, set 16384 for FLAC
+    uint16_t getMaxBlockSize();                      // returns maxBlockSize
+    size_t freeSpace();                              // number of free bytes to overwrite
+    size_t writeSpace();                             // space fom writepointer to bufferend
+    size_t bufferFilled();                           // returns the number of filled bytes
+    size_t getMaxAvailableBytes();                   // max readable bytes in one block
+    void bytesWritten(size_t bw);                    // update writepointer
+    void bytesWasRead(size_t br);                    // update readpointer
+    uint8_t *getWritePtr();                          // returns the current writepointer
+    uint8_t *getReadPtr();                           // returns the current readpointer
+    uint32_t getWritePos();                          // write position relative to the beginning
+    uint32_t getReadPos();                           // read position relative to the beginning
+    void resetBuffer();                              // restore defaults
 
 protected:
     size_t m_buffSizePSRAM = UINT16_MAX * 10; // most webstreams limit the advance to 100...300Kbytes
@@ -77,7 +77,7 @@ public:
     bool setFilePos(uint32_t pos);
     bool setTimeOffset(int sec);
     bool pauseResume();
-    bool isRunning() { return m_f_running; }
+    bool isRunning() const { return m_f_running; }
     void loop();
     uint32_t stopSong();
     void forceMono(bool m);

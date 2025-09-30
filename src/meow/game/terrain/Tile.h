@@ -19,7 +19,7 @@ namespace meow
             TYPE_MUD = 1 << 6
         };
 
-        Tile(TileType type, const uint16_t *img_ptr) : _type{type}, _img_ptr{img_ptr} {}
+        Tile(TileType type, const uint16_t *img_ptr) : _img_ptr{img_ptr}, _type{type} {}
 
         const uint16_t *_img_ptr;
         const TileType _type;

@@ -48,9 +48,9 @@ namespace meow
             _view_y = _terrain_h - VIEW_H;
     }
 
-    uint16_t TerrainManager::coordToTilePos(uint16_t obj_pos)
+    uint16_t TerrainManager::coordToTilePos(uint16_t coord) const
     {
-        float temp_float_div = (float)obj_pos / _tile_side_len;
+        float temp_float_div = (float)coord / _tile_side_len;
         uint16_t rounded_div = round(temp_float_div);
 
         if (rounded_div > temp_float_div)
@@ -59,7 +59,7 @@ namespace meow
         return rounded_div;
     }
 
-    void TerrainManager::onDraw()
+    void TerrainManager::onDraw() const
     {
         if (_back_img)
             _display.pushImage(0, 0, VIEW_W, VIEW_H, _back_img);
@@ -169,7 +169,7 @@ namespace meow
         }
     }
 
-    bool TerrainManager::canPass(uint16_t x_from, uint16_t y_from, uint16_t x_to, uint16_t y_to, const SpriteDescription &sprite)
+    bool TerrainManager::canPass(uint16_t x_from, uint16_t y_from, uint16_t x_to, uint16_t y_to, const SpriteDescription &sprite) const
     {
         if (x_to > _terrain_w || y_to > _terrain_h || !_terrain)
             return false;
@@ -257,7 +257,7 @@ namespace meow
         return false;
     }
 
-    Tile::TileType TerrainManager::getTileType(uint16_t x, uint16_t y)
+    Tile::TileType TerrainManager::getTileType(uint16_t x, uint16_t y) const
     {
         if (x > _terrain_w || y > _terrain_h || !_terrain)
             return Tile::TYPE_NONE;
@@ -267,7 +267,7 @@ namespace meow
         return _terrain[tile_y_pos][tile_x_pos]->_type;
     }
 
-    bool TerrainManager::isInView(uint16_t x_pos, uint16_t y_pos, uint16_t sprite_w, uint16_t sprite_h)
+    bool TerrainManager::isInView(uint16_t x_pos, uint16_t y_pos, uint16_t sprite_w, uint16_t sprite_h) const
     {
         if (x_pos + sprite_w < _view_x || y_pos + sprite_h < _view_y || x_pos > _view_x + VIEW_W || y_pos > _view_y + VIEW_H)
             return false;

@@ -4,7 +4,7 @@
 
 namespace meow
 {
-    Image::Image(uint16_t wiget_ID) : IWidget(wiget_ID, TYPE_ID_IMAGE) {}
+    Image::Image(uint16_t widget_ID) : IWidget(widget_ID, TYPE_ID_IMAGE) {}
 
     void Image::setTranspColor(uint16_t color)
     {

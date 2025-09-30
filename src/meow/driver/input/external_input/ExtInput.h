@@ -17,7 +17,7 @@ namespace meow
     public:
         void init();
         void update();
-        bool getBtnState(uint8_t btn_pos);
+        bool getBtnState(uint8_t btn_pos) const;
         void enableBtn(uint8_t btn_pos);
         void disableBtn(uint8_t btn_pos);
 

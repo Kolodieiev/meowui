@@ -15,13 +15,13 @@ namespace meow
     {
 
     public:
-        bool isEnabled();
-        bool isAlarmed();
-        bool setAlarmData(const DS3231AlarmTime &alarmData);
-        DS3231AlarmTime getAlarmTime();
-        bool enable(bool enableWithoutExternalPower);
-        bool disable();
-        bool procAlarm();
+        bool isEnabled() const;
+        bool isAlarmed() const;
+        bool setAlarmData(const DS3231AlarmTime &alarmData) const;
+        DS3231AlarmTime getAlarmTime() const;
+        bool enable(bool enableWithoutExternalPower) const;
+        bool disable() const;
+        bool procAlarm() const;
 
     private:
         const uint8_t REG_ALARMTWO = 0x0B;

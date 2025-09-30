@@ -61,6 +61,8 @@ namespace meow
 
         log_i("File server addr: %s", _server_ip.c_str());
 
+        _must_work = true;
+
         BaseType_t result = xTaskCreatePinnedToCore(startWebServer, "fileServerTask", (1024 / 2) * 20, this, 10, NULL, 1);
 
         if (result == pdPASS)
@@ -130,14 +132,11 @@ namespace meow
 
         _server->begin();
 
-        // cppcheck-suppress-begin knownConditionTrueFalse
-        _must_work = true;
         while (_must_work)
         {
             _server->handleClient();
             vTaskDelay(1 / portTICK_PERIOD_MS);
         }
-        // cppcheck-suppress-end knownConditionTrueFalse
 
         _is_working = false;
         vTaskDelete(NULL);
@@ -195,7 +194,7 @@ namespace meow
             std::vector<FileInfo> f_infos;
             _fs.indexFiles(f_infos, _server_path.c_str());
 
-            for (auto &info : f_infos)
+            for (const auto &info : f_infos)
             {
                 html += HREF_HTML;
                 html += info.getName();

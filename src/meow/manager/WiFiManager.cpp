@@ -106,7 +106,7 @@ namespace meow
         return true;
     }
 
-    void WiFiManager::getScanResult(std::vector<String> &out_vector)
+    void WiFiManager::getScanResult(std::vector<String> &out_vector) const
     {
         out_vector.clear();
 

@@ -56,7 +56,7 @@ namespace meow
          * Інакше малює частину ігрового рівня найближчу до цих координат.
          *
          */
-        void onDraw();
+        void onDraw() const;
 
         /**
          * @brief Встановлює вказівник на фонове зображення ігрового рівня.
@@ -106,7 +106,7 @@ namespace meow
          * @param sprite Спрайт ігрового об'єкта.
          * @return true - Якщо об'єкт може бути переміщено в указані координатах ігрового рівня. false - інакше.
          */
-        bool canPass(uint16_t x_from, uint16_t y_from, uint16_t x_to, uint16_t y_to, const SpriteDescription &sprite);
+        bool canPass(uint16_t x_from, uint16_t y_from, uint16_t x_to, uint16_t y_to, const SpriteDescription &sprite) const;
 
         /**
          * @brief Повертає тип плитки у вказаних координатах.
@@ -115,7 +115,7 @@ namespace meow
          * @param y Координата плитки.
          * @return Tile::TileType тип плитки у вказаних координатах. Tile::TYPE_NONE - якщо плитка за вказаними координатами відсутня.
          */
-        Tile::TileType getTileType(uint16_t x, uint16_t y);
+        Tile::TileType getTileType(uint16_t x, uint16_t y) const;
 
         /**
          * @brief Встановлює позицію камери за вказаними координатами.
@@ -134,13 +134,13 @@ namespace meow
          * @param sprite_h Висота спрайта.
          * @return true - Якщо спрайт частково чи повністю потрапляє на зображення кадру. false - інакше.
          */
-        bool isInView(uint16_t x_pos, uint16_t y_pos, uint16_t sprite_w, uint16_t sprite_h);
+        bool isInView(uint16_t x_pos, uint16_t y_pos, uint16_t sprite_w, uint16_t sprite_h) const;
 
     private:
         void freeMem();
         void freeTilesDescriptionData();
 
-        uint16_t coordToTilePos(uint16_t coord);
+        uint16_t coordToTilePos(uint16_t coord) const;
 
     private:
         std::unordered_map<uint16_t, Tile *> _tile_descr; // Опис плиток
@@ -153,7 +153,7 @@ namespace meow
         const uint16_t VIEW_H;      // Висота view-порта
         const uint16_t HALF_VIEW_W; // Використовується для позиціонування об'єктів
         const uint16_t HALF_VIEW_H; // Використовується для позиціонування об'єктів
-        
+
     private:
         uint16_t _view_x{0};     // X верхнього лівого кута view-порта
         uint16_t _view_y{0};     // Y верхнього лівого кута view-порта

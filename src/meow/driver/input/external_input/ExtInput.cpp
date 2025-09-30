@@ -27,7 +27,7 @@ namespace meow
         }
     }
 
-    bool ExtInput::getBtnState(uint8_t btn_pos)
+    bool ExtInput::getBtnState(uint8_t btn_pos) const
     {
         uint8_t byte_index = btn_pos / 8;
 

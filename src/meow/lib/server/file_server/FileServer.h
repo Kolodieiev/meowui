@@ -98,7 +98,7 @@ namespace meow
 
         ServerMode _server_mode{SERVER_MODE_RECEIVE};
         //
-        bool _must_work = false;
+        bool _must_work{false};
         bool _is_working{false};
     };
 }

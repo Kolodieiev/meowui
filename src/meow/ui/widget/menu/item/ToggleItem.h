@@ -8,11 +8,12 @@
 
 namespace meow
 {
+    // cppcheck-suppress duplInheritedMember
     class ToggleItem final : public MenuItem
     {
     public:
         explicit ToggleItem(uint16_t widget_ID);
-        virtual ~ToggleItem();
+        virtual ~ToggleItem() override;
 
         /**
          * @brief Викликає процедуру малювання віджета на дисплей.

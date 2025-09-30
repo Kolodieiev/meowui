@@ -109,8 +109,8 @@
 
 // Create a null default font in case some fonts not used (to prevent crash)
 const uint8_t widtbl_null[1] = {0};
-PROGMEM const uint8_t chr_null[1] = {0};
-PROGMEM const uint8_t *const chrtbl_null[1] = {chr_null};
+const uint8_t chr_null[1] = {0};
+const uint8_t *const chrtbl_null[1] = {chr_null};
 
 // This is a structure to conveniently hold information on the default fonts
 // Stores pointer to font character image address table, width table and height
@@ -123,7 +123,7 @@ typedef struct
 } fontinfo;
 
 // Now fill the structure
-const PROGMEM fontinfo fontdata[] = {
+const fontinfo fontdata[] = {
     {(const uint8_t *)chrtbl_null, widtbl_null, 0, 0},
     {(const uint8_t *)chrtbl_null, widtbl_null, 8, 7},
 #ifdef LOAD_FONT2
@@ -192,7 +192,7 @@ const PROGMEM fontinfo fontdata[] = {
 #define TFT_TRANSPARENT 0xF81F // Колір rgb(255, 0, 255)
 
 // Default palette for 4 bit colour sprites
-const uint16_t default_4bit_palette[] PROGMEM = {
+const uint16_t default_4bit_palette[] = {
     TFT_BLACK,     //  0  ^
     TFT_BROWN,     //  1  |
     TFT_RED,       //  2  |
@@ -261,6 +261,7 @@ const uint16_t default_4bit_palette[] PROGMEM = {
 typedef uint16_t (*getColorCallback)(uint16_t x, uint16_t y);
 
 // Class functions and variables
+// cppcheck-suppress duplInheritedMember
 class TFT_eSPI
 {
   friend class TFT_eSprite; // Sprite class has access to protected members
@@ -442,7 +443,7 @@ public:
   void pushImage(int32_t x, int32_t y, int32_t w, int32_t h, uint16_t *data);
   void pushImage(int32_t x, int32_t y, int32_t w, int32_t h, uint16_t *data, uint16_t transparent);
 
-  // These are used to render images stored in FLASH (PROGMEM)
+  // These are used to render images stored in FLASH
   void pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint16_t *data, uint16_t transparent);
   void pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const uint16_t *data);
 

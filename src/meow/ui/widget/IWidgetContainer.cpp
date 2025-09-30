@@ -31,7 +31,7 @@ namespace meow
         xSemaphoreTake(_widg_mutex, portMAX_DELAY);
 
         // cppcheck-suppress constVariableReference
-        for (const auto &widget : _widgets)
+        for (const IWidget *widget : _widgets)
         {
             if (widget->getID() == search_ID)
             {

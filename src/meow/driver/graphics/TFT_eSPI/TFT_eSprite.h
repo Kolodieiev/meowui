@@ -8,6 +8,7 @@
 #pragma once
 #include "./TFT_eSPI.h"
 
+// cppcheck-suppress duplInheritedMember
 class TFT_eSprite : public TFT_eSPI
 {
 
@@ -172,26 +173,26 @@ private:
   void end_nin_write(void) override { ; }
 
 protected:
-  int32_t _sinra; // Sine of rotation angle in fixed point
-  int32_t _cosra; // Cosine of rotation angle in fixed point
+  int32_t _sinra{0}; // Sine of rotation angle in fixed point
+  int32_t _cosra{0}; // Cosine of rotation angle in fixed point
 
-  int32_t _xs, _ys, _xe, _ye, _xptr, _yptr; // for setWindow
-  int32_t _sx, _sy;                         // x,y for scroll zone
-  uint32_t _sw, _sh;                        // w,h for scroll zone
-  uint32_t _scolor;                         // gap fill colour for scroll zone
+  int32_t _xs{0}, _ys{0}, _xe{0}, _ye{0}, _xptr{0}, _yptr{0}; // for setWindow
+  int32_t _sx{0}, _sy{0};                                     // x,y for scroll zone
+  uint32_t _sw{0}, _sh{0};                                    // w,h for scroll zone
+  uint32_t _scolor{0};                                        // gap fill colour for scroll zone
 
-  int32_t _iwidth, _iheight; // Sprite memory image bit width and height (swapped during rotations)
-  int32_t _dwidth, _dheight; // Real sprite width and height (for <8bpp Sprites)
-  int32_t _bitwidth;         // Sprite image bit width for drawPixel (for <8bpp Sprites, not swapped)
+  int32_t _iwidth{0}, _iheight{0}; // Sprite memory image bit width and height (swapped during rotations)
+  int32_t _dwidth{0}, _dheight{0}; // Real sprite width and height (for <8bpp Sprites)
+  int32_t _bitwidth{0};            // Sprite image bit width for drawPixel (for <8bpp Sprites, not swapped)
 
-  uint16_t *_img;      // pointer to 16 bit sprite
-  uint16_t *_colorMap; // color map pointer: 16 entries, used with 4 bit color map.
-  uint8_t *_img8;      // pointer to  1 and 8 bit sprite frame 1 or frame 2
-  uint8_t *_img4;      // pointer to  4 bit sprite (uses color map)
-  uint8_t *_img8_1;    // pointer to frame 1
-  uint8_t *_img8_2;    // pointer to frame 2
+  uint16_t *_img{nullptr};      // pointer to 16 bit sprite
+  uint16_t *_colorMap{nullptr}; // color map pointer: 16 entries, used with 4 bit color map.
+  uint8_t *_img8{nullptr};      // pointer to  1 and 8 bit sprite frame 1 or frame 2
+  uint8_t *_img4{nullptr};      // pointer to  4 bit sprite (uses color map)
+  uint8_t *_img8_1{nullptr};    // pointer to frame 1
+  uint8_t *_img8_2{nullptr};    // pointer to frame 2
 
-  uint8_t _bpp;  // bits per pixel (1, 4, 8 or 16)
-  bool _created; // A Sprite has been created and memory reserved
-  bool _gFont = false;
+  uint8_t _bpp{16};     // bits per pixel (1, 4, 8 or 16)
+  bool _created{false}; // A Sprite has been created and memory reserved
+  bool _gFont{false};
 };

@@ -54,19 +54,19 @@ void HighPassFilter::init(float cutoff_freq, uint32_t sample_rate)
     float Q = 0.707f; // Чистий другий порядок (Butterworth)
     float alpha = sin_omega / (2.0f * Q);
 
-    float b0 = (1.0f + cos_omega) * 0.5f;
-    float b1 = -(1.0f + cos_omega);
-    float b2 = (1.0f + cos_omega) * 0.5f;
-    float a0 = 1.0f + alpha;
-    float a1 = -2.0f * cos_omega;
-    float a2 = 1.0f - alpha;
+    float B0 =  (1.0f + cos_omega) * 0.5f;
+    float B1 = -(1.0f + cos_omega);
+    float B2 =  (1.0f + cos_omega) * 0.5f;
 
-    // нормалізація
-    this->a0 = b0 / a0;
-    this->a1 = b1 / a0;
-    this->a2 = b2 / a0;
-    this->b1 = a1 / a0;
-    this->b2 = a2 / a0;
+    float A0 = 1.0f + alpha;
+    float A1 = -2.0f * cos_omega;
+    float A2 = 1.0f - alpha;
+
+    this->a0 = B0 / A0;
+    this->a1 = B1 / A0;
+    this->a2 = B2 / A0;
+    this->b1 = A1 / A0;
+    this->b2 = A2 / A0;
 
     x1 = x2 = y1 = y2 = 0.0f;
 }
@@ -99,9 +99,6 @@ void SimpleAGC::process(int16_t *buffer, size_t size)
 
     // Перетворення RMS в dB
     float rms_dB = 20.0f * log10f(rms / 32768.0f);
-
-    // Розрахунок необхідного коефіцієнта гейну
-    float target_gain = powf(10.0f, (_target_level - rms_dB) / 20.0f);
 
     // Плавне коригування гейну
     if (rms_dB > _target_level)

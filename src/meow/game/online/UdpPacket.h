@@ -120,19 +120,16 @@ namespace meow
          * Дані в буфері залишаються без змін.
          *
          */
-        void flush() { _index = 1; }
+        void resetDataCaret() { _index = 1; }
 
         /**
          * @brief Повертає поточну позицію каретки в буфері відносно секції даних.
          *
          * @return size_t
          */
-        size_t index() const { return _index - 1; }
+        size_t getDataIndex() const;
 
     private:
-        using DataStream::flush;
-        using DataStream::index;
-
         UdpPacket() {}
 
     private:

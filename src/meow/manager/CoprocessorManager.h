@@ -37,7 +37,7 @@ namespace meow
          * @return true - Якщо команду було успішно надіслано.
          * @return false - Інакше.
          */
-        bool sendCmd(const void *cmd_data, size_t data_size, uint8_t resp_delay = 0);
+        bool sendCmd(const void *cmd_data, size_t data_size, uint8_t resp_delay = 0) const;
 
         /**
          * @brief Зчитує дані з копроцесора по шині I2C.
@@ -47,7 +47,7 @@ namespace meow
          * @return true - Якщо було успішно отримано вказану кількість байтів.
          * @return false - Інакше.
          */
-        bool readData(void *out_buf, size_t data_size);
+        bool readData(void *out_buf, size_t data_size) const;
 
     private:
         bool _is_connected = false;

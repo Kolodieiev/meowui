@@ -64,7 +64,7 @@ namespace meow
         Serial1.write(cmd, sizeof(cmd));
         Serial1.write(_shadow_registers, sizeof(_shadow_registers));
 
-        if (!waitResponce(sizeof(sizeof(cmd) + sizeof(_shadow_registers))))
+        if (!waitResponce(sizeof(cmd) + sizeof(_shadow_registers)))
         {
             log_e("Помилка запису регістрів LoRa");
             return false;

@@ -101,7 +101,7 @@ namespace meow
          */
         const uint8_t *raw() const { return _buffer; }
 
-        operator bool()
+        operator bool() const
         {
             return _buffer != nullptr;
         }
@@ -111,7 +111,7 @@ namespace meow
 
     protected:
         uint8_t *_buffer{nullptr};
-        size_t _index;
-        size_t _size;
+        size_t _index{0};
+        size_t _size{0};
     };
 }

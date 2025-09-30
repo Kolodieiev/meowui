@@ -15,9 +15,8 @@ namespace meow
     }
 #endif // ENABLE_SCREENSHOTER
 
-    GraphicsDriver::GraphicsDriver()
+    GraphicsDriver::GraphicsDriver() : _sync_mutex{xSemaphoreCreateMutex()}
     {
-        _sync_mutex = xSemaphoreCreateMutex();
         xTaskCreatePinnedToCore(displayRendererTask, "dRend", 5 * 512, this, 11, nullptr, 0);
     }
 
