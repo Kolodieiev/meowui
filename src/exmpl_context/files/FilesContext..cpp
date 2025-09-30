@@ -844,9 +844,8 @@ void FilesContext::fillFilesTmpl()
 
 void FilesContext::startFileServer(FileServer::ServerMode mode)
 {
-    SettingsManager sm;
-    String ssid = sm.get(STR_PREF_FS_AP_SSID);
-    String pwd = sm.get(STR_PREF_FS_AP_PWD);
+    String ssid = SettingsManager::get(STR_PREF_FS_AP_SSID);
+    String pwd = SettingsManager::get(STR_PREF_FS_AP_PWD);
 
     if (ssid.isEmpty())
         ssid = STR_DEF_SSID;
@@ -871,9 +870,6 @@ void FilesContext::startFileServer(FileServer::ServerMode mode)
 
 void FilesContext::stopFileServer()
 {
-    if (!_is_back_eabled)
-        return;
-
     _server.stop();
 
     showFilesTmpl();

@@ -89,7 +89,6 @@ private:
     uint16_t *_qr_img_buff = nullptr;
     uint16_t _qr_width = 0;
     uint8_t _display_brightness = 125;
-    bool _is_back_eabled = true;
     //
     FixedMenu *_context_menu;
     ScrollBar *_scrollbar;
