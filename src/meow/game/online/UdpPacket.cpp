@@ -102,4 +102,12 @@ namespace meow
 
         return len;
     }
+
+    size_t UdpPacket::getDataIndex() const
+    {
+        if (_index > 0)
+            return _index - 1;
+            
+        return 0;
+    }
 }
