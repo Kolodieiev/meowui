@@ -10,5 +10,4 @@ void setup()
 void loop()
 {
     vTaskDelete(NULL);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
