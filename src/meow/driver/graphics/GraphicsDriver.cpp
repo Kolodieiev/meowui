@@ -135,14 +135,14 @@ namespace meow
 
                     BmpUtil util;
                     BmpHeader header;
-                    header.width = self._rend_buf_ptr->width();
-                    header.height = self._rend_buf_ptr->height();
+                    header.width = self._renderer_buf.width();
+                    header.height = self._renderer_buf.height();
 
                     String path_to_bmp = "/screenshot_";
                     path_to_bmp += millis();
                     path_to_bmp += ".bmp";
 
-                    bool res = util.saveBmp(header, static_cast<uint16_t *>(self._rend_buf_ptr->getPointer()), path_to_bmp.c_str());
+                    bool res = util.saveBmp(header, static_cast<uint16_t *>(self._renderer_buf.getPointer()), path_to_bmp.c_str());
 
                     if (res)
                         log_i("Скріншот успішно збережено");
