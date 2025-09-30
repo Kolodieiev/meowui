@@ -302,7 +302,7 @@ static int collectargs (char **argv, int *first) {
       case '-':  /* '--' */
         if (argv[i][2] != '\0')  /* extra characters after '--'? */
           return has_error;  /* invalid option */
-        *first = i + 1;
+       *first = (argv[i + 1] != NULL) ? i + 1 : 0;
         return args;
       case '\0':  /* '-' */
         return args;  /* script "name" is '-' */
@@ -490,10 +490,8 @@ static int incomplete (lua_State *L, int status) {
   if (status == LUA_ERRSYNTAX) {
     size_t lmsg;
     const char *msg = lua_tolstring(L, -1, &lmsg);
-    if (lmsg >= marklen && strcmp(msg + lmsg - marklen, EOFMARK) == 0) {
-      lua_pop(L, 1);
+    if (lmsg >= marklen && strcmp(msg + lmsg - marklen, EOFMARK) == 0)
       return 1;
-    }
   }
   return 0;  /* else... */
 }
@@ -508,9 +506,9 @@ static int pushline (lua_State *L, int firstline) {
   size_t l;
   const char *prmt = get_prompt(L, firstline);
   int readstatus = lua_readline(L, b, prmt);
-  if (readstatus == 0)
-    return 0;  /* no input (prompt will be popped by caller) */
   lua_pop(L, 1);  /* remove prompt */
+  if (readstatus == 0)
+    return 0;  /* no input */
   l = strlen(b);
   if (l > 0 && b[l-1] == '\n')  /* line ends with newline? */
     b[--l] = '\0';  /* remove it */
@@ -552,8 +550,9 @@ static int multiline (lua_State *L) {
     int status = luaL_loadbuffer(L, line, len, "=stdin");  /* try it */
     if (!incomplete(L, status) || !pushline(L, 0)) {
       lua_saveline(L, line);  /* keep history */
-      return status;  /* cannot or should not try to add continuation line */
+      return status;  /* should not or cannot try to add continuation line */
     }
+    lua_remove(L, -2);  /* remove error message (from incomplete line) */
     lua_pushliteral(L, "\n");  /* add newline... */
     lua_insert(L, -2);  /* ...between the two lines */
     lua_concat(L, 3);  /* join them */
@@ -666,3 +665,23 @@ static int pmain (lua_State *L) {
   lua_pushboolean(L, 1);  /* signal no errors */
   return 1;
 }
+
+
+int main (int argc, char **argv) {
+  int status, result;
+  lua_State *L = luaL_newstate();  /* create state */
+  if (L == NULL) {
+    l_message(argv[0], "cannot create state: not enough memory");
+    return EXIT_FAILURE;
+  }
+  lua_gc(L, LUA_GCSTOP);  /* stop GC while building state */
+  lua_pushcfunction(L, &pmain);  /* to call 'pmain' in protected mode */
+  lua_pushinteger(L, argc);  /* 1st argument */
+  lua_pushlightuserdata(L, argv); /* 2nd argument */
+  status = lua_pcall(L, 2, 1, 0);  /* do the call */
+  result = lua_toboolean(L, -1);  /* get result */
+  report(L, status);
+  lua_close(L);
+  return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+
