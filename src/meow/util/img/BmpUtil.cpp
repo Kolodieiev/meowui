@@ -4,32 +4,45 @@
 
 namespace meow
 {
+
+    bool BmpUtil::checkBmpFile(FILE *bmp_file, BmpHeader &out_bmp_header)
+    {
+        if (!_fs.readFromFile(bmp_file, &out_bmp_header, sizeof(BmpHeader)))
+            return false;
+
+        if (!validateHeader(out_bmp_header))
+        {
+            log_e("Помилка валідації bmp файлу");
+            return false;
+        }
+
+        return true;
+    }
+
     ImgData BmpUtil::loadBmp(const char *path_to_bmp)
     {
+        ImgData empty_bmp_data;
+
         if (!_fs.fileExist(path_to_bmp))
-            return _empty_data;
+            return empty_bmp_data;
 
-        FILE *f = _fs.openFile(path_to_bmp, "r");
-
-        if (!f)
-            return _empty_data;
+        FILE *bmp_file = _fs.openFile(path_to_bmp, "r");
+        if (!bmp_file)
+            return empty_bmp_data;
 
         BmpHeader bmp_header;
 
-        _fs.readFromFile(f, &bmp_header, BMP_HEADER_SIZE);
-
-        if (!validateHeader(bmp_header))
+        if (!checkBmpFile(bmp_file, bmp_header))
         {
-            _fs.closeFile(f);
-            log_e("Помилка валідації файлу: %s", path_to_bmp);
-            return _empty_data;
+            _fs.closeFile(bmp_file);
+            return empty_bmp_data;
         }
 
         if (!psramInit())
         {
-            _fs.closeFile(f);
+            _fs.closeFile(bmp_file);
             log_e("Помилка ініціалізації PSRAM");
-            return _empty_data;
+            return empty_bmp_data;
         }
         //
         bool is_flipped = bmp_header.height > 0;
@@ -42,20 +55,20 @@ namespace meow
         uint8_t *data = static_cast<uint8_t *>(ps_malloc(data_size));
         if (!data)
         {
-            _fs.closeFile(f);
+            _fs.closeFile(bmp_file);
             log_e("Помилка виділення %zu байтів PSRAM", data_size);
-            return _empty_data;
+            return empty_bmp_data;
         }
 
-        if (!_fs.readFromFile(f, data, data_size, bmp_header.data_offset))
+        if (!_fs.readFromFile(bmp_file, data, data_size, bmp_header.data_offset))
         {
             log_e("Помилка читання файлу: %s", path_to_bmp);
             free(data);
-            _fs.closeFile(f);
-            return _empty_data;
+            _fs.closeFile(bmp_file);
+            return empty_bmp_data;
         }
 
-        _fs.closeFile(f);
+        _fs.closeFile(bmp_file);
 
         uint16_t *data_temp = reinterpret_cast<uint16_t *>(data);
 
@@ -141,4 +154,5 @@ namespace meow
 
         return written_bytes == header.file_size;
     }
+
 }

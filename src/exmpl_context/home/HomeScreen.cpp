@@ -22,8 +22,7 @@ HomeContext::HomeContext()
 
     Image *wallpp_img = new Image(ID_WALLPAPER);
 
-    BmpUtil util;
-    ImgData bmp = util.loadBmp("/wall/wallpaper.bmp");
+    ImgData bmp = BmpUtil::loadBmp("/wall/wallpaper.bmp");
 
     if (bmp.width > 0)
     {

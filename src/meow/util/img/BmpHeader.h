@@ -25,10 +25,6 @@ namespace meow
         int32_t y_pixels_per_meter{0};
         uint32_t colors_used{0};
         uint32_t colors_important{0};
-        //
-        uint32_t red_mask{0xF800};
-        uint32_t green_mask{0x07E0};
-        uint32_t blue_mask{0x001F};
     };
 #pragma pack(pop)
 

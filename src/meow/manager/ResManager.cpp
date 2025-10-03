@@ -10,8 +10,7 @@ namespace meow
         if (!path_to_bmp)
             return 0;
 
-        BmpUtil util;
-        ImgData data = util.loadBmp(path_to_bmp);
+        ImgData data = BmpUtil::loadBmp(path_to_bmp);
 
         if (data.width == 0)
         {
