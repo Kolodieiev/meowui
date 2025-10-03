@@ -313,7 +313,7 @@ void WiFiContext::ok()
             if (!_fs.rmFile(path_to_pwd.c_str(), true))
                 showToast(STR_FAIL);
             else
-                showToast(STR_SUCCSESS);
+                showToast(STR_SUCCESS);
 
             hideContextMenu();
         }
@@ -531,7 +531,7 @@ void WiFiContext::connDoneHandler(void *arg, wl_status_t conn_status)
         self->showToast(STR_CONNECT_ERR, TOAST_LENGTH_LONG);
     else
     {
-        self->showToast(STR_SUCCSESS, TOAST_LENGTH_SHORT);
+        self->showToast(STR_SUCCESS, TOAST_LENGTH_SHORT);
         self->updateNetList(true);
     }
 }

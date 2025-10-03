@@ -982,7 +982,7 @@ void FilesContext::onPrevItemsLoad(std::vector<MenuItem *> &items, uint8_t size,
 void FilesContext::showResultToast(bool result)
 {
     if (result)
-        showToast(STR_SUCCSESS, TOAST_LENGTH_SHORT);
+        showToast(STR_SUCCESS, TOAST_LENGTH_SHORT);
     else
         showToast(STR_FAIL, TOAST_LENGTH_SHORT);
 }

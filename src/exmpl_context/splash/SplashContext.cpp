@@ -34,7 +34,7 @@ SplashContext::SplashContext()
     _sd.mount(meow::SPI_Manager::getSpi4Bus(SD_SPI_BUS));
 
     if (_sd.isMounted())
-        addLabel(DISPLAY_PADDING, y_pos, STR_SUCCSESS, TFT_GREEN);
+        addLabel(DISPLAY_PADDING, y_pos, STR_SUCCESS, TFT_GREEN);
     else
         addLabel(DISPLAY_PADDING, y_pos, STR_FAIL, TFT_RED);
 
@@ -45,7 +45,7 @@ SplashContext::SplashContext()
     // check psram
     bool psram_ok = psramInit();
     if (psram_ok)
-        addLabel(DISPLAY_PADDING, y_pos, STR_SUCCSESS, TFT_GREEN);
+        addLabel(DISPLAY_PADDING, y_pos, STR_SUCCESS, TFT_GREEN);
     else
         addLabel(DISPLAY_PADDING, y_pos, STR_FAIL, TFT_RED);
 
