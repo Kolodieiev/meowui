@@ -7,7 +7,7 @@ namespace meow
 #ifdef HAS_BATTERY
 
 #if !defined(PIN_VOLT_MEASH) || !defined(R_DIV_K) || !defined(VOLTAGE_SAMP_NUM)
-#error "Одине з необхідних налаштувань акумулятора не вказано!"
+#error "Одне з необхідних налаштувань акумулятора не вказано!"
 #endif
 
     static_assert(R_DIV_K != 0, "R_DIV_K must not be 0");
