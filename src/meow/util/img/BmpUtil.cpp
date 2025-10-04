@@ -4,7 +4,6 @@
 
 namespace meow
 {
-
     bool BmpUtil::checkBmpFile(FILE *bmp_file, BmpHeader &out_bmp_header)
     {
         if (!_fs.readFromFile(bmp_file, &out_bmp_header, sizeof(BmpHeader)))
@@ -105,15 +104,15 @@ namespace meow
 
     bool BmpUtil::validateHeader(const BmpHeader &bmp_header)
     {
-        if ((bmp_header.file_type != 0x4D42))
+        if ((bmp_header.file_type != BMP_FILE_TYPE))
         {
-            log_e("Не bmp");
+            log_e("Не bmp файл");
             return false;
         }
 
-        if ((bmp_header.bit_pp != 16))
+        if ((bmp_header.bit_pp != SUPORTED_BPP) || bmp_header.compression != COMPRESS_BI_BITFIELDS)
         {
-            log_e("Зображення повинне мати 16bpp");
+            log_e("Зображення повинне мати 16bpp в форматі 565");
             return false;
         }
 
