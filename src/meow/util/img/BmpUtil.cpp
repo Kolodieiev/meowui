@@ -125,7 +125,7 @@ namespace meow
         return true;
     }
 
-    bool BmpUtil::saveBmp(BmpHeader &header, const uint16_t *buff, const char *path_to_bmp)
+    bool BmpUtil::saveBmp(BmpHeader &header, const uint16_t *buff, const char *path_to_bmp, bool swap_data_bytes)
     {
         header.image_size = header.width * header.height * 2;
         header.file_size = header.data_offset + header.image_size;
@@ -139,19 +139,23 @@ namespace meow
             return false;
         }
 
-        const uint8_t *header_ptr = reinterpret_cast<uint8_t *>(&header);
-        for (uint32_t i = 0; i < header.data_offset; ++i)
-            data[i] = header_ptr[i];
+        memcpy(data, &header, header.data_offset);
 
-        uint16_t *data_p16 = reinterpret_cast<uint16_t *>(data + header.data_offset);
-        for (int i = 0; i < buf_size; ++i)
-            data_p16[i] = __bswap16(buff[i]);
-        //
+        if (!swap_data_bytes)
+        {
+            memcpy(data + header.data_offset, buff, buf_size * sizeof(uint16_t));
+        }
+        else
+        {
+            uint16_t *data_p16 = reinterpret_cast<uint16_t *>(data + header.data_offset);
+            for (int i = 0; i < buf_size; ++i)
+                data_p16[i] = __bswap16(buff[i]);
+        }
+
         size_t written_bytes = _fs.writeFile(path_to_bmp, data, header.file_size);
 
         free(data);
 
         return written_bytes == header.file_size;
     }
-
 }

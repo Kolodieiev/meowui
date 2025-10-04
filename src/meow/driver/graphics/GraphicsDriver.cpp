@@ -140,7 +140,7 @@ namespace meow
                     path_to_bmp += millis();
                     path_to_bmp += ".bmp";
 
-                    bool res = BmpUtil::saveBmp(header, static_cast<uint16_t *>(self._renderer_buf.getPointer()), path_to_bmp.c_str());
+                    bool res = BmpUtil::saveBmp(header, static_cast<uint16_t *>(self._renderer_buf.getPointer()), path_to_bmp.c_str(), true);
 
                     if (res)
                         log_i("Скріншот успішно збережено");

@@ -24,10 +24,11 @@ namespace meow
          * @param header Заголовок BMP-файлу.
          * @param buff Буфер з даними BMP.
          * @param path_to_bmp Шлях, куди повинен бути збережений файл без точки монтування.
+         * @param swap_data_bytes Прапор, який вказує на необхідність свапу байтів в масиві даних(BE/LE).
          * @return true - Якщо BMP було успішно збережено на карту пам'яті.
          * @return false - Інакше.
          */
-        static bool saveBmp(BmpHeader &header, const uint16_t *buff, const char *path_to_bmp);
+        static bool saveBmp(BmpHeader &header, const uint16_t *buff, const char *path_to_bmp, bool swap_data_bytes = false);
 
         /**
          * @brief Перевіряє BMP-файл, чи відповідає той вимогам системи для використання.
