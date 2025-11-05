@@ -1,0 +1,2 @@
+python -m esptool --chip esp32s3 merge-bin --output Meow.bin --flash-mode dio --flash-freq 80m --flash-size 16MB 0x0000 bootloader.bin 0x8000 partitions.bin 0xe000 boot_app0.bin 0x10000 firmware.bin
+python -m esptool --chip esp32s3 merge-bin --output Keira.bin --flash-mode dio --flash-freq 80m --flash-size 16MB 0x0000 bootloader.bin 0x8000 partitions.bin 0xe000 boot_app0.bin 0x10000 firmware.bin
