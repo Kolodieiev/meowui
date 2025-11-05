@@ -7,6 +7,10 @@
 
 const char STR_FIRMWARE_FN[] = "/firmware.bin";
 
+extern "C" bool verifyRollbackLater() {
+    return true;
+}
+
 FirmwareContext::FirmwareContext()
 {
     WidgetCreator creator;
